@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_primary"
+    android:fillViewport="true"
+    tools:context=".RegisterActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="24dp">
+
+        <TextView
+            android:id="@+id/text_title_aurora"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Aurora"
+            android:textSize="36sp"
+            android:fontFamily="@font/k2d_regular"
+            android:textColor="@color/magenta_turquesa_gradient_start"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/text_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sistema de localizacion de celulares"
+            android:textSize="16sp"
+            android:textColor="#D9D9D9"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/text_title_aurora"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/tab_buttons_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="32dp"
+            android:gravity="center"
+            app:layout_constraintTop_toBottomOf="@+id/text_subtitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <Button
+                android:id="@+id/btn_login"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Iniciar sesion"
+                android:textColor="@color/white"
+                android:background="@drawable/button_outline_default"
+                android:paddingVertical="12dp"
+                android:layout_marginEnd="8dp"
+                android:textAllCaps="false"
+                android:textSize="16sp"/>
+
+            <Button
+                android:id="@+id/btn_register"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Registrar"
+                android:textColor="@color/white"
+                android:background="@drawable/button_outline_gradient"
+                android:paddingVertical="12dp"
+                android:layout_marginStart="8dp"
+                android:textAllCaps="false"
+                android:textSize="16sp"/>
+        </LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/register_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:padding="20dp"
+            android:background="@drawable/register_card_background"
+            app:layout_constraintTop_toBottomOf="@+id/tab_buttons_container"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="0">
+
+            <TextView
+                android:id="@+id/text_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Crear nuevo usuario"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView
+                android:id="@+id/label_nombre"
+                android:text="Nombre"
+                style="@style/RegisterLabel"
+                app:layout_constraintTop_toBottomOf="@+id/text_header"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <EditText
+                android:id="@+id/input_nombre"
+                style="@style/RegisterInputField"
+                app:layout_constraintTop_toBottomOf="@+id/label_nombre" />
+
+            <TextView
+                android:id="@+id/label_correo"
+                android:text="Correo Electronico"
+                style="@style/RegisterLabel"
+                app:layout_constraintTop_toBottomOf="@+id/input_nombre"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <EditText
+                android:id="@+id/input_correo"
+                style="@style/RegisterInputField"
+                android:inputType="textEmailAddress"
+                app:layout_constraintTop_toBottomOf="@+id/label_correo" />
+
+            <TextView
+                android:id="@+id/label_celular"
+                android:text="Numero De Celular"
+                style="@style/RegisterLabel"
+                app:layout_constraintTop_toBottomOf="@+id/input_correo"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <EditText
+                android:id="@+id/input_celular"
+                style="@style/RegisterInputField"
+                android:inputType="phone"
+                app:layout_constraintTop_toBottomOf="@+id/label_celular" />
+
+            <TextView
+                android:id="@+id/label_password"
+                android:text="Contraseña"
+                style="@style/RegisterLabel"
+                app:layout_constraintTop_toBottomOf="@+id/input_celular"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <EditText
+                android:id="@+id/input_password"
+                style="@style/RegisterInputField"
+                android:inputType="textPassword"
+                app:layout_constraintTop_toBottomOf="@+id/label_password" />
+
+            <TextView
+                android:id="@+id/label_confirm_password"
+                android:text="Confirmar Contraseña"
+                style="@style/RegisterLabel"
+                app:layout_constraintTop_toBottomOf="@+id/input_password"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <EditText
+                android:id="@+id/input_confirm_password"
+                style="@style/RegisterInputField"
+                android:inputType="textPassword"
+                app:layout_constraintTop_toBottomOf="@+id/label_confirm_password" />
+
+            <Button
+                android:id="@+id/btn_create_account"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Crear cuenta"
+                android:textColor="@color/white"
+                android:background="@drawable/button_fill_gradient"
+                android:paddingVertical="14dp"
+                android:layout_marginTop="32dp"
+                android:textAllCaps="false"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@+id/input_confirm_password" />
+
+            <TextView
+                android:id="@+id/text_terms"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Al registrarte, aceptas nuestros términos de servicio y política de privacidad"
+                android:textColor="#D9D9D9"
+                android:textSize="12sp"
+                android:gravity="center"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@+id/btn_create_account"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

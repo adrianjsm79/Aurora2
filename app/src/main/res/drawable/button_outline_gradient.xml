@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Usamos un layer-list para simular el borde con gradiente -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 1. Capa de Fondo (El Borde con Gradiente) -->
+    <!-- Esta forma es el gradiente completo que se verá en los bordes. -->
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="24dp" /> <!-- Radio del contenedor exterior -->
+            <gradient
+                android:startColor="@color/magenta"
+                android:endColor="@color/turquesa"
+                android:angle="0" />
+        </shape>
+    </item>
+
+    <!-- 2. Capa Frontal (El Relleno SÓLIDO del Botón) -->
+    <!-- Esta forma se dibuja encima, dejando un margen de 2dp que actúa como borde. -->
+    <item
+        android:left="2dp"
+        android:right="2dp"
+        android:top="2dp"
+        android:bottom="2dp">
+        <shape android:shape="rectangle">
+            <!-- ===== ¡AQUÍ ESTÁ LA CORRECCIÓN! ===== -->
+            <!-- Cambiamos el color transparente por el color de fondo deseado para el botón. -->
+            <solid android:color="@color/background_primary" />
+
+            <corners android:radius="24dp" /> <!-- Radio ligeramente menor para un ajuste perfecto -->
+        </shape>
+    </item>
+
+</layer-list>
