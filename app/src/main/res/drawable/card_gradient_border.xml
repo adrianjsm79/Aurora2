@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Usamos un layer-list para simular el borde con gradiente -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Capa 1: El Borde (El Gradiente) -->
+    <!-- Esta capa es más grande y quedará por debajo. -->
+    <item>
+        <shape android:shape="rectangle">
+            <!-- El gradiente que quieres para tu borde -->
+            <gradient
+                android:type="linear"
+                android:angle="-45"
+                android:startColor="@color/magenta"
+                android:endColor="@color/turquesa" />
+            <!-- Las mismas esquinas redondeadas -->
+            <corners android:radius="15dp" />
+        </shape>
+    </item>
+
+    <!-- Capa 2: El Contenido (El Fondo Sólido) -->
+    <!-- Esta capa es más pequeña y se dibuja encima de la anterior, -->
+    <!-- dejando un margen de 2dp que crea el efecto de borde. -->
+    <item
+        android:left="2dp"
+        android:right="2dp"
+        android:top="2dp"
+        android:bottom="2dp">
+        <shape android:shape="rectangle">
+            <!-- El color de fondo sólido para el interior de la tarjeta -->
+            <solid android:color="@color/background_secondary" />
+            <!-- Las esquinas deben ser un poco menos redondeadas para un ajuste perfecto, -->
+            <!-- pero con 15dp suele ser suficiente. Ajústalo si es necesario. -->
+            <corners android:radius="13dp" /> <!-- 15dp (radio exterior) - 2dp (grosor) -->
+        </shape>
+    </item>
+
+</layer-list>
