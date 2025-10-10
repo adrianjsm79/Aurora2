@@ -20,7 +20,7 @@ class ContactsAdapter(
     var longPressedPosition: Int = -1
         private set
 
-    // --- ViewHolder ---
+    // VIEWHOLDER
     // Lo hacemos una inner class para acceder a la variable de posición
     inner class ContactViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView), View.OnCreateContextMenuListener { // 1. Implementamos la interfaz
@@ -32,24 +32,24 @@ class ContactsAdapter(
         val indicatorTrusted: ImageView = itemView.findViewById(R.id.indicator_confiable)
 
         init {
-            // 2. Registramos la vista para el menú contextual
+            //registra la vista para el menú contextual
             itemView.setOnCreateContextMenuListener(this)
         }
 
-        // 3. Sobreescribimos el método para crear el menú
+        //sobre el metodo para crear el menu
         override fun onCreateContextMenu(
             menu: ContextMenu?,
             v: View?,
             menuInfo: ContextMenu.ContextMenuInfo?
         ) {
-            // Inflamos el menú que creamos en XML
-            menu?.setHeaderTitle("Selecciona una acción") // Título opcional
+            //inflamos el menú que creamos en XML
+            menu?.setHeaderTitle("opciones") // Título opcional
             menu?.add(this.adapterPosition, R.id.menu_add_trusted, 0, "Añadir a contactos de confianza")
             menu?.add(this.adapterPosition, R.id.menu_add_emergency, 1, "Añadir a contactos de emergencia")
             menu?.add(this.adapterPosition, R.id.menu_remove, 2, "Eliminar de lista")
         }
     }
-    // --- Fin del ViewHolder ---
+    //fin de viewholder
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactViewHolder {
@@ -61,7 +61,7 @@ class ContactsAdapter(
         val contact = contacts[position]
         holder.contactName.text = contact.name
 
-        // Lógica para mostrar foto o inicial (ya la tenías)
+        //logica para mostrar foto de perfil
         if (contact.photoUri != null) {
             holder.contactPhoto.setImageURI(Uri.parse(contact.photoUri))
             holder.contactPhoto.visibility = View.VISIBLE
@@ -75,10 +75,10 @@ class ContactsAdapter(
         holder.indicatorEmergency.visibility = if (contact.isEmergency) View.VISIBLE else View.GONE
         holder.indicatorTrusted.visibility = if (contact.isTrusted) View.VISIBLE else View.GONE
 
-        // 4. Guardamos la posición cuando se hace una pulsación larga
+        //con esto guarda la posición cuando se hace una pulsación larga
         holder.itemView.setOnLongClickListener {
             longPressedPosition = holder.adapterPosition
-            false // Devolvemos 'false' para que el evento continúe y se cree el menú contextual
+            false //devolve 'false' para que el evento continúe y se cree el menú contextual
         }
     }
 
@@ -90,7 +90,7 @@ class ContactsAdapter(
         notifyDataSetChanged()
     }
 
-    // Función para obtener el contacto presionado desde la Activity
+    //función para obtener el contacto presionado desde la Activity
     fun getContactAt(position: Int): Contact {
         return contacts[position]
     }

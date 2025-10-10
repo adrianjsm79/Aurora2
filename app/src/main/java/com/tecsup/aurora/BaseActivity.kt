@@ -20,21 +20,13 @@ abstract class BaseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // --- MODO PANTALLA COMPLETA REAL (EDGE-TO-EDGE E INMERSIVO) ---
-
-        // 1. Permite que el layout de la app se dibuje detrás de las barras del sistema.
-        // Esto es crucial para eliminar los espacios reservados vacíos en la parte superior e inferior.
         WindowCompat.setDecorFitsSystemWindows(window, false)
-
-        // 2. Obtenemos el controlador de las barras del sistema para poder manipularlas.
+        //Obtenemos el controlador de las barras del sistema para poder manipularlas.
         val windowInsetsController =
             WindowCompat.getInsetsController(window, window.decorView)
-
-        // 3. Ocultamos las barras de estado (arriba) y de navegación (abajo).
+        //Ocultamos las barras de estado (arriba) y de navegación (abajo).
         windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
-
-        // 4. Configuramos el comportamiento para que las barras reaparezcan temporalmente
-        // al deslizar desde los bordes de la pantalla.
+        //al deslizar desde los bordes de la pantalla aparecen denuevo
         windowInsetsController.systemBarsBehavior =
             WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
     }

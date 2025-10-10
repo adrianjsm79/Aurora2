@@ -3,6 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
 
     <application
         android:allowBackup="true"
@@ -13,6 +17,12 @@
         android:roundIcon="@drawable/ic_aurora"
         android:supportsRtl="true"
         android:theme="@style/Theme.Aurora">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBijyV64POjqztyTFwbHH7D_L1W4aeIxHs" />
+
+
         <activity
             android:name=".SearchmapActivity"
             android:exported="false" />

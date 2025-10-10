@@ -26,25 +26,27 @@ import kotlinx.coroutines.withContext
 
 class ContactsActivity : BaseActivity() {
 
+    //se coloca antes de oncreate
+
     // Views
     private lateinit var recyclerView: RecyclerView
     private lateinit var layoutPermissionRequired: LinearLayout
     private lateinit var btnGrantPermission: Button
     private lateinit var searchView: SearchView // <-- NUEVO: Para el buscador
 
-    // Adapter y lista original
+    //adapter y lista
     private lateinit var contactsAdapter: ContactsAdapter
     private val allContacts = mutableListOf<Contact>() // <-- NUEVO: Lista para guardar todos los contactos
 
-    // Launcher para solicitar permisos
+    //solicitud de permisos permisos
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
             if (isGranted) {
-                // Permiso concedido, cargar contactos
+                //carga contactos
                 showContactsView()
                 loadContacts()
             } else {
-                // Permiso denegado, mostrar la vista correspondiente
+                //en caso de permiso denegaod
                 showPermissionDeniedView()
                 Toast.makeText(this, "Permiso denegado. No se pueden mostrar los contactos.", Toast.LENGTH_LONG).show()
             }
@@ -54,7 +56,7 @@ class ContactsActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_contacts)
 
-        // 1. Inicializar las vistas OBLIGATORIAMENTE después de setContentView
+        //Inicializa las vistas OBLIGATORIAMENTE después de setContentView
         recyclerView = findViewById(R.id.recycler_view_contacts)
         layoutPermissionRequired = findViewById(R.id.layout_permission_required)
         btnGrantPermission = findViewById(R.id.btn_grant_permission)
