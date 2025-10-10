@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="12dp">
+
+
+    <FrameLayout
+        android:id="@+id/container_contact_image"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true">
+
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/image_contact_photo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.App.Circle"
+            tools:src="@tools:sample/avatars" />
+
+
+        <TextView
+            android:id="@+id/text_contact_initial"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/circle_background"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            tools:text="J"
+            tools:visibility="gone" />
+
+    </FrameLayout>
+
+
+    <TextView
+        android:id="@+id/text_contact_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="16dp"
+        android:layout_toEndOf="@id/container_contact_image"
+        android:layout_toStartOf="@id/container_indicators"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        tools:text="Juanito Perez"/>
+
+    <LinearLayout
+        android:id="@+id/container_indicators"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:gravity="end"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/indicator_confiable"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_confiable"
+            android:visibility="gone"
+            app:tint="@color/turquesa"
+            tools:visibility="visible" />
+
+
+        <ImageView
+            android:id="@+id/indicator_emergencia"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/ic_emergency"
+            android:visibility="gone"
+            app:tint="@color/magenta"
+            tools:visibility="visible" />
+    </LinearLayout>
+
+</RelativeLayout>

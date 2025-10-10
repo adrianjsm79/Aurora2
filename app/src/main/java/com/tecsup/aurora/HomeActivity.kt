@@ -3,6 +3,7 @@ package com.tecsup.aurora
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
@@ -81,8 +82,19 @@ class HomeActivity : BaseActivity() {
         bottomNavView.selectedItemId = R.id.bottom_home
 
         bottomNavView.setOnItemSelectedListener { menuItem ->
+            // Evita relanzar la misma actividad si ya estamos en ella
+            if (menuItem.itemId == bottomNavView.selectedItemId) {
+                return@setOnItemSelectedListener false // No hacer nada
+            }
+
             when (menuItem.itemId) {
-                R.id.bottom_home -> true // Ya estamos aquí, no hacer nada
+                R.id.bottom_home -> {
+                    // Si vienes de otra actividad y quieres volver a Home, usa este intent
+                    val intent = Intent(this, HomeActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+                    startActivity(intent)
+                    true
+                }
 
                 R.id.bottom_profile -> {
                     startActivity(Intent(this, ProfileActivity::class.java))
@@ -96,6 +108,7 @@ class HomeActivity : BaseActivity() {
                 else -> false
             }
         }
+
 
 
         //CERRAR MENÚ DESDE EL HEADER
@@ -127,6 +140,21 @@ class HomeActivity : BaseActivity() {
             }
         }
         onBackPressedDispatcher.addCallback(this, callback)
+
+
+        //INTENTS
+        val BtnContacts = findViewById<LinearLayout>(R.id.card_contacts)
+        BtnContacts.setOnClickListener {
+            val intent = Intent(this, ContactsActivity::class.java)
+            startActivity(intent)
+        }
+
+        val BtnMap = findViewById<ImageButton>(R.id.find_devices_button)
+        BtnMap.setOnClickListener {
+            val intent = Intent(this, SearchmapActivity::class.java)
+            startActivity(intent)
+
+        }
     }
 }
 
