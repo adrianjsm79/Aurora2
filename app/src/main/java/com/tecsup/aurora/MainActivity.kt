@@ -13,17 +13,11 @@ class MainActivity : BaseActivity() {
         setupEdgeToEdge(R.id.main)
 
         //intents
-        val BtnLogin = findViewById<Button>(R.id.login_button)
-        val BtnHome = findViewById<Button>(R.id.btn_home)
+        val btninicio = findViewById<Button>(R.id.btn_login)
 
         //listener login
-        BtnLogin.setOnClickListener {
+        btninicio.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
-        }
-        //listener home
-        BtnHome.setOnClickListener {
-            val intent = Intent(this, HomeActivity::class.java)
             startActivity(intent)
         }
     }

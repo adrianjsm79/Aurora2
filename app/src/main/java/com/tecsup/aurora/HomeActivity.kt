@@ -2,6 +2,7 @@ package com.tecsup.aurora
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.ImageButton
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
@@ -16,9 +17,11 @@ class HomeActivity : BaseActivity() {
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var toggle: ActionBarDrawerToggle
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+        setupEdgeToEdge(R.id.main)
 
         // --- INICIO: LÓGICA DEL NAVIGATION DRAWER (CORREGIDO) ---
 
@@ -32,6 +35,13 @@ class HomeActivity : BaseActivity() {
             R.string.drawer_open,
             R.string.drawer_close
         )
+
+        toggle.isDrawerIndicatorEnabled = false
+
+        toolbar.setNavigationOnClickListener {
+            drawerLayout.openDrawer(GravityCompat.START)
+        }
+
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
@@ -48,8 +58,14 @@ class HomeActivity : BaseActivity() {
                 R.id.nav_support -> {
                     // Acción para "Soporte"
                 }
-                R.id.nav_logout -> {
-                    // Acción para "Cerrar Sesión"
+                R.id.btn_logout -> {
+                    val intent = Intent(this, MainActivity::class.java)
+
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+
+                    startActivity(intent)
+
+                    finish()
                 }
             }
             // Cierra el menú después de seleccionar una opción
@@ -81,11 +97,22 @@ class HomeActivity : BaseActivity() {
             }
         }
 
-        /**
-         * Sobrescribimos este método para cerrar el drawer si está abierto
-         * cuando el usuario presiona el botón de "Atrás" del sistema.
-         * Es una buena práctica para la experiencia de usuario.
-         */
+
+        //CERRAR MENÚ DESDE EL HEADER
+
+        // Obtener la vista del header del NavigationView
+        val headerView = navView.getHeaderView(0) // 0 porque es el primer y único header
+
+        // Encontrar el ImageButton dentro de la vista del header
+        val backButton: ImageButton = headerView.findViewById(R.id.back_button_header)
+
+        // Asignar el listener para cerrar el drawer
+        backButton.setOnClickListener {
+            drawerLayout.closeDrawer(GravityCompat.START)
+        }
+
+        //CERRAR MENU DESDE FUERA DEL DRAWER
+
         val callback = object : OnBackPressedCallback(true /* enabled by default */) {
             override fun handleOnBackPressed() {
                 // Si el menú lateral está abierto, ciérralo.

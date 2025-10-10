@@ -18,6 +18,11 @@ class RegisterActivity : BaseActivity() {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
+        val BtnCrear = findViewById<Button>(R.id.btn_create_account)
+        BtnCrear.setOnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+        }
 
     }
 }

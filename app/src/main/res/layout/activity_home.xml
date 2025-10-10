@@ -27,23 +27,28 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="@color/background_secondary"
-                android:paddingStart="10dp"
-                android:theme="@style/ThemeOverlay.MaterialComponents.Toolbar.Primary"
+                android:background="@color/background_tertiary"
                 app:navigationIcon="@drawable/ic_menu_hamburger"
-                app:titleTextColor="@color/white">
+                android:theme="@style/ThemeOverlay.MaterialComponents.Toolbar.Primary"
+                android:paddingTop="5dp"
 
-                <LinearLayout
+                >
+
+            <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:orientation="horizontal">
+                    android:layout_gravity="end"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingEnd="16dp"
+                    >
+
 
                     <ImageView
-                        android:id="@+id/hamburger_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_logo_aurora" />
+
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -52,7 +57,7 @@
                         android:text="Aurora"
                         android:textColor="@color/white"
                         android:textSize="24sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/k2d_regular"/>
 
                 </LinearLayout>
 
@@ -78,7 +83,8 @@
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="18dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginTop="32dp"
                     app:cardBackgroundColor="@android:color/transparent"
                     app:cardCornerRadius="15dp"
                     app:cardElevation="0dp">
@@ -220,7 +226,7 @@
                     android:padding="7dp"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_location_map"
-                    android:tint="@color/white" />
+                    app:tint="@color/white" />
 
                 <GridLayout
                     android:layout_width="match_parent"
@@ -240,6 +246,7 @@
                         app:cardElevation="0dp">
 
                         <LinearLayout
+                            android:id="@+id/card_location"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@drawable/card_gradient_border"
@@ -277,6 +284,7 @@
                         app:cardElevation="0dp">
 
                         <LinearLayout
+                            android:id="@+id/card_contacts"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@drawable/card_gradient_border"
@@ -313,6 +321,7 @@
                         app:cardElevation="0dp">
 
                         <LinearLayout
+                            android:id="@+id/card_security"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@drawable/card_gradient_border"
@@ -349,6 +358,7 @@
                         app:cardElevation="0dp">
 
                         <LinearLayout
+                            android:id="@+id/card_devices"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@drawable/card_gradient_border"
@@ -382,21 +392,26 @@
             android:id="@+id/bottom_nav_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@color/background_secondary"
-            app:itemIconTint="@color/white"
+            android:background="@color/background_tertiary"
+            app:itemIconTint="@color/bottom_nav_icon_color_selector"
+            app:labelVisibilityMode="unlabeled"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:menu="@menu/menu_bottom_nav" />
+            app:menu="@menu/menu_bottom_nav"
+            app:itemActiveIndicatorStyle="@style/App.Material.BottomNav.Indicator"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
-        android:layout_width="wrap_content"
+        android:layout_width="220dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:headerLayout="@layout/nav_header"
-        app:menu="@menu/menu_drawer" />
+        app:menu="@menu/menu_drawer"
+        android:background="@color/background_secondary"
+        app:itemTextColor="@color/white"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>

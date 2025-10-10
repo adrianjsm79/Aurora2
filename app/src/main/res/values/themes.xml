@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.Aurora" parent="Theme.Material3.DayNight">
+    <style name="Base.Theme.Aurora" parent="Theme.Material3.Dark.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
 
@@ -25,6 +25,21 @@
         <item name="android:textSize">16sp</item>
         <item name="android:singleLine">true</item>
         <item name="android:textColorHint">@color/input_hint_color</item>
+    </style>
+
+    <style name="ShapeAppearance.App.Circle" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <!-- ESTA ES LA VERSIÓN CORRECTA Y DEFINITIVA -->
+    <style name="App.Material.BottomNav.Indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <!-- 1. Ancho del indicador (ajusta si es necesario) -->
+        <item name="android:width">48dp</item>
+        <!-- 2. Alto del indicador (ajusta si es necesario) -->
+        <item name="android:height">48dp</item>
+        <!-- 3. Color del indicador -->
+        <item name="android:color">@color/magenta</item>
     </style>
 
 
