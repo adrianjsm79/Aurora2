@@ -152,7 +152,7 @@ class HomeActivity : BaseActivity() {
         val shareIntent = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
             putExtra(Intent.EXTRA_SUBJECT, "Descarga Aurora App")
-            putExtra(Intent.EXTRA_TEXT, "¡Te recomiendo Aurora! Una app increíble para nuestra seguridad. Descárgala aquí: https://github.com/adrianjsm79/Aurora2")
+            putExtra(Intent.EXTRA_TEXT, "¡Te recomiendo Aurora! Una app increíble para nuestra seguridad. https://github.com/adrianjsm79/Aurora2/releases/tag/debug1")
         }
         startActivity(Intent.createChooser(shareIntent, "Compartir vía"))
     }
