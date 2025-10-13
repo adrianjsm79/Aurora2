@@ -13,7 +13,8 @@ import com.tecsup.aurora.R
 import com.tecsup.aurora.model.Contact
 
 class ContactsAdapter(
-    private val contacts: MutableList<Contact>
+    private val contacts: MutableList<Contact>,
+    private val onItemClick: (Contact) -> Unit
 ) : RecyclerView.Adapter<ContactsAdapter.ContactViewHolder>() {
 
     // Variable para guardar la posición del ítem presionado
@@ -60,6 +61,11 @@ class ContactsAdapter(
     override fun onBindViewHolder(holder: ContactViewHolder, position: Int) {
         val contact = contacts[position]
         holder.contactName.text = contact.name
+
+        holder.itemView.setOnClickListener {
+            // Ejecuta la función que recibimos en el constructor
+            onItemClick(contact)
+        }
 
         //logica para mostrar foto de perfil
         if (contact.photoUri != null) {

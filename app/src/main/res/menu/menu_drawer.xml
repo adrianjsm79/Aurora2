@@ -20,6 +20,11 @@
             android:title="Soporte"
             />
 
+        <item
+            android:id="@+id/nav_share"
+            android:title="Compartir"
+            />
+
     </group>
 
     <item

@@ -1,4 +1,4 @@
-package com.tecsup.aurora
+package com.tecsup.aurora.activities
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -14,6 +14,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.tecsup.aurora.R
 
 class SearchmapActivity : AppCompatActivity(), OnMapReadyCallback {
 

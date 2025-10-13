@@ -1,10 +1,11 @@
-package com.tecsup.aurora
+package com.tecsup.aurora.activities
 
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import android.widget.TextView
+import com.tecsup.aurora.R
 
 class LoginActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

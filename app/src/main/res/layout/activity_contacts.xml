@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_primary"
-    tools:context=".ContactsActivity">
+    tools:context=".activities.ContactsActivity">
 
     <!-- 1. Barra superior con título y botón de añadir -->
     <com.google.android.material.appbar.AppBarLayout
@@ -24,22 +24,8 @@
             app:title="Mis Contactos"
             app:titleCentered="true"
             app:titleTextColor="@color/white"
-            app:navigationIcon="@drawable/ic_arrow_back"
-            app:navigationIconTint="@color/turquesa">
-
-            <!-- El único elemento que necesitas anidar es el botón de la derecha -->
-            <ImageButton
-                android:id="@+id/btn_add_contact_manual"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginEnd="16dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_add"
-                app:tint="@color/turquesa" />
-
-
-        </com.google.android.material.appbar.MaterialToolbar>
+            app:navigationIcon="@drawable/ic_arrow_left"
+            android:background="@color/background_secondary"/>
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -50,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/input_field_background"
+        android:background="@drawable/button_outline_gradient"
         app:iconifiedByDefault="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -85,12 +71,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/appBarLayout">
-
-        <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:src="@drawable/ic_contacts_permission"
-            app:tint="@color/turquesa" />
 
         <TextView
             android:id="@+id/text_permission_title"

@@ -1,9 +1,10 @@
-package com.tecsup.aurora
+package com.tecsup.aurora.activities
 
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import androidx.activity.enableEdgeToEdge
+import com.tecsup.aurora.R
 
 class RegisterActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

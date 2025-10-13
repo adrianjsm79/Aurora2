@@ -4,7 +4,7 @@
     android:id="@+id/map_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SearchmapActivity">
+    tools:context=".activities.SearchmapActivity">
 
     <fragment
         android:id="@+id/map_fragment"

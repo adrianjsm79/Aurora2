@@ -1,10 +1,7 @@
-package com.tecsup.aurora
+package com.tecsup.aurora.activities
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import com.tecsup.aurora.R
 
 class TestActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

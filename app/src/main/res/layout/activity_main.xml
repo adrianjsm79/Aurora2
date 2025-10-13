@@ -5,7 +5,9 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".activities.MainActivity"
+    android:background="@color/background_primary"
+    >
 
     <TextView
         android:layout_width="wrap_content"
@@ -13,6 +15,7 @@
         android:text="Aurora"
         android:textSize="42dp"
         android:fontFamily="@font/k2d_regular"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -30,9 +33,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginBottom="120dp"
-        android:background="@drawable/button_fill_gradient"
+        android:background="@drawable/button_fillgradient_ripple_effect"
+        android:clickable="true"
+        android:focusable="true"
         app:backgroundTint="@null"
-
+        android:textColor="@color/white"
+        android:fontFamily="@font/k2d_bold"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
