@@ -20,7 +20,6 @@ class DeviceItemFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Recoger los argumentos pasados al fragment
         arguments?.let {
             deviceName = it.getString(ARG_DEVICE_NAME)
             isDeviceActive = it.getBoolean(ARG_IS_ACTIVE)
@@ -48,7 +47,7 @@ class DeviceItemFragment : Fragment() {
             binding.deviceStatus.setBackgroundResource(R.drawable.status_active_background)
         } else {
             binding.deviceStatus.text = "Inactivo"
-            binding.deviceStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.background_tertiary)) // Reemplaza con tu color para inactivo
+            binding.deviceStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.background_primary))
             binding.deviceStatus.setBackgroundResource(R.drawable.status_inactive_background)
         }
     }
@@ -62,7 +61,7 @@ class DeviceItemFragment : Fragment() {
         private const val ARG_DEVICE_NAME = "device_name"
         private const val ARG_IS_ACTIVE = "is_active"
 
-        // Función "fábrica" para crear instancias del fragment de forma segura
+        // Función para crear instancias del fragment de forma segura
         fun newInstance(name: String, isActive: Boolean): DeviceItemFragment {
             val fragment = DeviceItemFragment()
             val args = Bundle()

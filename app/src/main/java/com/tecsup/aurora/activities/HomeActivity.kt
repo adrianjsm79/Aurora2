@@ -14,27 +14,26 @@ import com.tecsup.aurora.fragments.DeviceItemFragment
 
 class HomeActivity : BaseActivity() {
 
-    // El único objeto de vista que necesitas. Contiene todas las demás.
+    //objeto de vista que Contiene todas las demás.
     private lateinit var binding: ActivityHomeBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // 1. Inflar el layout y establecer la vista usando View Binding
+        //inflar el layout y establecer la vista usando View Binding
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // 2. Crear la lista de datos de ejemplo para los dispositivos
+        //lista de datos de (ejemplo)
         val devicesList = listOf(
-            "Galaxy S23" to true,  // Dispositivo activo
-            "Smartwatch" to false, // Dispositivo inactivo
-            "Tablet" to true      // Dispositivo activo
+            "Galaxy S23" to true,
+            "telefono de adrian" to false
         )
 
-        // 3. Llamar a las funciones de configuración y cargar los dispositivos
-        loadDevices(devicesList) // Pasamos la lista a la función que crea los fragments
+        //llamar a las funciones de configuración y cargar los dispositivos
+        loadDevices(devicesList) //se pasa la lista a la función que crea los fragments
 
-        setupEdgeToEdge(binding.drawerLayout.id) // Pasamos el ID del DrawerLayout desde binding
+        setupEdgeToEdge(binding.drawerLayout.id) //pasamos el id del drawerlayout desde el binding
         setupDrawer()
         setupBottomNavigation()
         setupClickListeners()
