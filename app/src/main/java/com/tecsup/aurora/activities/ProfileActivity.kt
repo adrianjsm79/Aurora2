@@ -3,136 +3,81 @@ package com.tecsup.aurora.activities
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.navigation.NavigationView
 import com.tecsup.aurora.R
+import com.tecsup.aurora.databinding.ActivityProfileBinding
 
 class ProfileActivity : BaseActivity() {
 
-    //usamos lateinit para iniciar las variables despues.
-    //son accesibles desde cualquier función de la clase.
-    //se le asocia un tipo de dato que hace referencia a componentes que hayas usado en el xml
-    private lateinit var drawerLayout: DrawerLayout
-    private lateinit var navView: NavigationView
-    private lateinit var bottomNavView: BottomNavigationView
-    private lateinit var toolbar: Toolbar
-    private lateinit var btnEditPswd: Button
-    private lateinit var btnEditEmail: TextView
-    private lateinit var btnEditNumber: TextView
-    private lateinit var btnEditUser: TextView
-    private lateinit var btnWeb: ImageButton
-    private lateinit var hamburgerButton: ImageButton
+    private lateinit var binding: ActivityProfileBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_profile)
+        binding = ActivityProfileBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        //en oncreate ponemos todas las funciones de la configuracion de la pantalla
-        initViews()
+        // Usamos la función de la clase base y le pasamos la vista raíz
+        setupEdgeToEdge(binding.drawerLayout)
 
-        setupEdgeToEdge(R.id.drawer_layout)
         setupDrawer()
         setupBottomNavigation()
         setupClickListeners()
-        setupOnBackPressed() //esto está aqui porque como tal no forma parte de las opciones del menu
+        setupOnBackPressed()
     }
 
-    //aca asignale un id a cada variable que hayas declarado arriba
-    private fun initViews() {
-        drawerLayout = findViewById(R.id.drawer_layout)
-        toolbar = findViewById(R.id.toolbar)
-        navView = findViewById(R.id.nav_view)
-        bottomNavView = findViewById(R.id.bottom_nav_view)
-        btnEditPswd = findViewById(R.id.btnChangePassword)
-        btnEditEmail = findViewById(R.id.btnEditEmail)
-        btnEditNumber = findViewById(R.id.btnEditNumber)
-        btnEditUser = findViewById(R.id.btnEditUser)
-        btnWeb = findViewById(R.id.link_web)
-        hamburgerButton = findViewById(R.id.hamburger_button_right)
-    }
-
-
-    //listeners para botones y demás intents
+    // Listeners para botones y demás intents usando View Binding
     private fun setupClickListeners() {
-        btnEditPswd.setOnClickListener {
+        binding.btnChangePassword.setOnClickListener {
             Toast.makeText(this, "Cambiar contraseña", Toast.LENGTH_SHORT).show()
-            true
         }
-        btnEditUser.setOnClickListener {
+        binding.btnEditUser.setOnClickListener {
             Toast.makeText(this, "Editar usuario", Toast.LENGTH_SHORT).show()
-            true
         }
-        btnEditNumber.setOnClickListener {
+        binding.btnEditNumber.setOnClickListener {
             Toast.makeText(this, "Editar numero", Toast.LENGTH_SHORT).show()
-            true
         }
-        btnEditEmail.setOnClickListener {
+        binding.btnEditEmail.setOnClickListener {
             Toast.makeText(this, "Editar email", Toast.LENGTH_SHORT).show()
-            true
         }
 
-        btnWeb.setOnClickListener {
+        binding.linkWeb.setOnClickListener {
             val webIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://auroraweb-zoe5.onrender.com"))
             startActivity(webIntent)
         }
-
-        //si quieres añadir un nuevo botón:
-        //declararlo arriba con el lateinit.
-        //inicializalo en initViews().
-        //añade su listener aquí, sin cambiar ninguna otra función.
-
-        //nuevoBoton.setOnClickListener{
-        // startActivity(Intent(this, EjemploActivity::class.java))
-        //}
-
-        //para implicitos hazlo diferente, poné algo asi antes del startActivity:
-        //val ejemploIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.ejemplo.com"))
-        //ten en cuenta que la parte de "ACTION_VIEW" cambia dependiendo lo que quieras hacer"
     }
 
-
-
-
-    //configuracion del menu lateral
+    // Configuracion del menu lateral usando View Binding
     private fun setupDrawer() {
         val toggle = ActionBarDrawerToggle(
-            this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close
+            this, binding.drawerLayout, binding.toolbar, R.string.drawer_open, R.string.drawer_close
         )
-        toggle.isDrawerIndicatorEnabled = false //esto deshabilita el icono que tiene android por defecto no lo quites porfa.
-        drawerLayout.addDrawerListener(toggle)
+        toggle.isDrawerIndicatorEnabled = false
+        binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
-        hamburgerButton.setOnClickListener {
-            drawerLayout.openDrawer(GravityCompat.END)
+        binding.hamburgerButtonRight.setOnClickListener {
+            binding.drawerLayout.openDrawer(GravityCompat.END)
         }
 
-        navView.setNavigationItemSelectedListener { menuItem ->
+        binding.navView.setNavigationItemSelectedListener { menuItem ->
             handleDrawerNavigation(menuItem.itemId)
             true
         }
 
-        val headerView = navView.getHeaderView(0)
-        headerView.findViewById<ImageButton>(R.id.back_button_header)?.setOnClickListener {
-            drawerLayout.closeDrawer(GravityCompat.END)
+        val headerView = binding.navView.getHeaderView(0)
+        headerView.findViewById<androidx.appcompat.widget.AppCompatImageButton>(R.id.back_button_header)?.setOnClickListener {
+            binding.drawerLayout.closeDrawer(GravityCompat.END)
         }
     }
 
-
-    //barra de navegacion inferior
+    // Barra de navegacion inferior usando View Binding
     private fun setupBottomNavigation() {
-        bottomNavView.selectedItemId = R.id.bottom_profile
-        bottomNavView.setOnItemSelectedListener { menuItem ->
-            if (menuItem.itemId == bottomNavView.selectedItemId) return@setOnItemSelectedListener false
+        binding.bottomNavView.selectedItemId = R.id.bottom_profile
+        binding.bottomNavView.setOnItemSelectedListener { menuItem ->
+            if (menuItem.itemId == binding.bottomNavView.selectedItemId) return@setOnItemSelectedListener false
 
             when (menuItem.itemId) {
                 R.id.bottom_home -> startActivity(Intent(this, HomeActivity::class.java))
@@ -142,7 +87,7 @@ class ProfileActivity : BaseActivity() {
         }
     }
 
-    //LAS OPCIONES del menu lateral
+    // Opciones del menu lateral
     private fun handleDrawerNavigation(itemId: Int) {
         when (itemId) {
             R.id.nav_notifications -> Toast.makeText(this, "Notificaciones", Toast.LENGTH_SHORT).show()
@@ -151,10 +96,10 @@ class ProfileActivity : BaseActivity() {
             R.id.nav_share -> shareApp()
             R.id.btn_logout -> logout()
         }
-        drawerLayout.closeDrawer(GravityCompat.END)
+        binding.drawerLayout.closeDrawer(GravityCompat.END)
     }
 
-    //accion para cerrar la sesion
+    // Acción para cerrar la sesión
     private fun logout() {
         val intent = Intent(this, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -162,7 +107,7 @@ class ProfileActivity : BaseActivity() {
         finish()
     }
 
-    //intent implisito para compartir la app desde el menu lateral
+    // Intent implícito para compartir la app desde el menu lateral
     private fun shareApp() {
         val shareIntent = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
@@ -172,15 +117,15 @@ class ProfileActivity : BaseActivity() {
         startActivity(Intent.createChooser(shareIntent, "Compartir vía"))
     }
 
-    //comportamiento del boton de regresar en el menu lateral
+    // Comportamiento del boton de regresar
     private fun setupOnBackPressed() {
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
-                    drawerLayout.closeDrawer(GravityCompat.END)
+                if (binding.drawerLayout.isDrawerOpen(GravityCompat.END)) {
+                    binding.drawerLayout.closeDrawer(GravityCompat.END)
                 } else {
-                    isEnabled = false
-                    onBackPressedDispatcher.onBackPressed()
+                    // Al estar en una pantalla secundaria, simplemente volvemos atrás
+                    super@ProfileActivity.onBackPressed()
                 }
             }
         })

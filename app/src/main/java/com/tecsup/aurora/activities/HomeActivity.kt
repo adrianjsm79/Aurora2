@@ -27,13 +27,15 @@ class HomeActivity : BaseActivity() {
         //lista de datos de (ejemplo)
         val devicesList = listOf(
             "Galaxy S23" to true,
-            "telefono de adrian" to false
+            "Xiaomi Mi 12" to false
         )
 
         //llamar a las funciones de configuración y cargar los dispositivos
         loadDevices(devicesList) //se pasa la lista a la función que crea los fragments
 
-        setupEdgeToEdge(binding.drawerLayout.id) //pasamos el id del drawerlayout desde el binding
+        // Pasamos la vista raíz del layout a la función de la clase base
+        setupEdgeToEdge(binding.drawerLayout)
+
         setupDrawer()
         setupBottomNavigation()
         setupClickListeners()
@@ -146,8 +148,7 @@ class HomeActivity : BaseActivity() {
                 } else {
                     // Logica para salir de la app o ir hacia atras
                     if (isTaskRoot) {
-                        finish()
-                    } else {
+                        finish()                    } else {
                         super@HomeActivity.onBackPressed()
                     }
                 }

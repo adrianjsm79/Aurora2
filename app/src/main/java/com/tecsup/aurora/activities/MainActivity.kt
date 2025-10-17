@@ -2,22 +2,22 @@ package com.tecsup.aurora.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import androidx.activity.enableEdgeToEdge
-import com.tecsup.aurora.R
+import com.tecsup.aurora.databinding.ActivityMainBinding
 
 class MainActivity : BaseActivity() {
+
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
-        setupEdgeToEdge(R.id.main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        //intents
-        val btninicio = findViewById<Button>(R.id.btn_login)
+        // Usamos la función de la clase base y le pasamos la vista raíz
+        setupEdgeToEdge(binding.main)
 
-        //listener login
-        btninicio.setOnClickListener {
+        // Listener para el botón de login usando View Binding
+        binding.btnLogin.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }

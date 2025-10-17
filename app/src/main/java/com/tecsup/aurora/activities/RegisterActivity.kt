@@ -2,28 +2,31 @@ package com.tecsup.aurora.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import androidx.activity.enableEdgeToEdge
-import com.tecsup.aurora.R
+import com.tecsup.aurora.databinding.ActivityRegisterBinding
 
 class RegisterActivity : BaseActivity() {
+
+    private lateinit var binding: ActivityRegisterBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_register)
-        setupEdgeToEdge(R.id.main)
+        binding = ActivityRegisterBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
+        // Usamos la nueva función de la clase base para manejar el teclado
+        setupEdgeToEdgeWithIme(binding.main)
 
-        val BtnLogin = findViewById<Button>(R.id.btn_login)
-        BtnLogin.setOnClickListener {
+        setupClickListeners()
+    }
+
+    private fun setupClickListeners() {
+        binding.btnLogin.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
-        val BtnCrear = findViewById<Button>(R.id.btn_create_account)
-        BtnCrear.setOnClickListener {
+        binding.btnCreateAccount.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
-
     }
 }

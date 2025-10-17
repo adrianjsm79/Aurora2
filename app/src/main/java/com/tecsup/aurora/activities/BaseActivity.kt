@@ -2,40 +2,48 @@ package com.tecsup.aurora.activities
 
 import android.os.Bundle
 import android.view.View
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
 
 /**
  * Una clase base para las actividades de la aplicación.
- * Implementa automáticamente el modo inmersivo a pantalla completa.
- * Todas las actividades que hereden de esta clase ocuparán toda la pantalla,
- * ocultando las barras del sistema. Las barras pueden ser reveladas
- * temporalmente deslizando desde los bordes de la pantalla.
+ * Habilita el modo de borde a borde (edge-to-edge) para que la UI
+ * se dibuje detrás de las barras del sistema.
  */
 abstract class BaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        //Obtenemos el controlador de las barras del sistema para poder manipularlas.
-        val windowInsetsController =
-            WindowCompat.getInsetsController(window, window.decorView)
-        //Ocultamos las barras de estado (arriba) y de navegación (abajo).
-        windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
-        //al deslizar desde los bordes de la pantalla aparecen denuevo
-        windowInsetsController.systemBarsBehavior =
-            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        // Habilita el modo edge-to-edge para que la app dibuje detrás de las barras de sistema.
+        enableEdgeToEdge()
     }
 
-    protected fun setupEdgeToEdge(rootId: Int) {
-        val rootView = findViewById<View>(rootId)
-        ViewCompat.setOnApplyWindowInsetsListener(rootView) { view, insets ->
+    /**
+     * Configura el padding para una vista raíz para evitar que el contenido se superponga
+     * con las barras del sistema (barra de estado y de navegación).
+     *
+     * @param view La vista a la que se aplicará el padding.
+     */
+    protected fun setupEdgeToEdge(view: View) {
+        ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            view.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+    }
+
+    /**
+     * Configura el padding para una vista raíz para evitar que el contenido se superponga
+     * con las barras del sistema y el teclado (IME). Ideal para pantallas con EditTexts.
+     *
+     * @param view La vista a la que se aplicará el padding.
+     */
+    protected fun setupEdgeToEdgeWithIme(view: View) {
+        ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
+            val imeAndSystemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.ime())
+            v.setPadding(imeAndSystemBars.left, imeAndSystemBars.top, imeAndSystemBars.right, imeAndSystemBars.bottom)
             insets
         }
     }
