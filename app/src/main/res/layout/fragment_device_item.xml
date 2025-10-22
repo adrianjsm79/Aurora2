@@ -14,7 +14,7 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="20dp"
         android:text="Nombre Dispositivo"
-        android:textColor="@color/white"
+        android:textColor="?attr/colorOnSurface"
         android:textSize="16sp"
         android:fontFamily="@font/k2d_regular" />
 
@@ -30,6 +30,6 @@
         android:paddingEnd="20dp"
         android:paddingBottom="2dp"
         android:text="Estado"
-        android:textColor="@color/white" />
+        android:textColor="?attr/colorOnBackground" />
 
 </RelativeLayout>

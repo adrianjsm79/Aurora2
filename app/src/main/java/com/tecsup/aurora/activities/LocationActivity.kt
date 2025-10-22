@@ -10,7 +10,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.tecsup.aurora.R
 import com.tecsup.aurora.databinding.ActivityLocationBinding
 
-class LocationActivity : AppCompatActivity() {
+class LocationActivity : BaseActivity() {
 
     private lateinit var binding: ActivityLocationBinding
 
@@ -19,17 +19,8 @@ class LocationActivity : AppCompatActivity() {
         binding = ActivityLocationBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setupEdgeToEdge()
+        setupSystemBars()
         setupClickListeners()
-    }
-
-    private fun setupEdgeToEdge() {
-        enableEdgeToEdge()
-        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
     }
 
     private fun setupClickListeners() {

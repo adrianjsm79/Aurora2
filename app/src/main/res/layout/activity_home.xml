@@ -14,7 +14,7 @@
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/background_primary">
+        android:background="?attr/android:colorBackground">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar_layout"
@@ -23,6 +23,7 @@
             app:layout_constraintTop_toTopOf="parent"
             android:outlineSpotShadowColor="@color/turquesa"
             android:outlineAmbientShadowColor="@color/turquesa"
+            android:fitsSystemWindows="true"
             >
 
             <com.google.android.material.appbar.MaterialToolbar
@@ -30,8 +31,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:theme="@style/ThemeOverlay.MaterialComponents.Toolbar.Primary"
-                android:paddingTop="5dp"
-                android:background="@color/background_secondary"
+                android:background="?attr/colorSurface"
                 >
 
 
@@ -53,7 +53,7 @@
                         android:layout_marginStart="8dp"
                         android:fontFamily="@font/k2d_regular"
                         android:text="Aurora"
-                        android:textColor="@color/white"
+                        android:textColor="?attr/colorOnBackground"
                         android:textSize="24sp"
 
                         />
@@ -72,8 +72,8 @@
                         android:src="@drawable/ic_web1"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:contentDescription="Abrir menú"
+                    />
 
-                        />
                 </FrameLayout>
 
                 <FrameLayout
@@ -96,77 +96,55 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <LinearLayout
+            android:id="@+id/fixed_bottom_content"
             android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:fillViewport="true"
-            android:padding="20dp"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:paddingHorizontal="20dp"
+            android:paddingBottom="20dp"
             app:layout_constraintBottom_toTopOf="@id/bottom_nav_view"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/app_bar_layout">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:layout_marginTop="12dp"
-                android:text="Dispositivos"
-                android:textColor="@color/white"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_marginHorizontal="10dp"
-                android:fontFamily="@font/k2d_medium"
-                />
-
-            <LinearLayout
-                android:id="@+id/devices_container"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:orientation="vertical" />
-
-
+            app:layout_constraintStart_toStartOf="parent">
 
 
             <LinearLayout
                 android:id="@+id/find_devices_button"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:layout_marginVertical="32dp"
-                android:orientation="horizontal"
-                android:gravity="center"
+                android:layout_marginBottom="60dp"
                 android:background="@drawable/button_fillgradient_ripple_effect"
                 android:clickable="true"
+                android:elevation="4dp"
                 android:focusable="true"
+                android:gravity="center"
+                android:orientation="horizontal"
                 android:paddingStart="24dp"
                 android:paddingEnd="24dp"
-                android:elevation="4dp"
                 >
 
                 <!-- 1. Icono -->
                 <ImageView
-                    android:layout_height="32dp"
                     android:layout_width="32dp"
-                    android:src="@drawable/ic_location_map"
-                    app:tint="@color/white"
+                    android:layout_height="32dp"
                     android:layout_marginEnd="12dp"
-                    android:contentDescription="Icono de encontrar dispositivos" />
-
+                    android:contentDescription="Icono de encontrar dispositivos"
+                    android:src="@drawable/ic_location_map"
+                    app:tint="?attr/colorOnBackground" />
                 <!-- 2. Texto -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/k2d_extrabold"
                     android:text="Encontrar Dispositivos"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
-                    android:fontFamily="@font/k2d_extrabold" />
+                    android:textColor="?attr/colorOnBackground"
+                    android:textSize="16sp" />
 
             </LinearLayout>
 
 
             <GridLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_weight="1"
                 android:columnCount="2"
@@ -194,14 +172,14 @@
                         android:layout_marginBottom="4dp"
                         android:contentDescription="Icono de dispositivo"
                         android:src="@drawable/ic_location"
-                        app:tint="@color/turquesa" />
+                        app:tint="?attr/colorPrimary" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Localizacion"
                         android:textAlignment="center"
-                        android:textColor="@color/white"
+                        android:textColor="?attr/colorOnSurface"
                         android:textSize="12sp"
                         android:fontFamily="@font/k2d_regular"
                         />
@@ -230,14 +208,14 @@
                         android:layout_marginBottom="4dp"
                         android:contentDescription="Icono de dispositivo"
                         android:src="@drawable/ic_contacts"
-                        app:tint="@color/turquesa" />
+                        app:tint="?attr/colorPrimary" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Contactos de confianza"
                         android:textAlignment="center"
-                        android:textColor="@color/white"
+                        android:textColor="?attr/colorOnSurface"
                         android:textSize="12sp"
                         android:fontFamily="@font/k2d_regular"/>
 
@@ -264,14 +242,14 @@
                         android:layout_marginBottom="4dp"
                         android:contentDescription="Icono de dispositivo"
                         android:src="@drawable/ic_security"
-                        app:tint="@color/turquesa" />
+                        app:tint="?attr/colorPrimary" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Seguridad"
                         android:textAlignment="center"
-                        android:textColor="@color/white"
+                        android:textColor="?attr/colorOnSurface"
                         android:textSize="12sp"
                         android:fontFamily="@font/k2d_regular"
                         />
@@ -299,14 +277,14 @@
                         android:layout_marginBottom="4dp"
                         android:contentDescription="Icono de dispositivo"
                         android:src="@drawable/ic_phone"
-                        app:tint="@color/turquesa" />
+                        app:tint="?attr/colorPrimary" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Gestionar dispositivos"
                         android:textAlignment="center"
-                        android:textColor="@color/white"
+                        android:textColor="?attr/colorOnSurface"
                         android:textSize="12sp"
                         android:fontFamily="@font/k2d_regular"
                         />
@@ -317,6 +295,46 @@
             </GridLayout>
 
         </LinearLayout>
+
+        <ScrollView
+            android:id="@+id/devices_scroll_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:fillViewport="true"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="20dp"
+            app:layout_constraintBottom_toTopOf="@id/fixed_bottom_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/app_bar_layout">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="24dp"
+                    android:fontFamily="@font/k2d_medium"
+                    android:text="Dispositivos"
+                    android:textColor="?attr/colorOnBackground"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/devices_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="150dp"
+                    android:orientation="vertical" />
+
+            </LinearLayout>
+
+        </ScrollView>
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_nav_view"
@@ -341,7 +359,7 @@
         android:layout_gravity="end"
         app:headerLayout="@layout/nav_header"
         app:menu="@menu/menu_drawer"
-        android:background="@color/background_secondary"
-        app:itemTextColor="@color/white"/>
+        android:background="?attr/colorSurface"
+        app:itemTextColor="?attr/colorOnBackground"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -1,7 +1,79 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.Aurora" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <!-- Customize your light theme here. -->
+        <!-- Colores primarios (acentos, botones importantes) -->
+
+        <item name="colorPrimary">@color/magenta</item>
+        <item name="colorSecondary">@color/turquesa</item>
+        <item name="colorPrimaryVariant">@color/magenta_transparente</item>
+        <item name="colorSecondaryVariant">@color/turquesa_transparente</item>
+
+
+
+
+        <!-- Colores de superficie (fondos de la app, tarjetas) -->
+        <item name="android:colorBackground">@color/background_light</item> <!-- Fondo principal claro -->
+        <item name="colorSurface">@color/surface_light</item> <!-- Fondo de tarjetas claro -->
+        <item name="colorTertiary">@color/background_tertiary_light</item>
+
+        <!-- Colores de texto y separadores -->
+        <item name="colorOnBackground">@color/text_primary_light</item> <!-- Texto sobre el fondo principal -->
+        <item name="colorOnSurface">@color/text_secondary_light</item> <!-- Texto sobre tarjetas -->
+        <item name="colorOnTertiary">@color/text_tertiary_light</item>
+
     </style>
+
+    <style name="RegisterLabel">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+    </style>
+
+    <style name="RegisterInputField">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/input_field_background</item>
+        <item name="android:paddingHorizontal">16dp</item>
+        <item name="android:paddingVertical">8dp</item>
+        <item name="android:textColor">@color/text_secondary_light</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColorHint">@color/background_tertiary_light</item>
+    </style>
+
+    <style name="ShapeAppearance.App.Circle" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <!-- ESTA ES LA VERSIÓN CORRECTA Y DEFINITIVA -->
+    <style name="App.Material.BottomNav.Indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <!-- 1. Ancho del indicador (ajusta si es necesario) -->
+        <item name="android:width">48dp</item>
+        <!-- 2. Alto del indicador (ajusta si es necesario) -->
+        <item name="android:height">48dp</item>
+        <!-- 3. Color del indicador -->
+        <item name="android:color">?attr/colorPrimary</item>
+    </style>
+
+    <style name="DeviceOptionStyle" parent="Widget.AppCompat.TextView">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingVertical">12dp</item>
+        <item name="android:paddingHorizontal">16dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:drawablePadding">16dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+        <item name="drawableTint">?attr/colorSecondaryVariant</item>
+    </style>
+
+
+    <style name="Theme.Aurora" parent="Base.Theme.Aurora" />
 </resources>

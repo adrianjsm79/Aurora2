@@ -1,15 +1,30 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.Aurora" parent="Theme.Material3.Dark.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    <style name="Base.Theme.Aurora" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your dark theme here. -->
+
+        <item name="colorPrimary">@color/turquesa</item>
+        <item name="colorSecondary">@color/magenta</item>
+        <item name="colorPrimaryVariant">@color/turquesa_transparente</item>
+        <item name="colorSecondaryVariant">@color/magenta_transparente</item>
+
+
+        <!-- Colores de superficie (fondos de la app, tarjetas) -->
+        <item name="android:colorBackground">@color/background_primary</item> <!-- Fondo principal claro -->
+        <item name="colorSurface">@color/background_secondary</item> <!-- Fondo de tarjetas claro -->
+        <item name="colorTertiary">@color/background_tertiary</item>
+
+        <!-- Colores de texto y separadores -->
+        <item name="colorOnBackground">@color/text_primary</item> <!-- Texto sobre el fondo principal -->
+        <item name="colorOnSurface">@color/text_secondary</item> <!-- Texto sobre tarjetas -->
+        <item name="colorOnTertiary">@color/text_tertiary</item>
 
     </style>
 
     <style name="RegisterLabel">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/label_color</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
         <item name="android:textSize">14sp</item>
         <item name="android:layout_marginTop">16dp</item>
         <item name="android:layout_marginBottom">4dp</item>
@@ -21,10 +36,10 @@
         <item name="android:background">@drawable/input_field_background</item>
         <item name="android:paddingHorizontal">16dp</item>
         <item name="android:paddingVertical">8dp</item>
-        <item name="android:textColor">@color/input_text_color</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
         <item name="android:textSize">16sp</item>
         <item name="android:singleLine">true</item>
-        <item name="android:textColorHint">@color/input_hint_color</item>
+        <item name="android:textColorHint">?attr/colorOnTertiary</item>
     </style>
 
     <style name="ShapeAppearance.App.Circle" parent="">
@@ -39,7 +54,21 @@
         <!-- 2. Alto del indicador (ajusta si es necesario) -->
         <item name="android:height">48dp</item>
         <!-- 3. Color del indicador -->
-        <item name="android:color">@color/magenta</item>
+        <item name="android:color">?attr/colorPrimary</item>
+    </style>
+
+    <style name="DeviceOptionStyle" parent="Widget.AppCompat.TextView">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingVertical">12dp</item>
+        <item name="android:paddingHorizontal">16dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:drawablePadding">16dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+        <item name="drawableTint">?attr/colorOnSurface</item>
     </style>
 
 

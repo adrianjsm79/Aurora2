@@ -14,7 +14,8 @@
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/background_primary">
+        android:background="?attr/android:colorBackground"
+        >
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar_layout"
@@ -23,6 +24,7 @@
             app:layout_constraintTop_toTopOf="parent"
             android:outlineSpotShadowColor="@color/turquesa"
             android:outlineAmbientShadowColor="@color/turquesa"
+            android:fitsSystemWindows="true"
             >
 
             <com.google.android.material.appbar.MaterialToolbar
@@ -30,8 +32,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:theme="@style/ThemeOverlay.MaterialComponents.Toolbar.Primary"
-                android:paddingTop="5dp"
-                android:background="@color/background_secondary"
+                android:background="?attr/colorSurface"
                 >
 
 
@@ -53,7 +54,7 @@
                         android:layout_marginStart="8dp"
                         android:fontFamily="@font/k2d_regular"
                         android:text="Aurora"
-                        android:textColor="@color/white"
+                        android:textColor="?attr/colorOnBackground"
                         android:textSize="24sp"
 
                         />
@@ -132,7 +133,7 @@
                             android:layout_gravity="center"
                             android:layout_marginBottom="16dp"
                             android:text="Ajustes"
-                            android:textColor="@color/turquesa"
+                            android:textColor="?attr/colorOnBackground"
                             android:textSize="24sp"
                             android:fontFamily="@font/k2d_regular"
 
@@ -154,16 +155,25 @@
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentStart="true"
                                 android:layout_centerVertical="true"
-                                android:text="Tema claro/oscuro"
-                                android:textColor="@color/white"
+                                android:text="Cambiar tema (claro/oscuro)"
+                                android:textColor="?attr/colorOnBackground"
                                 android:textSize="16sp" />
 
                             <com.google.android.material.switchmaterial.SwitchMaterial
                                 android:id="@+id/switch_theme"
-                                android:layout_width="64dp"
-                                android:layout_height="64dp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
                                 android:layout_alignParentEnd="true"
-                                android:layout_centerVertical="true" />
+                                android:layout_centerVertical="true"
+
+                                app:thumbTint="@color/switch_thumb_color_selector"
+
+                                app:trackTint="@color/switch_track_color_selector"
+                                />
+
+
+
+
                         </RelativeLayout>
 
                         <View
@@ -186,7 +196,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_centerInParent="true"
                                 android:text="opcion ejemplo"
-                                android:textColor="@color/white"
+                                android:textColor="?attr/colorOnSurface"
                                 android:textSize="16sp" />
                         </RelativeLayout>
 
@@ -212,7 +222,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_centerInParent="true"
                                 android:text="opcion ejemplo"
-                                android:textColor="@color/white"
+                                android:textColor="?attr/colorOnSurface"
                                 android:textSize="16sp" />
                         </RelativeLayout>
 
@@ -238,7 +248,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_centerInParent="true"
                                 android:text="opcion ejemplo"
-                                android:textColor="@color/white"
+                                android:textColor="?attr/colorOnSurface"
                                 android:textSize="16sp" />
                         </RelativeLayout>
 
@@ -265,12 +275,12 @@
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
-        android:layout_width="220dp"
+        android:layout_width="300dp"
         android:layout_height="match_parent"
         android:layout_gravity="end"
         app:headerLayout="@layout/nav_header"
         app:menu="@menu/menu_drawer"
-        android:background="@color/background_secondary"
-        app:itemTextColor="@color/white"/>
+        android:background="?attr/colorSurface"
+        app:itemTextColor="?attr/colorOnBackground"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>

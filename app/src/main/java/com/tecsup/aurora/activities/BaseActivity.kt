@@ -1,49 +1,62 @@
 package com.tecsup.aurora.activities
 
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.WindowInsets
+import android.view.WindowInsetsController
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
-/**
- * Una clase base para las actividades de la aplicación.
- * Habilita el modo de borde a borde (edge-to-edge) para que la UI
- * se dibuje detrás de las barras del sistema.
- */
 abstract class BaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Habilita el modo edge-to-edge para que la app dibuje detrás de las barras de sistema.
-        enableEdgeToEdge()
+
+
     }
 
-    /**
-     * Configura el padding para una vista raíz para evitar que el contenido se superponga
-     * con las barras del sistema (barra de estado y de navegación).
-     *
-     * @param view La vista a la que se aplicará el padding.
-     */
-    protected fun setupEdgeToEdge(view: View) {
-        ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+    protected fun setupSystemBars() {
+        window.setDecorFitsSystemWindows(false)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            // Versión para Android 11+
+            val controller = window.insetsController ?: return
+
+            // Ocultar la barra de navegación inferior
+            controller.hide(WindowInsets.Type.systemBars())
+
+            // Definir el comportamiento cuando el usuario desliza desde el borde inferior
+            controller.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+
+            // Solución para el teclado (esto no cambia)
+            ViewCompat.setOnApplyWindowInsetsListener(window.decorView) { _, insets ->
+                val imeVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
+                if (imeVisible) {
+                    controller.show(WindowInsets.Type.navigationBars())
+                } else {
+                    controller.hide(WindowInsets.Type.navigationBars())
+                }
+                insets
+            }
+        } else {
+            // Versión antigua para Android 10 y anteriores
+            @Suppress("DEPRECATION")
+            window.decorView.systemUiVisibility = (
+                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // Oculta la barra de navegación
+                            or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                    )
         }
     }
 
-    /**
-     * Configura el padding para una vista raíz para evitar que el contenido se superponga
-     * con las barras del sistema y el teclado (IME). Ideal para pantallas con EditTexts.
-     *
-     * @param view La vista a la que se aplicará el padding.
-     */
-    protected fun setupEdgeToEdgeWithIme(view: View) {
-        ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
-            val imeAndSystemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.ime())
-            v.setPadding(imeAndSystemBars.left, imeAndSystemBars.top, imeAndSystemBars.right, imeAndSystemBars.bottom)
+    protected fun setupContentPadding(rootView: View) {
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
     }

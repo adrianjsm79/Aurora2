@@ -7,32 +7,29 @@ import android.provider.ContactsContract
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.appbar.MaterialToolbar
 import com.tecsup.aurora.R
 import com.tecsup.aurora.adapter.ContactsAdapter
+import com.tecsup.aurora.databinding.ActivityContactsBinding
 import com.tecsup.aurora.model.Contact
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+import android.content.Intent // Asegúrate de tener esta importación
+import android.net.Uri       // Asegúrate de tener esta importación
+import android.provider.Settings // Asegúrate de tener esta importación
+
+
 class ContactsActivity : BaseActivity() {
 
-    // Views
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var layoutPermissionRequired: LinearLayout
-    private lateinit var btnGrantPermission: Button
-    private lateinit var searchView: SearchView
-    private lateinit var toolbar: MaterialToolbar
+    // Views -> Reemplazado por View Binding
+    private lateinit var binding: ActivityContactsBinding
 
     // Adapter y lista de contactos
     private lateinit var contactsAdapter: ContactsAdapter
@@ -52,20 +49,21 @@ class ContactsActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_contacts)
+        // 1. Inflar el layout usando View Binding
+        binding = ActivityContactsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        // 1. Inicializar todas las vistas
-        initViews()
+        setupSystemBars()
 
         // 2. Configurar la Toolbar y el menú
         setupToolbar()
 
         // 3. Configurar el RecyclerView
         setupRecyclerView()
-        registerForContextMenu(recyclerView)
+        registerForContextMenu(binding.recyclerViewContacts)
 
         // 4. Configurar el listener del botón para pedir permiso
-        btnGrantPermission.setOnClickListener {
+        binding.btnGrantPermission.setOnClickListener {
             requestContactsPermission()
         }
 
@@ -76,21 +74,15 @@ class ContactsActivity : BaseActivity() {
         checkPermissionAndLoadContacts()
     }
 
-    private fun initViews() {
-        toolbar = findViewById(R.id.toolbar_contacts)
-        recyclerView = findViewById(R.id.recycler_view_contacts)
-        layoutPermissionRequired = findViewById(R.id.layout_permission_required)
-        btnGrantPermission = findViewById(R.id.btn_grant_permission)
-        searchView = findViewById(R.id.search_view_contacts)
-    }
+    // La función initViews() ya no es necesaria con View Binding
 
     private fun setupToolbar() {
         // Le decimos a la actividad que esta es nuestra barra de acción principal.
         // ¡Este paso es MUY IMPORTANTE para que el menú aparezca!
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbarContacts)
 
         // Asigna la acción de "volver" al ícono de navegación (la flecha izquierda)
-        toolbar.setNavigationOnClickListener {
+        binding.toolbarContacts.setNavigationOnClickListener {
             finish() // Cierra la actividad actual y regresa a la anterior
         }
     }
@@ -99,12 +91,12 @@ class ContactsActivity : BaseActivity() {
         contactsAdapter = ContactsAdapter(mutableListOf()) {
             Toast.makeText(this, "Mantén presionado para ver las opciones", Toast.LENGTH_SHORT).show()
         }
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = contactsAdapter
+        binding.recyclerViewContacts.layoutManager = LinearLayoutManager(this)
+        binding.recyclerViewContacts.adapter = contactsAdapter
     }
 
     private fun setupSearch() {
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        binding.searchViewContacts.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 filterContacts(query)
                 return true
@@ -193,36 +185,45 @@ class ContactsActivity : BaseActivity() {
     // --- Funciones para controlar la visibilidad de las vistas ---
 
     private fun showContactsView() {
-        recyclerView.visibility = View.VISIBLE
-        searchView.visibility = View.VISIBLE
-        layoutPermissionRequired.visibility = View.GONE
+        binding.recyclerViewContacts.visibility = View.VISIBLE
+        binding.searchViewContacts.visibility = View.VISIBLE
+        binding.layoutPermissionRequired.visibility = View.GONE
     }
 
     private fun showPermissionRequiredView() {
-        recyclerView.visibility = View.GONE
-        searchView.visibility = View.GONE
-        layoutPermissionRequired.visibility = View.VISIBLE
-        findViewById<TextView>(R.id.text_permission_title).text = "Acceso a Contactos Requerido"
-        findViewById<TextView>(R.id.text_permission_description).text = "Para mostrar tus contactos, necesitamos que nos des permiso."
-        btnGrantPermission.text = "Conceder Permiso"
+        binding.recyclerViewContacts.visibility = View.GONE
+        binding.searchViewContacts.visibility = View.GONE
+        binding.layoutPermissionRequired.visibility = View.VISIBLE
+        binding.textPermissionTitle.text = "Acceso a Contactos Requerido"
+        binding.textPermissionDescription.text = "Para mostrar tus contactos, necesitamos que nos des permiso."
+        binding.btnGrantPermission.text = "Conceder Permiso"
+        binding.btnGrantPermission.setOnClickListener {
+            requestContactsPermission()
+        }
     }
 
     private fun showPermissionDeniedView() {
-        recyclerView.visibility = View.GONE
-        searchView.visibility = View.GONE
-        layoutPermissionRequired.visibility = View.VISIBLE
-        findViewById<TextView>(R.id.text_permission_title).text = "Permiso Denegado"
-        findViewById<TextView>(R.id.text_permission_description).text = "Has denegado el permiso. Para usar esta función, actívalo desde los ajustes de la aplicación."
-        btnGrantPermission.text = "Ir a Ajustes"
+        binding.recyclerViewContacts.visibility = View.GONE
+        binding.searchViewContacts.visibility = View.GONE
+        binding.layoutPermissionRequired.visibility = View.VISIBLE
+        binding.textPermissionTitle.text = "Permiso Denegado"
+        binding.textPermissionDescription.text = "Has denegado el permiso. Para usar esta función, actívalo desde los ajustes de la aplicación."
+        binding.btnGrantPermission.text = "Ir a Ajustes"
+        binding.btnGrantPermission.setOnClickListener {
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+            val uri = Uri.fromParts("package", packageName, null)
+            intent.data = uri
+            startActivity(intent)
+        }
     }
 
     private fun showEmptyView() {
-        recyclerView.visibility = View.GONE
-        searchView.visibility = View.GONE
-        layoutPermissionRequired.visibility = View.VISIBLE
-        findViewById<TextView>(R.id.text_permission_title).text = "No hay contactos"
-        findViewById<TextView>(R.id.text_permission_description).text = "Tu lista de contactos está vacía. Añade algunos para verlos aquí."
-        btnGrantPermission.visibility = View.GONE
+        binding.recyclerViewContacts.visibility = View.GONE
+        binding.searchViewContacts.visibility = View.GONE
+        binding.layoutPermissionRequired.visibility = View.VISIBLE
+        binding.textPermissionTitle.text = "No hay contactos"
+        binding.textPermissionDescription.text = "Tu lista de contactos está vacía. Añade algunos para verlos aquí."
+        binding.btnGrantPermission.visibility = View.GONE
     }
 
     // --- Métodos para el Menú de la Toolbar ---
@@ -238,7 +239,7 @@ class ContactsActivity : BaseActivity() {
         return when (item.itemId) {
 
             R.id.item_add_number -> {
-                Toast.makeText(this, "añadir a una lista usando solo numero", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "añadir a una lista usando numero", Toast.LENGTH_SHORT).show()
                 true
             }
 

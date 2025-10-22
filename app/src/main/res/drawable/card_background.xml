@@ -9,7 +9,7 @@
         android:bottom="2dp">
         <shape android:shape="rectangle">
             <!-- El color de fondo sólido para el interior de la tarjeta -->
-            <solid android:color="@color/background_secondary" />
+            <solid android:color="?attr/colorSurface" />
             <!-- Las esquinas deben ser un poco menos redondeadas para un ajuste perfecto, -->
             <!-- pero con 15dp suele ser suficiente. Ajústalo si es necesario. -->
             <corners android:radius="20dp" /> <!-- 15dp (radio exterior) - 2dp (grosor) -->

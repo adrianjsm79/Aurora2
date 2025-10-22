@@ -47,7 +47,7 @@ class DeviceItemFragment : Fragment() {
             binding.deviceStatus.setBackgroundResource(R.drawable.status_active_background)
         } else {
             binding.deviceStatus.text = "Inactivo"
-            binding.deviceStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.background_primary))
+            binding.deviceStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_tertiary_light))
             binding.deviceStatus.setBackgroundResource(R.drawable.status_inactive_background)
         }
     }

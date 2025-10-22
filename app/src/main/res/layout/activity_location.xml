@@ -6,31 +6,44 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_primary"
-    tools:context=".activities.LocationActivity">
+    android:background="?attr/android:colorBackground"
+    tools:context=".activities.LocationActivity"
+    >
 
     <!-- APP BAR -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar_location"
         android:layout_width="0dp"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/background_secondary"
+        android:background="?attr/colorSurface"
         app:title="Localización"
-        app:titleTextColor="@color/white"
+        app:titleTextColor="?attr/colorOnSurface"
         app:navigationIcon="@drawable/ic_arrow_left"
+        app:navigationIconTint="?attr/colorOnBackground"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <ImageButton
-            android:id="@+id/btn_info"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:fitsSystemWindows="true"
+        >
+        <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/button_ripple_effect"
             android:layout_gravity="end"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_info"
-            app:tint="@color/turquesa"
-            android:layout_marginEnd="20dp"/>
+            android:layout_marginEnd="20dp"
+            android:padding="10dp"
+            >
+            <ImageButton
+                android:id="@+id/btn_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_info"
+                app:tint="?attr/colorPrimary"
+
+                />
+
+        </FrameLayout>
     </com.google.android.material.appbar.MaterialToolbar>
 
 
@@ -42,7 +55,7 @@
         android:layout_margin="24dp"
         app:cardCornerRadius="20dp"
         app:cardElevation="6dp"
-        android:backgroundTint="@color/background_secondary"
+        android:backgroundTint="?attr/colorSurface"
         app:layout_constraintTop_toBottomOf="@id/toolbar_location"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -60,7 +73,7 @@
                 android:text="Modo de localización"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@color/white"
+                android:textColor="?attr/colorOnBackground"
                 android:fontFamily="@font/k2d_regular"/>
 
             <TextView
@@ -69,7 +82,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="Selecciona cómo deseas obtener tu ubicación actual."
-                android:textColor="#cfcfcf"
+                android:textColor="?attr/colorOnSurface"
                 android:textSize="14sp"
                 android:fontFamily="@font/k2d_regular"/>
 
@@ -85,16 +98,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Convencional (Internet)"
-                    android:textColor="@color/white"
+                    android:textColor="?attr/colorOnBackground"
                     android:textSize="16sp"
                     android:fontFamily="@font/k2d_regular"/>
 
-                <Switch
+                <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/switch_location_mode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:thumbTint="@color/turquesa"
-                    android:layout_marginStart="10dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+
+                    app:thumbTint="@color/switch_thumb_color_selector"
+
+                    app:trackTint="@color/switch_track_color_selector"
                     />
             </LinearLayout>
         </LinearLayout>
@@ -118,7 +135,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Estado actual"
-            android:textColor="@color/white"
+            android:textColor="?attr/colorOnBackground"
             android:textSize="16sp"
             android:fontFamily="@font/k2d_bold"/>
 
@@ -127,7 +144,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Usando GPS con conexión establecida"
-            android:textColor="#bdbdbd"
+            android:textColor="?attr/colorOnSurface"
             android:layout_marginTop="4dp"
             android:textSize="14sp"
             android:fontFamily="@font/k2d_regular"/>
@@ -145,7 +162,7 @@
         android:background="@drawable/button_fillgradient_ripple_effect"
         app:backgroundTint="@null"
         android:text="Ver en mapa"
-        android:textColor="@color/white"
+        android:textColor="?attr/colorOnBackground"
         android:textSize="16sp"
         android:fontFamily="@font/k2d_bold"
         android:textStyle="bold"

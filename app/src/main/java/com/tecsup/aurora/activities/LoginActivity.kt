@@ -2,6 +2,10 @@ package com.tecsup.aurora.activities
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.tecsup.aurora.databinding.ActivityLoginBinding
 
 class LoginActivity : BaseActivity() {
@@ -13,11 +17,11 @@ class LoginActivity : BaseActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Usamos la función de la clase base y le pasamos la vista raíz
-        setupEdgeToEdge(binding.main)
+        setupSystemBars()
 
         setupClickListeners()
     }
+
 
     private fun setupClickListeners() {
         binding.btnRegister.setOnClickListener {

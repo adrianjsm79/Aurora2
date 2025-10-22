@@ -5,9 +5,12 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
-import com.google.android.material.navigation.NavigationView
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.tecsup.aurora.R
 import com.tecsup.aurora.databinding.ActivityHomeBinding // Importante: el import de la clase Binding
 import com.tecsup.aurora.fragments.DeviceItemFragment
@@ -24,6 +27,8 @@ class HomeActivity : BaseActivity() {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setupSystemBars()
+
         //lista de datos de (ejemplo)
         val devicesList = listOf(
             "Galaxy S23" to true,
@@ -34,13 +39,14 @@ class HomeActivity : BaseActivity() {
         loadDevices(devicesList) //se pasa la lista a la función que crea los fragments
 
         // Pasamos la vista raíz del layout a la función de la clase base
-        setupEdgeToEdge(binding.drawerLayout)
+
 
         setupDrawer()
         setupBottomNavigation()
         setupClickListeners()
         setupOnBackPressed()
     }
+
 
     // listeners para botones y demás intents, ahora usando 'binding'
     private fun setupClickListeners() {

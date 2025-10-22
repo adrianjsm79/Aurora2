@@ -53,7 +53,7 @@
         android:layout_toStartOf="@id/container_indicators"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/white"
+        android:textColor="?attr/colorOnBackground"
         android:textSize="18sp"
         tools:text="Juanito Perez"/>
 
@@ -72,7 +72,7 @@
             android:layout_height="24dp"
             android:src="@drawable/ic_confiable"
             android:visibility="gone"
-            app:tint="@color/turquesa"
+            app:tint="@color/positive_background"
             tools:visibility="visible" />
 
 
@@ -83,7 +83,7 @@
             android:layout_marginStart="8dp"
             android:src="@drawable/ic_emergency"
             android:visibility="gone"
-            app:tint="@color/magenta"
+            app:tint="@color/negativo"
             tools:visibility="visible" />
     </LinearLayout>
 

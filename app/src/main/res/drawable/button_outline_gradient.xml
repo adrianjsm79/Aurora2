@@ -24,7 +24,7 @@
         <shape android:shape="rectangle">
             <!-- ===== ¡AQUÍ ESTÁ LA CORRECCIÓN! ===== -->
             <!-- Cambiamos el color transparente por el color de fondo deseado para el botón. -->
-            <solid android:color="@color/background_primary" />
+            <solid android:color="?attr/android:colorBackground" />
 
             <corners android:radius="24dp" /> <!-- Radio ligeramente menor para un ajuste perfecto -->
         </shape>

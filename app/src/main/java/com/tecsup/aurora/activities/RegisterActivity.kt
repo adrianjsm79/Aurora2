@@ -2,7 +2,13 @@ package com.tecsup.aurora.activities
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import com.tecsup.aurora.R
 import com.tecsup.aurora.databinding.ActivityRegisterBinding
+
 
 class RegisterActivity : BaseActivity() {
 
@@ -14,7 +20,7 @@ class RegisterActivity : BaseActivity() {
         setContentView(binding.root)
 
         // Usamos la nueva función de la clase base para manejar el teclado
-        setupEdgeToEdgeWithIme(binding.main)
+        setupSystemBars()
 
         setupClickListeners()
     }

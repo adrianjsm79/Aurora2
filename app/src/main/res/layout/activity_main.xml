@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.MainActivity"
-    android:background="@color/background_primary"
+    android:background="?attr/android:colorBackground"
     >
 
     <TextView
@@ -15,12 +15,13 @@
         android:text="Aurora"
         android:textSize="42dp"
         android:fontFamily="@font/k2d_regular"
-        android:textColor="@color/white"
+        android:textColor="?attr/colorSecondary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginBottom="180dp"
+        android:elevation="4dp"
         />
 
 
@@ -37,7 +38,7 @@
         android:clickable="true"
         android:focusable="true"
         app:backgroundTint="@null"
-        android:textColor="@color/white"
+        android:textColor="?attr/colorOnBackground"
         android:fontFamily="@font/k2d_bold"
         />
 

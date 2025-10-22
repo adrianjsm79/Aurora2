@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_primary"
+    android:background="?attr/android:colorBackground"
     android:fillViewport="true"
     tools:context=".activities.RegisterActivity">
 
@@ -24,7 +24,9 @@
             android:textColor="@color/magenta_turquesa_gradient_start"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            android:fitsSystemWindows="true"
+            />
 
         <TextView
             android:id="@+id/text_subtitle"
@@ -32,7 +34,7 @@
             android:layout_height="wrap_content"
             android:text="Sistema de localizacion de celulares"
             android:textSize="16sp"
-            android:textColor="#D9D9D9"
+            android:textColor="?attr/colorOnSurface"
             android:layout_marginTop="8dp"
             app:layout_constraintTop_toBottomOf="@+id/text_title_aurora"
             app:layout_constraintStart_toStartOf="parent"
@@ -55,7 +57,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Iniciar sesion"
-                android:textColor="@color/white"
+                android:textColor="?attr/colorOnBackground"
                 android:background="@drawable/button_outlinedefault_ripple_effect"
                 android:clickable="true"
                 android:focusable="true"
@@ -71,7 +73,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Registrar"
-                android:textColor="@color/white"
+                android:textColor="?attr/colorOnBackground"
                 android:background="@drawable/button_outlinegradient_ripple_effect"
                 android:clickable="true"
                 android:focusable="true"
@@ -102,7 +104,7 @@
                 android:text="Crear nuevo usuario"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="@color/white"
+                android:textColor="?attr/colorOnBackground"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -177,7 +179,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Crear cuenta"
-                android:textColor="@color/white"
+                android:textColor="?attr/colorOnBackground"
                 android:background="@drawable/button_fillgradient_ripple_effect"
                 android:clickable="true"
                 android:focusable="true"
@@ -194,7 +196,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Al registrarte, aceptas nuestros términos de servicio y política de privacidad"
-                android:textColor="#D9D9D9"
+                android:textColor="?attr/colorOnSurface"
                 android:textSize="12sp"
                 android:gravity="center"
                 android:layout_marginTop="16dp"
@@ -204,4 +206,4 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-</LinearLayout>
+</ScrollView>

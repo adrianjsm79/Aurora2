@@ -5,8 +5,12 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.tecsup.aurora.R
 import com.tecsup.aurora.databinding.ActivityProfileBinding
 
@@ -19,8 +23,7 @@ class ProfileActivity : BaseActivity() {
         binding = ActivityProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Usamos la función de la clase base y le pasamos la vista raíz
-        setupEdgeToEdge(binding.drawerLayout)
+        setupSystemBars()
 
         setupDrawer()
         setupBottomNavigation()

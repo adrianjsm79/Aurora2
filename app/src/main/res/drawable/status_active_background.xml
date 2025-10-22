@@ -6,6 +6,6 @@
     <corners android:radius="20dp" />
 
     <!-- Define el color de fondo sólido -->
-    <solid android:color="#0C3126" /> <!-- Un tono de verde estándar de Material Design -->
+    <solid android:color="#80053729" /> <!-- Un tono de verde estándar de Material Design -->
 
 </shape>

@@ -5,6 +5,87 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/android:colorBackground"
     tools:context=".activities.DevicesActivity">
+
+    <!-- 1. Barra de herramientas (Toolbar) -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar_devices"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorSurface"
+        android:fitsSystemWindows="true"
+        android:theme="@style/ThemeOverlay.Material3.Toolbar.Surface"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/ic_arrow_left"
+        app:navigationIconTint="?attr/colorOnBackground"
+        app:title="Mis Dispositivos"
+        app:titleTextColor="?attr/colorOnSurface">
+
+        <!-- Botón de Información -->
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:background="@drawable/button_ripple_effect"
+            android:paddingHorizontal="20dp">
+
+            <ImageView
+                android:id="@+id/btn_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_info"
+                app:tint="?attr/colorPrimary" />
+
+        </FrameLayout>
+    </com.google.android.material.appbar.MaterialToolbar>
+
+    <!-- 2. Lista de dispositivos -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_devices"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:paddingTop="8dp"
+        android:paddingBottom="80dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_devices"
+        tools:itemCount="1"
+        tools:listitem="@layout/item_device" />
+
+    <!-- 3. Vista de "Lista Vacía" -->
+    <TextView
+        android:id="@+id/text_empty_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Aún no tienes dispositivos vinculados.\n¡Añade uno!"
+        android:textAlignment="center"
+        android:textColor="?attr/colorOnSurface"
+        android:textSize="16sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_devices"
+        tools:visibility="visible" />
+
+    <!-- 4. Botón flotante para añadir dispositivos -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_add_device"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:contentDescription="Vincular nuevo dispositivo"
+        app:backgroundTint="?attr/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_add"
+        app:tint="@color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
