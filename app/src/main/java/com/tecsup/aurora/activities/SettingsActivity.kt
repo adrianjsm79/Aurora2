@@ -54,9 +54,9 @@ class SettingsActivity : BaseActivity() {
         binding.switchTheme.setOnCheckedChangeListener { _, isChecked ->
             // 1. Aplicar el tema inmediatamente
             if (isChecked) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             }
 
             // 2. Guardar la preferencia del usuario
