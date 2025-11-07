@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+
+    // Plugin de Realm para Kotlin
+    alias(libs.plugins.realm)
 }
 
 android {
@@ -26,18 +29,17 @@ android {
             )
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
 
     buildFeatures{
         viewBinding = true
     }
+
 }
+
+kotlin {
+    jvmToolchain(17)
+}
+
 
 dependencies {
 
@@ -45,6 +47,7 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
+    implementation("androidx.activity:activity-ktx:1.11.0") // Dependencia para by viewModels
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.material3)
     testImplementation(libs.junit)
@@ -54,4 +57,19 @@ dependencies {
     //servicios de google
     implementation("com.google.android.gms:play-services-maps:18.2.0")
     implementation("com.google.android.gms:play-services-location:21.0.1")
+
+    // Country Code Picker
+    implementation("com.hbb20:ccp:2.7.0")
+
+    // --- MVVM: VIEWMODEL, LIVEDATA Y CORRUTINAS ---
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.kotlinx.coroutines.android)
+
+    // --- NETWORKING: RETROFIT Y GSON ---
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
+
+    // --- BASE DE DATOS LOCAL: REALM ---
+    implementation(libs.realm.library.base)
 }

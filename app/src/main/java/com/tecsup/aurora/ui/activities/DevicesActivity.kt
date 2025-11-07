@@ -1,13 +1,13 @@
-package com.tecsup.aurora.activities
+package com.tecsup.aurora.ui.activities
 
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.tecsup.aurora.adapter.DeviceAdapter
+import com.tecsup.aurora.ui.adapter.DeviceAdapter
 import com.tecsup.aurora.databinding.ActivityDevicesBinding
-import com.tecsup.aurora.model.Device
+import com.tecsup.aurora.data.model.Device
 
 class DevicesActivity : BaseActivity(), DeviceAdapter.DeviceInteractionListener {
 

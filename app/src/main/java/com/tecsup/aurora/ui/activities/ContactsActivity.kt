@@ -1,4 +1,4 @@
-package com.tecsup.aurora.activities
+package com.tecsup.aurora.ui.activities
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -14,9 +14,9 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tecsup.aurora.R
-import com.tecsup.aurora.adapter.ContactsAdapter
+import com.tecsup.aurora.ui.adapter.ContactsAdapter
 import com.tecsup.aurora.databinding.ActivityContactsBinding
-import com.tecsup.aurora.model.Contact
+import com.tecsup.aurora.data.model.Contact
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

@@ -5,44 +5,116 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.SecurityActivity"
     android:background="?attr/android:colorBackground"
-    >
+    tools:context=".ui.activities.SecurityActivity">
 
+    <!-- 1. Barra de herramientas con menú -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar_security"
         android:layout_width="0dp"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorSurface"
+        android:fitsSystemWindows="true"
+        android:theme="@style/ThemeOverlay.Material3.Toolbar.Surface"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/ic_arrow_left"
         app:title="Seguridad"
         app:titleTextColor="?attr/colorOnSurface"
-        app:navigationIcon="@drawable/ic_arrow_left"
-        app:navigationIconTint="?attr/colorOnBackground"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/security_menu" /> <!-- ¡Aquí se infla el menú! -->
+
+
+    <!-- 2. Contenedor Scrollable para las opciones -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:fitsSystemWindows="true"
-        >
-        <FrameLayout
-            android:layout_width="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_security">
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/button_ripple_effect"
-            android:layout_gravity="end"
-            android:layout_marginEnd="20dp"
-            android:padding="10dp"
-            >
-            <ImageButton
-                android:id="@+id/btn"
+            android:orientation="vertical"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp">
+
+            <!-- Card 1: Seguridad de la Cuenta -->
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_info"
-                app:tint="?attr/colorPrimary"
+                android:layout_marginHorizontal="16dp"
+                android:text="SEGURIDAD DE LA CUENTA"
+                android:textColor="?attr/colorPrimary"
+                android:textStyle="bold" />
 
-                />
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="8dp"
+                app:cardBackgroundColor="?attr/colorSurface"
+                app:cardElevation="2dp">
 
-        </FrameLayout>
-    </com.google.android.material.appbar.MaterialToolbar>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
+                    <TextView
+                        android:id="@+id/option_change_password"
+                        style="@style/SecurityOptionStyle"
+                        android:text="Cambiar contraseña"
+                        app:drawableStartCompat="@drawable/ic_password" />
+
+                    <View
+                        android:layout_width="300dp"
+                        android:layout_height="1dp"
+                        android:background="#555"
+                        android:layout_gravity="center_horizontal"/>
+
+
+                    <TextView
+                        android:id="@+id/option_2fa"
+                        style="@style/SecurityOptionStyle"
+                        android:text="Autenticación de dos factores (2FA)"
+
+                        />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <!-- Card 2: Sesiones -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="24dp"
+                android:text="SESIONES"
+                android:textColor="?attr/colorPrimary"
+                android:textStyle="bold" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="8dp"
+                app:cardBackgroundColor="?attr/colorSurface"
+                app:cardElevation="2dp">
+
+                <TextView
+                    android:id="@+id/option_manage_sessions"
+                    style="@style/SecurityOptionStyle"
+                    android:text="Gestionar sesiones activas"
+                    app:drawableStartCompat="@drawable/ic_devices" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

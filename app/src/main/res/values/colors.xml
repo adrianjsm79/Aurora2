@@ -6,9 +6,9 @@
     <color name="background_tertiary">#364153</color>
     <color name="text_primary">#fff</color>
     <color name="text_secondary">#d9d9d9</color>
-    <color name="text_tertiary">#555</color>
+    <color name="text_tertiary">#818181</color>
 
-    <color name="turquesa">#01F6CA</color>
+    <color name="turquesa">#01D9F6</color>
     <color name="magenta">#CA01F6</color>
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00000000</color>
@@ -34,7 +34,7 @@
 
     <color name="background_light">#F5F5F5</color>  <!-- Un gris muy claro -->
     <color name="surface_light">#FFFFFF</color>     <!-- Blanco puro para tarjetas -->
-    <color name="background_tertiary_light">#80E0F7FA</color>
+    <color name="background_tertiary_light">#fbfeff</color>
     <color name="text_primary_light">#212121</color> <!-- Negro/gris oscuro para texto -->
     <color name="text_secondary_light">#757575</color>
     <color name="text_tertiary_light">#BDBDBD</color>

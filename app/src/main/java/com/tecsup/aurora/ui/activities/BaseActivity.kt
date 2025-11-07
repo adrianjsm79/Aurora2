@@ -1,4 +1,4 @@
-package com.tecsup.aurora.activities
+package com.tecsup.aurora.ui.activities
 
 import android.os.Build
 import android.os.Bundle

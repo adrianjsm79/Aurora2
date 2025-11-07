@@ -1,4 +1,4 @@
-package com.tecsup.aurora.model
+package com.tecsup.aurora.data.model
 
 data class Device(
     val id: Int,

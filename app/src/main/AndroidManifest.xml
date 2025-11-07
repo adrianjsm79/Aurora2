@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".AuroraApplication"
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -18,13 +18,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Aurora">
         <activity
-            android:name=".activities.DevicesActivity"
+            android:name=".ui.activities.DevicesActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.SecurityActivity"
+            android:name=".ui.activities.SecurityActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.LocationActivity"
+            android:name=".ui.activities.LocationActivity"
             android:exported="false" />
 
         <meta-data
@@ -32,34 +32,34 @@
             android:value="AIzaSyBijyV64POjqztyTFwbHH7D_L1W4aeIxHs" />
 
         <activity
-            android:name=".activities.SearchmapActivity"
+            android:name=".ui.activities.SearchmapActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.TestActivity"
+            android:name=".ui.activities.TestActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.ContactsActivity"
+            android:name=".ui.activities.ContactsActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.ProfileActivity"
+            android:name=".ui.activities.ProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.SettingsActivity"
+            android:name=".ui.activities.SettingsActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.HomeActivity"
+            android:name=".ui.activities.HomeActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.BaseActivity"
+            android:name=".ui.activities.BaseActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.RegisterActivity"
+            android:name=".ui.activities.RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.LoginActivity"
+            android:name=".ui.activities.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".ui.activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,4 +1,4 @@
-package com.tecsup.aurora.fragments
+package com.tecsup.aurora.ui.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater

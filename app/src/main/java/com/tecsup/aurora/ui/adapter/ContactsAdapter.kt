@@ -1,4 +1,4 @@
-package com.tecsup.aurora.adapter
+package com.tecsup.aurora.ui.adapter
 
 import android.net.Uri
 import android.view.ContextMenu
@@ -10,7 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.imageview.ShapeableImageView
 import com.tecsup.aurora.R
-import com.tecsup.aurora.model.Contact
+import com.tecsup.aurora.data.model.Contact
 
 class ContactsAdapter(
     private val contacts: MutableList<Contact>,

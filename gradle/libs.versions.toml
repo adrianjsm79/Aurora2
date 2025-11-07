@@ -1,6 +1,6 @@
 [versions]
 agp = "8.12.2"
-kotlin = "2.0.21"
+kotlin = "2.0.0"
 coreKtx = "1.10.1"
 junit = "4.13.2"
 junitVersion = "1.1.5"
@@ -10,6 +10,12 @@ material = "1.10.0"
 activity = "1.8.0"
 constraintlayout = "2.1.4"
 material3 = "1.4.0"
+# --- Versiones para las nuevas librerías ---
+lifecycle = "2.8.0"
+coroutines = "1.8.0"
+retrofit = "2.11.0"
+realm = "2.1.0"  #version compatible con kotlin
+ccp = "2.7.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -22,7 +28,23 @@ androidx-activity = { group = "androidx.activity", name = "activity", version.re
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 
+# --- Librerías para MVVM y Corrutinas ---
+androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
+androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycle" }
+kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
+
+# --- Librerías para Retrofit ---
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+retrofit-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
+
+# --- Librería para Realm ---
+realm-library-base = { group = "io.realm.kotlin", name = "library-base", version.ref = "realm" }
+
+# --- Librería para CCP ---
+ccp = { group = "com.hbb20", name = "ccp", version.ref = "ccp" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-
+# --- Plugin para Realm ---
+realm = { id = "io.realm.kotlin", version.ref = "realm" }

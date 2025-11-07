@@ -1,4 +1,4 @@
-package com.tecsup.aurora.adapter
+package com.tecsup.aurora.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +7,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tecsup.aurora.R
 import com.tecsup.aurora.databinding.ItemDeviceBinding
-import com.tecsup.aurora.model.Device
+import com.tecsup.aurora.data.model.Device
 
 class DeviceAdapter(
     private var devices: List<Device>,

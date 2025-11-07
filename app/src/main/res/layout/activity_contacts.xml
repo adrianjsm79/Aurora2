@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/android:colorBackground"
-    tools:context=".activities.ContactsActivity">
+    tools:context=".ui.activities.ContactsActivity">
 
     <!-- 1. Barra superior (Toolbar simplificada) -->
     <com.google.android.material.appbar.MaterialToolbar
