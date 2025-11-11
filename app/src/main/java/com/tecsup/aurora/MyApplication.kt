@@ -8,6 +8,8 @@ import io.realm.kotlin.Realm
 import io.realm.kotlin.RealmConfiguration
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import com.tecsup.aurora.data.repository.DeviceRepository
+import com.tecsup.aurora.viewmodel.HomeViewModelFactory
 
 class MyApplication : Application() {
 
@@ -36,4 +38,15 @@ class MyApplication : Application() {
     val authRepository by lazy {
         AuthRepository(apiService, realm) // <-- ACTUALIZADO
     }
+
+    // 3. Crea la instancia del DeviceRepository
+    val deviceRepository by lazy {
+        DeviceRepository(apiService)
+    }
+
+    // 4. Crea una instancia de la HomeViewModelFactory
+    val homeViewModelFactory by lazy {
+        HomeViewModelFactory(authRepository, deviceRepository)
+    }
+
 }

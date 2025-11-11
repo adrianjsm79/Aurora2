@@ -31,7 +31,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:theme="@style/ThemeOverlay.MaterialComponents.Toolbar.Primary"
-                android:background="?attr/colorSurface"
+                android:background="#000000"
                 >
 
 
@@ -53,7 +53,7 @@
                         android:layout_marginStart="8dp"
                         android:fontFamily="@font/k2d_regular"
                         android:text="Aurora"
-                        android:textColor="?attr/colorOnBackground"
+                        android:textColor="?attr/colorPrimary"
                         android:textSize="24sp"
 
                         />
@@ -296,45 +296,32 @@
 
         </LinearLayout>
 
-        <ScrollView
-            android:id="@+id/devices_scroll_view"
+        <TextView
+            android:id="@+id/label_devices"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="30dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="12dp"
+            android:fontFamily="@font/k2d_medium"
+            android:text="Dispositivos"
+            android:textColor="?attr/colorOnBackground"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/app_bar_layout" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/devices_recycler_view"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:fillViewport="true"
-            android:paddingHorizontal="20dp"
-            android:paddingTop="20dp"
+            android:paddingHorizontal="12dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toTopOf="@id/fixed_bottom_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/app_bar_layout">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="10dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginBottom="24dp"
-                    android:fontFamily="@font/k2d_medium"
-                    android:text="Dispositivos"
-                    android:textColor="?attr/colorOnBackground"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:id="@+id/devices_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="150dp"
-                    android:orientation="vertical" />
-
-            </LinearLayout>
-
-        </ScrollView>
+            app:layout_constraintTop_toBottomOf="@id/label_devices"
+            tools:listitem="@layout/fragment_device"
+            />
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_nav_view"

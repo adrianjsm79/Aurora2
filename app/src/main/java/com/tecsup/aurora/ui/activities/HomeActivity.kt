@@ -3,172 +3,174 @@ package com.tecsup.aurora.ui.activities
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
+import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.widget.AppCompatImageButton
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import androidx.lifecycle.viewModelScope
+import com.google.android.material.navigation.NavigationView
+import com.tecsup.aurora.MyApplication
 import com.tecsup.aurora.R
-import com.tecsup.aurora.databinding.ActivityHomeBinding // Importante: el import de la clase Binding
-import com.tecsup.aurora.ui.fragments.DeviceItemFragment
+import com.tecsup.aurora.data.repository.AuthRepository
+import com.tecsup.aurora.databinding.ActivityHomeBinding
+import com.tecsup.aurora.viewmodel.AuthViewModel
+import com.tecsup.aurora.viewmodel.AuthViewModelFactory
+import com.tecsup.aurora.viewmodel.HomeState
+import com.tecsup.aurora.viewmodel.HomeViewModel
+import kotlinx.coroutines.launch
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.tecsup.aurora.ui.adapter.DeviceAdapter
 
-class HomeActivity : BaseActivity() {
+class HomeActivity : AppCompatActivity() {
 
-    //objeto de vista que Contiene todas las demás.
     private lateinit var binding: ActivityHomeBinding
+    private lateinit var deviceAdapter: DeviceAdapter
+
+    // 1. Obtenemos el HomeViewModel para los datos de esta pantalla
+    private val homeViewModel: HomeViewModel by viewModels {
+        (application as MyApplication).homeViewModelFactory
+    }
+
+    // 2. Obtenemos el AuthViewModel para la lógica de Logout
+    private val authViewModel: AuthViewModel by viewModels {
+        val repository = (application as MyApplication).authRepository
+        // ¡Correcto! Se pasan ambas dependencias
+        AuthViewModelFactory(repository, application)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        //inflar el layout y establecer la vista usando View Binding
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setupSystemBars()
+        // 3. Configura todos los listeners de navegación
+        setupRecyclerView()
+        setupNavigation()
 
-        //lista de datos de (ejemplo)
-        val devicesList = listOf(
-            "Galaxy S23" to true,
-            "Xiaomi Mi 12" to false
-        )
+        // 4. Observa el estado del ViewModel
+        homeViewModel.homeState.observe(this) { state ->
+            when (state) {
+                is HomeState.Loading -> {
+                    // Muestra un ProgressBar
+                    // binding.progressBar.visibility = View.VISIBLE
+                }
+                is HomeState.Success -> {
+                    // binding.progressBar.visibility = View.GONE
 
-        //llamar a las funciones de configuración y cargar los dispositivos
-        loadDevices(devicesList) //se pasa la lista a la función que crea los fragments
-
-        // Pasamos la vista raíz del layout a la función de la clase base
-
-
-        setupDrawer()
-        setupBottomNavigation()
-        setupClickListeners()
-        setupOnBackPressed()
-    }
+                    // Actualiza el nombre de usuario en el Drawer
+                    val headerView = binding.navView.getHeaderView(0)
+                    val userNameTextView = headerView.findViewById<TextView>(R.id.text_username_nav)
+                    userNameTextView.text = state.userProfile.nombre
 
 
-    // listeners para botones y demás intents, ahora usando 'binding'
-    private fun setupClickListeners() {
-        binding.cardContacts.setOnClickListener {
-            startActivity(Intent(this, ContactsActivity::class.java))
-        }
+                    // Actualiza la lista de dispositivos
+                    deviceAdapter.submitList(state.devices)
 
-        binding.cardLocation.setOnClickListener {
-            startActivity(Intent(this, LocationActivity::class.java))
-        }
-
-        binding.cardSecurity.setOnClickListener {
-            startActivity(Intent(this, SecurityActivity::class.java))
-        }
-
-        binding.cardDevices.setOnClickListener {
-            startActivity(Intent(this, DevicesActivity::class.java))
-        }
-
-        binding.findDevicesButton.setOnClickListener {
-            startActivity(Intent(this, SearchmapActivity::class.java))
-        }
-
-        binding.linkWeb.setOnClickListener {
-            val webIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://auroraweb-zoe5.onrender.com"))
-            startActivity(webIntent)
+                }
+                is HomeState.Error -> {
+                    // binding.progressBar.visibility = View.GONE
+                    Toast.makeText(this, state.message, Toast.LENGTH_LONG).show()
+                    // Si el error es de autenticación, hacer logout
+                    if (state.message.contains("401") || state.message.contains("Sesión")) {
+                        handleLogout()
+                    }
+                }
+            }
         }
     }
 
-    // Configuracion del menu lateral, usando 'binding'
-    private fun setupDrawer() {
-        val toggle = ActionBarDrawerToggle(
-            this, binding.drawerLayout, binding.toolbar, R.string.drawer_open, R.string.drawer_close
-        )
-        toggle.isDrawerIndicatorEnabled = false
-        binding.drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
+    private fun setupRecyclerView() {
+        deviceAdapter = DeviceAdapter() // Inicializa el adaptador
+        binding.devicesRecyclerView.apply { // <-- Usa el ID del RecyclerView del XML
+            adapter = deviceAdapter
+            layoutManager = LinearLayoutManager(this@HomeActivity)
+        }
+    }
 
+    private fun setupNavigation() {
+        // --- Toolbar ---
         binding.hamburgerButtonRight.setOnClickListener {
             binding.drawerLayout.openDrawer(GravityCompat.END)
         }
 
+        binding.linkWeb.setOnClickListener {
+            val url = "https://auroraweb-topaz.vercel.app/" // Tu URL web
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            startActivity(intent)
+        }
+
+        // --- (Menú Hamburguesa) ---
         binding.navView.setNavigationItemSelectedListener { menuItem ->
-            handleDrawerNavigation(menuItem.itemId)
-            true
-        }
-
-        // Acceder al botón dentro del header del NavigationView
-        val headerView = binding.navView.getHeaderView(0)
-        headerView.findViewById<AppCompatImageButton>(R.id.back_button_header)?.setOnClickListener {
-            binding.drawerLayout.closeDrawer(GravityCompat.END)
-        }
-    }
-
-    // Barra de navegacion inferior, usando 'binding'
-    private fun setupBottomNavigation() {
-        binding.bottomNavView.selectedItemId = R.id.bottom_home
-        binding.bottomNavView.setOnItemSelectedListener { menuItem ->
-            if (menuItem.itemId == binding.bottomNavView.selectedItemId) return@setOnItemSelectedListener false
-
             when (menuItem.itemId) {
-                R.id.bottom_profile -> startActivity(Intent(this, ProfileActivity::class.java))
-                R.id.bottom_settings -> startActivity(Intent(this, SettingsActivity::class.java))
+                R.id.nav_logout -> handleLogout()
+                R.id.nav_share -> shareApp()
+                // R.id.nav_notifications -> ...
+                // R.id.nav_about -> ...
+                // R.id.nav_support -> ...
             }
+            binding.drawerLayout.closeDrawer(GravityCompat.END)
             true
         }
-    }
 
-    // LAS OPCIONES del menu lateral
-    private fun handleDrawerNavigation(itemId: Int) {
-        when (itemId) {
-            R.id.nav_notifications -> Toast.makeText(this, "Notificaciones", Toast.LENGTH_SHORT).show()
-            R.id.nav_about -> Toast.makeText(this, "Acerca de", Toast.LENGTH_SHORT).show()
-            R.id.nav_support -> Toast.makeText(this, "Soporte", Toast.LENGTH_SHORT).show()
-            R.id.nav_share -> shareApp()
-            R.id.btn_logout -> logout()
+        // --- Botón Principal ---
+        binding.findDevicesButton.setOnClickListener {
+            // Ir al Mapa
+            // startActivity(Intent(this, MapActivity::class.java))
         }
-        binding.drawerLayout.closeDrawer(GravityCompat.END)
+
+        // --- Cards ---
+        // (Configura los listeners para las 4 cards)
+        binding.cardLocation.setOnClickListener {
+
+        }
+        binding.cardContacts.setOnClickListener {
+
+        }
+        binding.cardSecurity.setOnClickListener {
+
+        }
+        binding.cardDevices.setOnClickListener {
+
+        }
+
+        // --- Bottom Navigation ---
+        binding.bottomNavView.selectedItemId = R.id.bottom_home // Marca "Home" como activo
+        binding.bottomNavView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.bottom_home -> true // Ya estamos aquí
+                R.id.bottom_profile -> {
+                    // startActivity(Intent(this, ProfileActivity::class.java))
+                    true
+                }
+                R.id.bottom_settings -> {
+                    // startActivity(Intent(this, SettingsActivity::class.java))
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
-    // Funcion para cerrar la sesion
-    private fun logout() {
+    private fun handleLogout() {
+        // ¡Correcto! La Activity solo notifica la intención al ViewModel.
+        authViewModel.onLogoutClicked()
+
+        // El resto de la navegación se queda igual.
         val intent = Intent(this, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         finish()
     }
 
-    // Intent implícito para compartir la app desde el menu lateral
+
     private fun shareApp() {
-        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+        val sendIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, "¡Descarga Aurora para mantenerte seguro! [Link]")
             type = "text/plain"
-            putExtra(Intent.EXTRA_SUBJECT, "Descarga Aurora App")
-            putExtra(Intent.EXTRA_TEXT, "¡Te recomiendo Aurora! Una app increíble para nuestra seguridad. https://github.com/adrianjsm79/Aurora2/releases/tag/debug1")
         }
-        startActivity(Intent.createChooser(shareIntent, "Compartir vía"))
-    }
-
-    // Comportamiento del boton de regresar
-    private fun setupOnBackPressed() {
-        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                if (binding.drawerLayout.isDrawerOpen(GravityCompat.END)) {
-                    binding.drawerLayout.closeDrawer(GravityCompat.END)
-                } else {
-                    // Logica para salir de la app o ir hacia atras
-                    if (isTaskRoot) {
-                        finish()                    } else {
-                        super@HomeActivity.onBackPressed()
-                    }
-                }
-            }
-        })
-    }
-
-    // Funcion para cargar los dispositivos como fragments
-    private fun loadDevices(devices: List<Pair<String, Boolean>>) {
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-
-        devices.forEach { (name, isActive) ->
-            val deviceFragment = DeviceItemFragment.newInstance(name, isActive)
-            // Añadimos cada fragment al contenedor LinearLayout usando el id desde binding
-            fragmentTransaction.add(binding.devicesContainer.id, deviceFragment)
-        }
-
-        fragmentTransaction.commit()
+        startActivity(Intent.createChooser(sendIntent, "Compartir app..."))
     }
 }

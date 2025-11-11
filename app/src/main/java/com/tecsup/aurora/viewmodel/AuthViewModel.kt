@@ -1,11 +1,14 @@
 package com.tecsup.aurora.viewmodel
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tecsup.aurora.data.model.RegisterRequest
 import com.tecsup.aurora.data.repository.AuthRepository
+import com.tecsup.aurora.ui.activities.LoginActivity
+import com.tecsup.aurora.utils.DeviceHelper
 import kotlinx.coroutines.launch
 
 // Estado para la UI: Cargando, Éxito o Error
@@ -24,13 +27,17 @@ sealed class LoginState {
 }
 
 // El ViewModel necesita el Repositorio para trabajar
-class AuthViewModel(private val repository: AuthRepository) : ViewModel() {
+class AuthViewModel(
+    private val repository: AuthRepository,
+    application: Application
+) : AndroidViewModel(application) { // <-- Llama al constructor padre
 
     // LiveData privado que solo el ViewModel puede modificar
     private val _registrationState = MutableLiveData<RegistrationState>(RegistrationState.Idle)
 
     // LiveData público que la Activity "observa"
     val registrationState: LiveData<RegistrationState> = _registrationState
+
 
     fun onRegisterClicked(
         nombre: String,
@@ -82,19 +89,42 @@ class AuthViewModel(private val repository: AuthRepository) : ViewModel() {
             return
         }
 
-        // 3. Corrutina para llamar al repositorio
         viewModelScope.launch {
             _loginState.value = LoginState.Loading
             try {
-                repository.login(email, pass)
+                // Paso 1: Autenticar y obtener token
+                val token = repository.login(email, pass)
+                val context = getApplication<Application>().applicationContext
+                // Paso 2: Obtener datos del dispositivo
+                val deviceId = DeviceHelper.getDeviceIdentifier(context.applicationContext)
+                val deviceName = DeviceHelper.getDeviceName()
+
+                // Paso 3: Registrar el dispositivo en el backend
+                repository.registerDevice(token, deviceName, deviceId)
+
+                // ¡Éxito en ambos pasos!
                 _loginState.value = LoginState.Success
+
             } catch (e: Exception) {
+                // Si falla el login O el registro del dispositivo, se reporta error
                 _loginState.value = LoginState.Error(e.message ?: "Error desconocido")
             }
         }
     }
 
-}
+    // Dentro de tu clase AuthViewModel.kt
+    fun onLogoutClicked() {
+        viewModelScope.launch {
+            try {
+                repository.logout() // Llama al método del repositorio inyectado
+                // Opcional: Podrías emitir un estado de LogoutSuccess si necesitas que la UI reaccione
+                // _logoutState.value = LogoutState.Success
+            } catch (e: Exception) {
+                // Manejar cualquier error que pueda ocurrir al limpiar el token
+                // _logoutState.value = LogoutState.Error(e.message)
+            }
+        }
+    }
 
-// (Necesitarás un ViewModelFactory para pasar el 'repository'
-// al constructor del ViewModel)
+
+}

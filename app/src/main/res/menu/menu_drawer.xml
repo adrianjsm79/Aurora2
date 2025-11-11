@@ -28,11 +28,12 @@
     </group>
 
     <item
+        android:id="@+id/text_username_nav"
         android:title="Nombre de Usuario"
         >
         <menu>
             <item
-                android:id="@+id/btn_logout"
+                android:id="@+id/nav_logout"
                 android:title="Cerrar sesion"
                 />
         </menu>

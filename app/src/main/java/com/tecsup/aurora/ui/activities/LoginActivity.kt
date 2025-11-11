@@ -19,7 +19,8 @@ class LoginActivity : AppCompatActivity() {
     // Usamos la MISMA Factory que creamos para RegisterActivity.
     private val viewModel: AuthViewModel by viewModels {
         val repository = (application as MyApplication).authRepository
-        AuthViewModelFactory(repository)
+        // Pasamos ambos parámetros requeridos por la Factory
+        AuthViewModelFactory(repository, application)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

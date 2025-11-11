@@ -6,6 +6,8 @@ import com.tecsup.aurora.data.model.RegisterRequest
 import com.tecsup.aurora.data.remote.ApiService
 import io.realm.kotlin.Realm
 import io.realm.kotlin.ext.query
+import com.tecsup.aurora.data.model.DeviceRequest
+import com.tecsup.aurora.data.model.UserProfile
 
 
 // 1. El Repositorio ahora también necesita Realm
@@ -22,10 +24,9 @@ class AuthRepository(
         }
     }
 
-    // --- AÑADE ESTA LÓGICA DE LOGIN ---
-
-    suspend fun login(email: String, pass: String) {
-        // 1. Llama a la API de Retrofit
+    // --- Lógica de Login (Actualizada) ---
+    // Ahora devuelve el token para que el siguiente paso lo use
+    suspend fun login(email: String, pass: String): String {
         val response = apiService.loginUser(LoginRequest(email, pass))
 
         if (response.isSuccessful) {
@@ -34,8 +35,10 @@ class AuthRepository(
             val refreshToken = loginResponse?.refresh
 
             if (token != null && refreshToken != null) {
-                // 2. Si es exitoso, guarda el token en Realm
+                // Guarda el token en Realm
                 saveTokenToRealm(token, refreshToken)
+                // Devuelve el token para el siguiente paso
+                return token
             } else {
                 throw Exception("Respuesta de login incompleta")
             }
@@ -43,6 +46,22 @@ class AuthRepository(
             throw Exception("Credenciales inválidas")
         }
     }
+
+
+    suspend fun registerDevice(token: String, deviceName: String, deviceId: String) {
+        val authToken = "Bearer $token" // Prepara el token para el header
+        val request = DeviceRequest(name = deviceName, device_identifier = deviceId)
+
+        val response = apiService.registerDevice(authToken, request)
+
+        if (!response.isSuccessful) {
+            // Si falla el registro del dispositivo, el login igual funcionó,
+            // pero deberíamos registrar el error.
+            throw Exception("Login exitoso, pero falló el registro del dispositivo: ${response.code()}")
+        }
+        // Si tiene éxito, el dispositivo está registrado/actualizado en el backend
+    }
+
 
     private suspend fun saveTokenToRealm(token: String, refreshToken: String) {
         // Escribe en la base de datos de Realm
@@ -59,8 +78,28 @@ class AuthRepository(
         }
     }
 
-    fun getTokenFromRealm(): String? {
-        // (Función útil para más adelante)
-        return realm.query<UserSession>().first().find()?.token
+    // Obtiene el token guardado en Realm
+    fun getToken(): String? {
+        val session = realm.query<UserSession>().first().find()
+        return session?.token
     }
+
+    // Obtiene el perfil del usuario desde la API
+    suspend fun getUserProfile(token: String): UserProfile {
+        val authToken = "Bearer $token"
+        val response = apiService.getUserProfile(authToken)
+        if (!response.isSuccessful) {
+            throw Exception("Error al cargar el perfil: ${response.code()}")
+        }
+        return response.body() ?: throw Exception("Respuesta de perfil vacía")
+    }
+
+    // Borra la sesión de Realm
+    suspend fun logout() {
+        realm.write {
+            val session = this.query<UserSession>().find()
+            delete(session)
+        }
+    }
+
 }

@@ -6,27 +6,28 @@
     <!-- Esta forma es el gradiente completo que se verá en los bordes. -->
     <item>
         <shape android:shape="rectangle">
-            <corners android:radius="24dp" /> <!-- Radio del contenedor exterior -->
+            <corners android:radius="30dp" /> <!-- Radio del contenedor exterior -->
             <gradient
-                android:startColor="@color/magenta"
-                android:endColor="@color/turquesa"
-                android:angle="0" />
+                android:startColor="@color/turquesa"
+                android:endColor="@color/magenta"
+                android:angle="0"
+                />
         </shape>
     </item>
 
     <!-- 2. Capa Frontal (El Relleno SÓLIDO del Botón) -->
     <!-- Esta forma se dibuja encima, dejando un margen de 2dp que actúa como borde. -->
     <item
-        android:left="2dp"
-        android:right="2dp"
-        android:top="2dp"
-        android:bottom="2dp">
+        android:left="4dp"
+        android:right="4dp"
+        android:top="4dp"
+        android:bottom="4dp">
         <shape android:shape="rectangle">
             <!-- ===== ¡AQUÍ ESTÁ LA CORRECCIÓN! ===== -->
             <!-- Cambiamos el color transparente por el color de fondo deseado para el botón. -->
-            <solid android:color="?attr/android:colorBackground" />
+            <solid android:color="?attr/colorSurface" />
 
-            <corners android:radius="24dp" /> <!-- Radio ligeramente menor para un ajuste perfecto -->
+            <corners android:radius="28dp" /> <!-- Radio ligeramente menor para un ajuste perfecto -->
         </shape>
     </item>
 
