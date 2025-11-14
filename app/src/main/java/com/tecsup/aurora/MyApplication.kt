@@ -1,7 +1,7 @@
 package com.tecsup.aurora
 
 import android.app.Application
-import com.tecsup.aurora.data.local.UserSession // <-- 1. Importa tu modelo de Realm
+import com.tecsup.aurora.data.local.UserSession
 import com.tecsup.aurora.data.remote.ApiService
 import com.tecsup.aurora.data.repository.AuthRepository
 import io.realm.kotlin.Realm
@@ -10,6 +10,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import com.tecsup.aurora.data.repository.DeviceRepository
 import com.tecsup.aurora.viewmodel.HomeViewModelFactory
+import com.tecsup.aurora.data.remote.LocationWebSocketClient
+import com.tecsup.aurora.data.repository.LocationRepository
 
 class MyApplication : Application() {
 
@@ -44,8 +46,16 @@ class MyApplication : Application() {
         DeviceRepository(apiService)
     }
 
-    // 4. Crea una instancia de la HomeViewModelFactory
+    private val locationWebSocketClient by lazy {
+        LocationWebSocketClient()
+    }
+
+    val locationRepository by lazy {
+        LocationRepository(locationWebSocketClient)
+    }
+
     val homeViewModelFactory by lazy {
+        // El HomeViewModel no necesita el LocationRepository
         HomeViewModelFactory(authRepository, deviceRepository)
     }
 

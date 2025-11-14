@@ -8,6 +8,7 @@ import android.util.Log
 import com.google.android.gms.location.*
 import com.tecsup.aurora.MyApplication
 import com.tecsup.aurora.data.repository.AuthRepository
+import com.tecsup.aurora.data.repository.LocationRepository
 import com.tecsup.aurora.utils.DeviceHelper
 import com.tecsup.aurora.utils.NotificationHelper
 import kotlinx.coroutines.CoroutineScope
@@ -28,6 +29,11 @@ class TrackingService : Service() {
         (application as MyApplication).authRepository
     }
 
+    // --- 3. INYECTA EL REPOSITORIO DE UBICACIÓN ---
+    private val locationRepository: LocationRepository by lazy {
+        (application as MyApplication).locationRepository
+    }
+
     companion object {
         const val ACTION_START_SERVICE = "ACTION_START_SERVICE"
         const val ACTION_STOP_SERVICE = "ACTION_STOP_SERVICE"
@@ -43,7 +49,23 @@ class TrackingService : Service() {
         when (intent?.action) {
             ACTION_START_SERVICE -> {
                 Log.d("TrackingService", "Iniciando servicio...")
-                startTracking()
+
+                // --- 4. CONECTA EL WEBSOCKET ANTES DE INICIAR ---
+                // (Necesitamos el token, que es una llamada síncrona a Realm)
+                scope.launch {
+                    // (Asegúrate de que authRepository.getTokenFromRealm() exista)
+                    val token = authRepository.getToken()
+
+                    if (token != null) {
+                        // Conecta el WebSocket
+                        locationRepository.connect(token)
+                        // Ahora sí, inicia el rastreo GPS
+                        startTracking()
+                    } else {
+                        Log.e("TrackingService", "No hay token, no se puede iniciar el WS. Deteniendo.")
+                        stopSelf()
+                    }
+                }
             }
             ACTION_STOP_SERVICE -> {
                 Log.d("TrackingService", "Deteniendo servicio...")
@@ -55,11 +77,9 @@ class TrackingService : Service() {
 
     private fun startTracking() {
         // 1. CREA LA NOTIFICACIÓN
-        // Pasamos 'this' (el servicio) para que el helper pueda crear el PendingIntent
         val notification = NotificationHelper.createNotification(this)
 
         // 2. INICIA EL SERVICIO EN PRIMER PLANO
-        // Esto es OBLIGATORIO. Si no lo haces, la app crasheará.
         startForeground(NotificationHelper.NOTIFICATION_ID, notification)
 
         // 3. CONFIGURA LA UBICACIÓN
@@ -70,6 +90,8 @@ class TrackingService : Service() {
 
         // 4. INICIA LAS ACTUALIZACIONES
         try {
+            // Esta llamada debe hacerse en el hilo principal
+            // Looper.getMainLooper() se asegura de eso.
             fusedLocationClient.requestLocationUpdates(
                 locationRequest,
                 locationCallback,
@@ -87,16 +109,17 @@ class TrackingService : Service() {
                 for (location in locationResult.locations) {
                     Log.d("TrackingService", "Nueva ubicación: ${location.latitude}, ${location.longitude}")
 
-                    // 5. ENVÍA LA UBICACIÓN AL BACKEND
+                    // --- 5. ¡AQUÍ ESTÁ EL ARREGLO! ---
+                    // ENVÍA LA UBICACIÓN AL BACKEND
                     scope.launch {
                         try {
-                            // (Aquí usaremos tu AuthRepository, pero
-                            // necesitarás un LocationRepository separado para esto)
-
-                            // val token = authRepository.getToken()
-                            // val deviceId = DeviceHelper.getDeviceIdentifier(this@TrackingService)
-                            // locationRepository.sendLocation(token, deviceId, location.latitude, ...)
-
+                            val deviceId = DeviceHelper.getDeviceIdentifier(this@TrackingService)
+                            locationRepository.sendLocation(
+                                deviceId = deviceId,
+                                latitude = location.latitude,
+                                longitude = location.longitude,
+                                accuracy = if (location.hasAccuracy()) location.accuracy else null
+                            )
                         } catch (e: Exception) {
                             Log.e("TrackingService", "Error al enviar ubicación", e)
                         }
@@ -108,6 +131,7 @@ class TrackingService : Service() {
 
     private fun stopTracking() {
         fusedLocationClient.removeLocationUpdates(locationCallback)
+        locationRepository.disconnect() // --- 6. DESCONECTA EL WEBSOCKET ---
         stopForeground(true) // true = elimina la notificación
         stopSelf() // Detiene el servicio
     }
