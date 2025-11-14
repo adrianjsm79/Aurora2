@@ -125,7 +125,7 @@ class SettingsActivity : BaseActivity() {
             R.id.nav_about -> Toast.makeText(this, "Acerca de", Toast.LENGTH_SHORT).show()
             R.id.nav_support -> Toast.makeText(this, "Soporte", Toast.LENGTH_SHORT).show()
             R.id.nav_share -> shareApp()
-            R.id.btn_logout -> logout()
+            R.id.nav_logout -> logout()
         }
         binding.drawerLayout.closeDrawer(GravityCompat.END)
     }

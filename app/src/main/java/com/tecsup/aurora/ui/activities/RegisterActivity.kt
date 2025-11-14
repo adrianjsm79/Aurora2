@@ -19,10 +19,9 @@ class RegisterActivity : AppCompatActivity() {
 
     // 2. Obtener el ViewModel
     private val viewModel: AuthViewModel by viewModels {
-        // Obtenemos el repositorio desde nuestra clase Application
         val repository = (application as MyApplication).authRepository
-        // Le pasamos el repositorio a la fábrica
-        AuthViewModelFactory(repository)
+        // Le pasamos AMBOS, el repositorio y la application a la fábrica
+        AuthViewModelFactory(repository, application)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

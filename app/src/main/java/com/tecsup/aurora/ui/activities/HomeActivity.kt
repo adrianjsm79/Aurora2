@@ -22,6 +22,15 @@ import com.tecsup.aurora.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tecsup.aurora.ui.adapter.DeviceAdapter
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
+import com.tecsup.aurora.service.TrackingService
+import com.tecsup.aurora.utils.NotificationHelper
+import android.provider.Settings
 
 class HomeActivity : AppCompatActivity() {
 
@@ -36,16 +45,56 @@ class HomeActivity : AppCompatActivity() {
     // 2. Obtenemos el AuthViewModel para la lógica de Logout
     private val authViewModel: AuthViewModel by viewModels {
         val repository = (application as MyApplication).authRepository
-        // ¡Correcto! Se pasan ambas dependencias
         AuthViewModelFactory(repository, application)
     }
+
+    // --- MANEJO DE PERMISOS ---
+    // 1. Launcher para permiso 'FINE' (En primer plano)
+    private val locationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            showBackgroundPermissionRationaleDialog()
+        } else {
+            Toast.makeText(this, "Permiso de ubicación denegado", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // 2. Launcher para permiso 'BACKGROUND' (En segundo plano)
+    private val backgroundLocationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            // 4. ¡PERMISOS COMPLETOS! Inicia el servicio.
+            startTrackingService()
+        } else {
+            // ESTO ES LO QUE TE ESTÁ PASANDO AHORA
+            Toast.makeText(this, "Permiso en segundo plano denegado", Toast.LENGTH_SHORT).show()
+
+            // Opcional: Guía al usuario a la configuración si lo niega
+            AlertDialog.Builder(this)
+                .setTitle("Permiso Requerido")
+                .setMessage("Para rastrear su dispositivo, la app necesita permiso de 'Ubicación todo el tiempo'. Por favor, actívelo en la configuración de la app.")
+                .setPositiveButton("Ir a Configuración") { _, _ ->
+                    // Abre la configuración de la app
+                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                    val uri = Uri.fromParts("package", packageName, null)
+                    intent.data = uri
+                    startActivity(intent)
+                }
+                .setNegativeButton("Cancelar", null)
+                .show()
+        }
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        // 3. Configura todos los listeners de navegación
+        //Crea el canal de notificación (solo una vez)
+        NotificationHelper.createNotificationChannel(this)
+        //Configura todos los listeners de navegación
         setupRecyclerView()
         setupNavigation()
 
@@ -79,6 +128,64 @@ class HomeActivity : AppCompatActivity() {
                 }
             }
         }
+        showLocationOptInDialog()
+    }
+
+    private fun showLocationOptInDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Habilitar Rastreo")
+            .setMessage("Para protegerte, Aurora necesita enviar tu ubicación en tiempo real. ¿Deseas activar esta función?")
+            .setPositiveButton("Aceptar") { dialog, _ ->
+                // Inicia la cadena de permisos
+                requestFineLocationPermission()
+                dialog.dismiss()
+            }
+            .setNegativeButton("Cancelar") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    // DIÁLOGO #2: Explica por qué se necesita el permiso "Background"
+    private fun showBackgroundPermissionRationaleDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("¡Un paso más!")
+            .setMessage("Aurora necesita permiso para acceder a su ubicación 'todo el tiempo' (en segundo plano) para poder rastrear su dispositivo incluso si la app está cerrada o la pantalla bloqueada.\n\nSe le dirigirá a la configuración para habilitarlo.")
+            .setPositiveButton("Entendido") { dialog, _ ->
+                // 3. Ahora SÍ pedimos el permiso background
+                requestBackgroundLocationPermission()
+                dialog.dismiss()
+            }
+            .setNegativeButton("Ahora no") { dialog, _ ->
+                Toast.makeText(this, "El rastreo solo funcionará mientras la app esté abierta", Toast.LENGTH_LONG).show()
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun requestFineLocationPermission() {
+        // Pedimos primero el permiso 'normal' (FINE)
+        locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+    }
+
+    private fun requestBackgroundLocationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            // En Android 10+ (Q), pedimos 'BACKGROUND'
+            backgroundLocationPermissionLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+        } else {
+            // En Android 9 (Pie) e inferior, el permiso FINE ya incluye BACKGROUND
+            startTrackingService()
+        }
+    }
+
+    private fun startTrackingService() {
+        // Inicia el servicio
+        val intent = Intent(this, TrackingService::class.java).apply {
+            action = TrackingService.ACTION_START_SERVICE
+        }
+        startForegroundService(intent)
+
+        Toast.makeText(this, "Rastreo iniciado", Toast.LENGTH_SHORT).show()
     }
 
     private fun setupRecyclerView() {

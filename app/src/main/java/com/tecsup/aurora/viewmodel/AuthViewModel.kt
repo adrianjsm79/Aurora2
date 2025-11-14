@@ -117,11 +117,9 @@ class AuthViewModel(
         viewModelScope.launch {
             try {
                 repository.logout() // Llama al método del repositorio inyectado
-                // Opcional: Podrías emitir un estado de LogoutSuccess si necesitas que la UI reaccione
-                // _logoutState.value = LogoutState.Success
             } catch (e: Exception) {
                 // Manejar cualquier error que pueda ocurrir al limpiar el token
-                // _logoutState.value = LogoutState.Error(e.message)
+
             }
         }
     }

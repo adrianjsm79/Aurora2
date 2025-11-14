@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.tecsup.aurora.R
 import com.tecsup.aurora.data.model.DeviceResponse
-import com.tecsup.aurora.databinding.FragmentDeviceBinding // <-- 1. Importa el ViewBinding de tu XML
+import com.tecsup.aurora.databinding.FragmentDeviceBinding
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
