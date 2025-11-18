@@ -7,8 +7,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tecsup.aurora.data.model.RegisterRequest
 import com.tecsup.aurora.data.repository.AuthRepository
-import com.tecsup.aurora.ui.activities.LoginActivity
 import com.tecsup.aurora.utils.DeviceHelper
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 // Estado para la UI: Cargando, Éxito o Error
@@ -32,10 +33,33 @@ class AuthViewModel(
     application: Application
 ) : AndroidViewModel(application) { // <-- Llama al constructor padre
 
+    // --- SESSION MANAGEMENT ---
+    private val _sessionState = MutableStateFlow<SessionState>(SessionState.Loading)
+    val sessionState: StateFlow<SessionState> = _sessionState
+
+    fun checkSessionStatus() {
+        viewModelScope.launch {
+            try {
+                // Busca un token en la base de datos local (Realm)
+                val token = repository.getToken()
+                if (token != null) {
+                    // Si hay token, el usuario está autenticado
+                    _sessionState.value = SessionState.Authenticated
+                } else {
+                    // Si no hay token, no está autenticado
+                    _sessionState.value = SessionState.Unauthenticated
+                }
+            } catch (e: Exception) {
+                // Ante cualquier error, se asume que no está autenticado
+                _sessionState.value = SessionState.Unauthenticated
+            }
+        }
+    }
+
     // LiveData privado que solo el ViewModel puede modificar
     private val _registrationState = MutableLiveData<RegistrationState>(RegistrationState.Idle)
 
-    // LiveData público que la Activity "observa"
+    // LiveData público que la Activity \"observa\"
     val registrationState: LiveData<RegistrationState> = _registrationState
 
 
@@ -112,17 +136,15 @@ class AuthViewModel(
         }
     }
 
-    // Dentro de tu clase AuthViewModel.kt
     fun onLogoutClicked() {
         viewModelScope.launch {
             try {
-                repository.logout() // Llama al método del repositorio inyectado
+                repository.logout() // Llama al método del repositorio para borrar el token
+                _sessionState.value = SessionState.Unauthenticated // Notifica que la sesión ha terminado
             } catch (e: Exception) {
-                // Manejar cualquier error que pueda ocurrir al limpiar el token
-
+                // Incluso si hay un error, se considera la sesión cerrada
+                 _sessionState.value = SessionState.Unauthenticated
             }
         }
     }
-
-
 }

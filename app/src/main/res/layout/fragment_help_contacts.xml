@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Contactos de Confianza"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="?attr/colorOnSurface"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Añade contactos de confianza para que puedan ver tu ubicación en tiempo real desde la aplicación web."
+        android:layout_marginBottom="8dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="• Pulsa prolongadamente sobre un contacto del teléfono para añadirlo.\n• Pulsa 'Añadir por Número' para añadir a alguien que no esté en tu agenda.\n• Pulsa el icono de basura para eliminar a alguien de tu lista de confianza."/>
+</LinearLayout>

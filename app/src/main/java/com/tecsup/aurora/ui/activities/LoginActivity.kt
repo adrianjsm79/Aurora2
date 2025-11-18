@@ -42,12 +42,14 @@ class LoginActivity : AppCompatActivity() {
                 }
                 is LoginState.Success -> {
                     // ÉXITO: Realm ya tiene el token.
-                    // Navegamos al HomeActivity.
                     binding.btnIngresar.isEnabled = true
                     // binding.progressBar.visibility = View.GONE
 
-                    // Esta es la lógica que antes tenías en el botón
-                    val intent = Intent(this, HomeActivity::class.java)
+                    // ¡CAMBIO CLAVE AQUÍ!
+                    // Le decimos a HomeActivity que muestre el diálogo.
+                    val intent = Intent(this, HomeActivity::class.java).apply {
+                        putExtra("SHOW_LOCATION_DIALOG", true)
+                    }
                     startActivity(intent)
                     finish() // Cierra LoginActivity para que no pueda volver
                 }

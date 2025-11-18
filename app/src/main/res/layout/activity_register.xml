@@ -1,186 +1,258 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/android:colorBackground"
     android:fillViewport="true"
-    tools:context=".ui.activities.RegisterActivity"
-    android:layout_marginHorizontal="34dp"
-    android:layout_marginVertical="52dp"
-    >
+    tools:context=".ui.activities.RegisterActivity">
 
-    <LinearLayout
+    <!-- FrameLayout para superponer el logo sobre la card -->
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:padding="44dp"
-        android:background="@drawable/button_outline_gradient"
-        android:fontFamily="@font/k2d_regular"
-        >
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingHorizontal="34dp"
+        android:paddingVertical="52dp">
 
-        <ImageView
-            android:id="@+id/logo"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+        <!-- Tarjeta de Registro -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="8dp"
+            app:cardBackgroundColor="?attr/colorSurface">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/k2d_regular"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingHorizontal="32dp"
+                android:paddingTop="64dp"
+                android:paddingBottom="32dp">
+
+                <!-- Título -->
+                <TextView
+                    android:id="@+id/text_title_aurora"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/k2d_regular"
+                    android:letterSpacing="0.05"
+                    android:text="Crear Cuenta"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="32sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/text_subtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:alpha="0.7"
+                    android:text="Únete a Aurora y mantente seguro"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="20dp"
+                    />
+
+                <!-- Campo Nombre Completo -->
+
+                <EditText
+                    android:id="@+id/input_nombre"
+                    style="@style/RegisterInputField"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="8dp"
+                    android:hint="Nombre Completo"
+                    android:inputType="textPersonName"
+                    android:paddingVertical="14dp" />
+
+                <!-- Campo Email -->
+                <EditText
+                    android:id="@+id/input_correo"
+                    style="@style/RegisterInputField"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="20dp"
+                    android:hint="Email"
+                    android:inputType="textEmailAddress"
+                    android:paddingVertical="14dp" />
+
+                <!-- Campo Teléfono -->
+                <LinearLayout
+                    android:id="@+id/phone_input_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <com.hbb20.CountryCodePicker
+                        android:id="@+id/ccp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:ccp_contentColor="?attr/colorOnSurface"
+                        app:ccp_defaultNameCode="PE"
+                        app:ccp_showFlag="true"
+                        app:ccp_showFullName="false"
+                        app:ccp_showNameCode="false" />
+
+                    <EditText
+                        android:id="@+id/input_celular"
+                        style="@style/RegisterInputField"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="Numero de Telefono"
+                        android:inputType="phone"
+                        android:paddingVertical="14dp" />
+
+                </LinearLayout>
+
+                <!-- Campo Contraseña -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    app:passwordToggleEnabled="true"
+                    app:boxBackgroundMode="none">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/input_password"
+                        style="@style/RegisterInputField"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Contraseña"
+                        android:inputType="textPassword" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Campo Confirmar Contraseña -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    app:passwordToggleEnabled="true"
+                    app:boxBackgroundMode="none">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/input_confirm_password"
+                        style="@style/RegisterInputField"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Confirmar Contraseña"
+                        android:inputType="textPassword" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Checkbox de Términos y Condiciones -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <CheckBox
+                        android:id="@+id/checkbox_terms"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:buttonTint="?attr/colorPrimary" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="Acepto los "
+                        android:textColor="?attr/colorOnSurface"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:id="@+id/terms_link"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:text="Términos y Condiciones"
+                        android:textColor="?attr/colorPrimary"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- Botón Registrarse -->
+                <Button
+                    android:id="@+id/btn_create_account"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:background="@drawable/button_fillgradient_ripple_effect"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:elevation="4dp"
+                    android:fontFamily="@font/k2d_bold"
+                    android:paddingVertical="16dp"
+                    android:text="Registrarse"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null" />
+
+                <!-- Link de inicio de sesión -->
+                <LinearLayout
+                    android:id="@+id/login_prompt_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/account_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="¿Ya tienes cuenta? "
+                        android:textColor="?attr/colorOnSurface"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/login_link"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:text="Inicia sesión aquí"
+                        android:textColor="?attr/colorPrimary"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Logo flotante -->
+        <FrameLayout
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:layout_gravity="top|center_horizontal"
             android:background="@drawable/circle_background"
-            android:contentDescription="Icono de registro"
-            android:padding="20dp"
-            android:src="@drawable/ic_person"
-            app:tint="@color/white" />
+            android:elevation="12dp">
 
-        <TextView
-            android:id="@+id/text_title_aurora"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:fontFamily="@font/k2d_regular"
-            android:text="Crear Cuenta"
-            android:textColor="?attr/colorPrimary"
-            android:textSize="28sp"
-            android:textStyle="bold" />
+            <ImageView
+                android:id="@+id/logo"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:contentDescription="Icono de registro"
+                android:src="@drawable/ic_person"
+                app:tint="@color/white" />
 
-        <TextView
-            android:id="@+id/text_subtitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Únete a Aurora"
-            android:textColor="?attr/colorOnSurface"
-            android:textSize="16sp" />
+        </FrameLayout>
 
-        <TextView
-            android:id="@+id/label_nombre"
-            style="@style/RegisterLabel"
-            android:layout_width="match_parent"
-            android:layout_marginTop="24dp"
-            android:text="Nombre Completo" />
+    </FrameLayout>
 
-        <EditText
-            android:id="@+id/input_nombre"
-            style="@style/RegisterInputField"
-            android:layout_width="match_parent"
-            android:hint="Juan Pérez"
-            android:inputType="textPersonName" />
-
-        <TextView
-            android:id="@+id/label_correo"
-            style="@style/RegisterLabel"
-            android:layout_width="match_parent"
-            android:text="Email" />
-
-        <EditText
-            android:id="@+id/input_correo"
-            style="@style/RegisterInputField"
-            android:layout_width="match_parent"
-            android:hint="tu@email.com"
-            android:inputType="textEmailAddress" />
-
-        <TextView
-            android:id="@+id/label_celular"
-            style="@style/RegisterLabel"
-            android:layout_width="match_parent"
-            android:text="Número de Teléfono" />
-
-        <!-- LinearLayout anidado para la fila del teléfono -->
-        <LinearLayout
-            android:id="@+id/phone_input_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <com.hbb20.CountryCodePicker
-                android:id="@+id/ccp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:ccp_contentColor="?attr/colorOnSurface"
-                app:ccp_defaultNameCode="PE"
-                app:ccp_showFlag="true"
-                app:ccp_showFullName="false"
-                app:ccp_showNameCode="false" />
-
-            <EditText
-                android:id="@+id/input_celular"
-                style="@style/RegisterInputField"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="987654321"
-                android:inputType="phone" />
-
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/label_password"
-            style="@style/RegisterLabel"
-            android:layout_width="match_parent"
-            android:text="Contraseña" />
-
-        <EditText
-            android:id="@+id/input_password"
-            style="@style/RegisterInputField"
-            android:layout_width="match_parent"
-            android:hint="********"
-            android:inputType="textPassword" />
-
-        <TextView
-            android:id="@+id/label_confirm_password"
-            style="@style/RegisterLabel"
-            android:layout_width="match_parent"
-            android:text="Confirmar Contraseña" />
-
-        <EditText
-            android:id="@+id/input_confirm_password"
-            style="@style/RegisterInputField"
-            android:layout_width="match_parent"
-            android:hint="********"
-            android:inputType="textPassword" />
-
-        <Button
-            android:id="@+id/btn_create_account"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:background="@drawable/button_fillgradient_ripple_effect"
-            android:clickable="true"
-            android:focusable="true"
-            android:paddingVertical="14dp"
-            android:text="Registrarse"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:backgroundTint="@null" />
-
-        <!-- LinearLayout para el texto final -->
-        <LinearLayout
-            android:id="@+id/login_prompt_container"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/account_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="¿Ya tienes cuenta? "
-                android:textColor="?attr/colorOnSurface"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/login_link"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Inicia sesión aquí"
-                android:textColor="?attr/colorPrimary"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-    </LinearLayout>
 </ScrollView>

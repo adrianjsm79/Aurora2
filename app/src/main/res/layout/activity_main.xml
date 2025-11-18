@@ -1,45 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.activities.MainActivity"
-    android:background="?attr/android:colorBackground"
-    >
+    android:background="?attr/colorSurface"
+    tools:context=".ui.activities.MainActivity">
 
-    <TextView
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Aurora"
-        android:textSize="42dp"
-        android:fontFamily="@font/k2d_regular"
-        android:textColor="?attr/colorSecondary"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginBottom="180dp"
-        android:elevation="4dp"
-        />
+        android:layout_centerInParent="true" />
 
-
-    <Button
-        android:id="@+id/btn_login"
-        android:layout_height="wrap_content"
-        android:layout_width="300dp"
-        android:text="GO"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginBottom="120dp"
-        android:background="@drawable/button_fillgradient_ripple_effect"
-        android:clickable="true"
-        android:focusable="true"
-        app:backgroundTint="@null"
-        android:textColor="?attr/colorOnBackground"
-        android:fontFamily="@font/k2d_bold"
-        />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

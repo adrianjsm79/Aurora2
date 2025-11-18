@@ -6,347 +6,493 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.activities.HomeActivity"
-    tools:openDrawer="end"
+    tools:openDrawer="end">
 
-    >
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="?attr/android:colorBackground">
 
+        <!-- AppBar Material Design 2 -->
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            android:outlineSpotShadowColor="@color/turquesa"
-            android:outlineAmbientShadowColor="@color/turquesa"
             android:fitsSystemWindows="true"
-            >
+            app:elevation="4dp">
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
+                android:layout_height="64dp"
+                android:background="?attr/colorSurface"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
                 android:theme="@style/ThemeOverlay.MaterialComponents.Toolbar.Primary"
-                android:background="#000000"
-                >
+                app:layout_scrollFlags="scroll|enterAlways">
 
+                <!-- Botón Web (izquierda) -->
+                <FrameLayout
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="start|center_vertical"
+                    android:layout_marginStart="4dp">
 
+                    <ImageButton
+                        android:id="@+id/link_web"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="Abrir web"
+                        android:padding="12dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_web1"
+                        app:tint="?attr/colorOnSurface"
+                        />
+                </FrameLayout>
+
+                <!-- Logo centrado -->
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:gravity="center_vertical"
+                    android:gravity="center"
                     android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_logo_aurora" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
                         android:fontFamily="@font/k2d_regular"
+                        android:letterSpacing="0.05"
                         android:text="Aurora"
                         android:textColor="?attr/colorPrimary"
-                        android:textSize="24sp"
-
-                        />
-
+                        android:textSize="26sp"
+                        android:textStyle="bold" />
                 </LinearLayout>
 
+                <!-- Botón Menú (derecha) -->
                 <FrameLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="start">
-
-                    <ImageButton
-                        android:id="@+id/link_web"
-                        android:layout_width="?attr/actionBarSize"
-                        android:layout_height="?attr/actionBarSize"
-                        android:src="@drawable/ic_web1"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="Abrir menú"
-                    />
-
-                </FrameLayout>
-
-                <FrameLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="end">
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="end|center_vertical"
+                    android:layout_marginEnd="8dp">
 
                     <ImageButton
                         android:id="@+id/hamburger_button_right"
-                        android:layout_width="?attr/actionBarSize"
-                        android:layout_height="?attr/actionBarSize"
-                        android:src="@drawable/ic_menu_hamburger"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:contentDescription="Abrir menú"
-                        android:layout_marginEnd="15dp"
+                        android:padding="12dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_menu_hamburger"
+                        app:tint="?attr/colorOnSurface"
                         />
                 </FrameLayout>
+
             </com.google.android.material.appbar.MaterialToolbar>
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <LinearLayout
-            android:id="@+id/fixed_bottom_content"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingHorizontal="20dp"
-            android:paddingBottom="20dp"
-            app:layout_constraintBottom_toTopOf="@id/bottom_nav_view"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+        <!-- Contenido principal con scroll -->
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-
-            <LinearLayout
-                android:id="@+id/find_devices_button"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginBottom="60dp"
-                android:background="@drawable/button_fillgradient_ripple_effect"
-                android:clickable="true"
-                android:elevation="4dp"
-                android:focusable="true"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingStart="24dp"
-                android:paddingEnd="24dp"
-                >
-
-                <!-- 1. Icono -->
-                <ImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_marginEnd="12dp"
-                    android:contentDescription="Icono de encontrar dispositivos"
-                    android:src="@drawable/ic_location_map"
-                    app:tint="?attr/colorOnBackground" />
-                <!-- 2. Texto -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/k2d_extrabold"
-                    android:text="Encontrar Dispositivos"
-                    android:textColor="?attr/colorOnBackground"
-                    android:textSize="16sp" />
-
-            </LinearLayout>
-
-
-            <GridLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_weight="1"
-                android:columnCount="2"
-                >
+                android:paddingBottom="80dp">
 
-                <LinearLayout
-                    android:id="@+id/card_location"
+                <!-- Sección de Dispositivos -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/devices_card"
+                    style="@style/Widget.MaterialComponents.CardView"
                     android:layout_width="0dp"
-                    android:layout_height="100dp"
-                    android:layout_row="0"
-                    android:layout_column="0"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="8dp"
-                    android:background="@drawable/button_ripple_effect"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:elevation="4dp"
-                    >
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginTop="16dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="4dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-                    <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:layout_marginBottom="4dp"
-                        android:contentDescription="Icono de dispositivo"
-                        android:src="@drawable/ic_location"
-                        app:tint="?attr/colorPrimary" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Localizacion"
-                        android:textAlignment="center"
-                        android:textColor="?attr/colorOnSurface"
-                        android:textSize="12sp"
-                        android:fontFamily="@font/k2d_regular"
-                        />
+                        android:orientation="vertical"
+                        android:padding="16dp">
 
-                </LinearLayout>
+                        <!-- Header de Dispositivos -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingBottom="12dp">
 
-                <LinearLayout
-                    android:id="@+id/card_contacts"
+                            <TextView
+                                android:id="@+id/label_devices"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/k2d_medium"
+                                android:text="Dispositivos"
+                                android:textColor="?attr/colorOnBackground"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@drawable/ic_phone"
+                                app:tint="?attr/colorPrimary" />
+                        </LinearLayout>
+
+                        <!-- Divider -->
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginBottom="12dp"
+                            android:alpha="0.12"
+                            android:background="?attr/colorOnSurface" />
+
+                        <!-- RecyclerView de dispositivos -->
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/devicesRecyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:maxHeight="300dp"
+                            android:nestedScrollingEnabled="false"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            tools:itemCount="2"
+                            tools:listitem="@layout/fragment_device" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Botón principal de encontrar dispositivos -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/find_button_card"
+                    style="@style/Widget.MaterialComponents.CardView"
                     android:layout_width="0dp"
-                    android:layout_height="100dp"
-                    android:layout_margin="8dp"
-                    android:layout_columnWeight="1"
-                    android:background="@drawable/button_ripple_effect"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="8dp"
-                    android:elevation="4dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginTop="20dp"
+                    android:foreground="?attr/selectableItemBackground"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="6dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/devices_card">
 
-                    >
-
-                    <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:layout_marginBottom="4dp"
-                        android:contentDescription="Icono de dispositivo"
-                        android:src="@drawable/ic_contacts"
-                        app:tint="?attr/colorPrimary" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:id="@+id/find_devices_button"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Contactos de confianza"
-                        android:textAlignment="center"
-                        android:textColor="?attr/colorOnSurface"
-                        android:textSize="12sp"
-                        android:fontFamily="@font/k2d_regular"/>
+                        android:background="@drawable/button_fillgradient_ripple_effect"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:paddingVertical="18dp"
+                        android:paddingStart="24dp"
+                        android:paddingEnd="24dp">
 
-                </LinearLayout>
+                        <ImageView
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_marginEnd="16dp"
+                            android:contentDescription="Icono de encontrar dispositivos"
+                            android:src="@drawable/ic_location_map"
+                            app:tint="?attr/colorOnBackground" />
 
-                <LinearLayout
-                    android:id="@+id/card_security"
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/k2d_extrabold"
+                            android:text="Encontrar Dispositivos"
+                            android:textColor="?attr/colorOnBackground"
+                            android:textSize="17sp" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Grid  -->
+                <TextView
+                    android:id="@+id/quick_actions_label"
                     android:layout_width="0dp"
-                    android:layout_height="100dp"
-                    android:layout_margin="8dp"
-                    android:layout_columnWeight="1"
-                    android:background="@drawable/button_ripple_effect"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="8dp"
-                    android:elevation="4dp"
-                    >
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginTop="28dp"
+                    android:fontFamily="@font/k2d_medium"
+                    android:text="Acciones"
+                    android:textColor="?attr/colorOnBackground"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/find_button_card" />
 
-                    <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:layout_marginBottom="4dp"
-                        android:contentDescription="Icono de dispositivo"
-                        android:src="@drawable/ic_security"
-                        app:tint="?attr/colorPrimary" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Seguridad"
-                        android:textAlignment="center"
-                        android:textColor="?attr/colorOnSurface"
-                        android:textSize="12sp"
-                        android:fontFamily="@font/k2d_regular"
-                        />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/card_devices"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/fixed_bottom_content"
                     android:layout_width="0dp"
-                    android:layout_height="100dp"
-                    android:layout_margin="8dp"
-                    android:layout_columnWeight="1"
-                    android:background="@drawable/button_ripple_effect"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="8dp"
-                    android:elevation="4dp"
-                    >
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:paddingHorizontal="20dp"
+                    android:paddingBottom="20dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/quick_actions_label">
 
-                    <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:layout_marginBottom="4dp"
-                        android:contentDescription="Icono de dispositivo"
-                        android:src="@drawable/ic_phone"
-                        app:tint="?attr/colorPrimary" />
+                    <!-- Card 1: Localización -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/card_location"
+                        style="@style/Widget.MaterialComponents.CardView"
+                        android:layout_width="0dp"
+                        android:layout_height="130dp"
+                        android:layout_marginEnd="8dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="4dp"
+                        app:layout_constraintEnd_toStartOf="@id/card_contacts"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Gestionar dispositivos"
-                        android:textAlignment="center"
-                        android:textColor="?attr/colorOnSurface"
-                        android:textSize="12sp"
-                        android:fontFamily="@font/k2d_regular"
-                        />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:padding="16dp">
 
-                </LinearLayout>
+                            <!-- Fondo circular para el icono -->
+                            <FrameLayout
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
+                                android:layout_marginBottom="12dp"
+                                android:background="@drawable/ic_circle_background">
 
+                                <ImageView
+                                    android:layout_width="28dp"
+                                    android:layout_height="28dp"
+                                    android:layout_gravity="center"
+                                    android:contentDescription="Icono de localización"
+                                    android:src="@drawable/ic_location"
+                                    app:tint="@android:color/white" />
+                            </FrameLayout>
 
-            </GridLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/k2d_regular"
+                                android:gravity="center"
+                                android:text="Localización"
+                                android:textColor="?attr/colorOnSurface"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
 
-        </LinearLayout>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
 
-        <TextView
-            android:id="@+id/label_devices"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="30dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="12dp"
-            android:fontFamily="@font/k2d_medium"
-            android:text="Dispositivos"
-            android:textColor="?attr/colorOnBackground"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@id/app_bar_layout" />
+                    <!-- Card 2: Contactos -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/card_contacts"
+                        style="@style/Widget.MaterialComponents.CardView"
+                        android:layout_width="0dp"
+                        android:layout_height="130dp"
+                        android:layout_marginStart="8dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="4dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/card_location"
+                        app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/devices_recycler_view"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:paddingHorizontal="12dp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toTopOf="@id/fixed_bottom_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/label_devices"
-            tools:listitem="@layout/fragment_device"
-            />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:padding="16dp">
 
+                            <FrameLayout
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
+                                android:layout_marginBottom="12dp"
+                                android:background="@drawable/ic_circle_background">
+
+                                <ImageView
+                                    android:layout_width="28dp"
+                                    android:layout_height="28dp"
+                                    android:layout_gravity="center"
+                                    android:contentDescription="Icono de contactos"
+                                    android:src="@drawable/ic_contacts"
+                                    app:tint="@android:color/white" />
+                            </FrameLayout>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/k2d_regular"
+                                android:gravity="center"
+                                android:lineSpacingExtra="2dp"
+                                android:text="Contactos de\nconfianza"
+                                android:textAlignment="center"
+                                android:textColor="?attr/colorOnSurface"
+                                android:textSize="13sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Card 3: Seguridad -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/card_security"
+                        style="@style/Widget.MaterialComponents.CardView"
+                        android:layout_width="0dp"
+                        android:layout_height="130dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="8dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="4dp"
+                        app:layout_constraintEnd_toStartOf="@id/card_devices"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/card_location">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+                            <FrameLayout
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
+                                android:layout_marginBottom="12dp"
+                                android:background="@drawable/ic_circle_background">
+
+                                <ImageView
+                                    android:layout_width="28dp"
+                                    android:layout_height="28dp"
+                                    android:layout_gravity="center"
+                                    android:contentDescription="Icono de seguridad"
+                                    android:src="@drawable/ic_security"
+                                    app:tint="@android:color/white" />
+                            </FrameLayout>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/k2d_regular"
+                                android:gravity="center"
+                                android:text="Seguridad"
+                                android:textColor="?attr/colorOnSurface"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Card 4: Gestionar dispositivos -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/card_devices"
+                        style="@style/Widget.MaterialComponents.CardView"
+                        android:layout_width="0dp"
+                        android:layout_height="130dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="16dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="4dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/card_security"
+                        app:layout_constraintTop_toBottomOf="@id/card_contacts">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+                            <FrameLayout
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
+                                android:layout_marginBottom="12dp"
+                                android:background="@drawable/ic_circle_background">
+
+                                <ImageView
+                                    android:layout_width="28dp"
+                                    android:layout_height="28dp"
+                                    android:layout_gravity="center"
+                                    android:contentDescription="Icono de dispositivos"
+                                    android:src="@drawable/ic_phone"
+                                    app:tint="@android:color/white" />
+                            </FrameLayout>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/k2d_regular"
+                                android:gravity="center"
+                                android:lineSpacingExtra="2dp"
+                                android:text="Gestionar\ndispositivos"
+                                android:textAlignment="center"
+                                android:textColor="?attr/colorOnSurface"
+                                android:textSize="13sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+        <!-- Bottom Navigation -->
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_nav_view"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
             android:background="@color/black"
+            android:elevation="8dp"
+            app:itemActiveIndicatorStyle="@style/App.Material.BottomNav.Indicator"
             app:itemIconTint="@color/bottom_nav_icon_color_selector"
             app:labelVisibilityMode="unlabeled"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:menu="@menu/menu_bottom_nav"
-            app:itemActiveIndicatorStyle="@style/App.Material.BottomNav.Indicator"
-            />
+            app:menu="@menu/menu_bottom_nav" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
+    <!-- Navigation Drawer -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="300dp"
         android:layout_height="match_parent"
         android:layout_gravity="end"
-        app:headerLayout="@layout/nav_header"
-        app:menu="@menu/menu_drawer"
         android:background="?attr/colorSurface"
-        app:itemTextColor="?attr/colorOnBackground"/>
+        android:elevation="16dp"
+        app:headerLayout="@layout/nav_header"
+        app:itemTextColor="?attr/colorOnBackground"
+        app:menu="@menu/menu_drawer" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

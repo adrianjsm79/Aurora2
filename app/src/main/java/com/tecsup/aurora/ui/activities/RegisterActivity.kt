@@ -31,12 +31,22 @@ class RegisterActivity : AppCompatActivity() {
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // 3. Configurar el Listener del Botón
+        // --- ¡CAMBIOS CLAVE AQUÍ! ---
+        // 1. Deshabilita el botón por defecto
+        binding.btnCreateAccount.isEnabled = false
+
+        // 2. Añade un listener al checkbox
+        binding.checkboxTerms.setOnCheckedChangeListener { _, isChecked ->
+            // 3. Habilita o deshabilita el botón según el estado del checkbox
+            binding.btnCreateAccount.isEnabled = isChecked
+        }
+
+        // Configurar el Listener del Botón
         binding.btnCreateAccount.setOnClickListener {
             handleRegistration()
         }
 
-        // 4. Configurar el Observador de Estado
+        // Configurar el Observador de Estado
         viewModel.registrationState.observe(this) { state ->
             // El 'when' reacciona a los cambios de estado
             when (state) {
@@ -55,12 +65,14 @@ class RegisterActivity : AppCompatActivity() {
                 }
                 is RegistrationState.Error -> {
                     // Error: Muestra el error
-                    binding.btnCreateAccount.isEnabled = true
+                    // Re-habilita el botón solo si el checkbox está marcado
+                    binding.btnCreateAccount.isEnabled = binding.checkboxTerms.isChecked
                     // binding.progressBar.visibility = View.GONE
                     Toast.makeText(this, state.message, Toast.LENGTH_LONG).show()
                 }
-                is RegistrationState.Idle -> {
-                    binding.btnCreateAccount.isEnabled = true
+                is Registration.Idle -> {
+                    // Estado inicial, el botón se controla por el checkbox
+                    binding.btnCreateAccount.isEnabled = binding.checkboxTerms.isChecked
                     // binding.progressBar.visibility = View.GONE
                 }
             }

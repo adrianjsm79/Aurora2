@@ -2,11 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/menu_add_trusted"
-        android:title="Añadir a contactos de confianza"/>
-
-    <item
-        android:id="@+id/menu_add_emergency"
+        android:id="@+id/menu_add_contact"
         android:title="Añadir a contactos de emergencia"/>
 
     <item

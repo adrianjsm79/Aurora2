@@ -1,98 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="?attr/android:colorBackground"
     tools:context=".ui.activities.ContactsActivity">
 
-    <!-- 1. Barra superior (Toolbar simplificada) -->
+    <!-- 1. Toolbar -->
     <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbar_contacts"
-        android:theme="@style/ThemeOverlay.Material3.Toolbar.Surface"
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorSurface"
-        app:title="Mis Contactos"
-        app:titleTextColor="?attr/colorOnSurface"
         app:navigationIcon="@drawable/ic_arrow_left"
-        app:navigationIconTint="?attr/colorOnBackground"
-        app:layout_constraintTop_toTopOf="parent"
-        android:fitsSystemWindows="true" />
+        app:title="Contactos"
+        app:menu="@menu/menu_contacts2" /> <!-- Tu menu con 'Ayuda' y 'Añadir por Número' -->
 
-
-    <!-- 2. Barra de búsqueda -->
+    <!-- 2. Barra de Búsqueda -->
     <androidx.appcompat.widget.SearchView
-        android:id="@+id/search_view_contacts"
-        android:layout_width="0dp"
+        android:id="@+id/search_view"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_margin="16dp"
         android:background="@drawable/button_outline_gradient"
-        app:iconifiedByDefault="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_contacts"
-        app:queryHint="Buscar por nombre o número" />
+        app:queryHint="Buscar por nombre o número..."
+        app:iconifiedByDefault="false" />
 
-    <!-- 3. Lista de Contactos -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view_contacts"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="16dp"
-        android:visibility="gone"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/search_view_contacts"
-        tools:listitem="@layout/contact_list_item"
-        tools:visibility="visible" />
+    <!-- Usamos un ScrollView porque tenemos dos listas que no deben anidarse -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-    <!-- 4. Vista para "Permiso Requerido" o "Lista Vacía" -->
-    <LinearLayout
-        android:id="@+id/layout_permission_required"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="32dp"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_contacts">
-
-        <TextView
-            android:id="@+id/text_permission_title"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Acceso a Contactos Requerido"
-            android:textColor="?attr/colorOnBackground"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/text_permission_description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Para mostrar tus contactos, necesitamos que nos des permiso."
-            android:textAlignment="center"
-            android:textColor="?attr/colorOnSurface" />
+            <!-- 3. Lista 1: Contactos de Confianza (del Backend) -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:text="Contactos de Confianza"
+                android:textColor="?attr/colorPrimary"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/btn_grant_permission"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Conceder Permiso"
-            app:backgroundTint="?attr/colorPrimary" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_trusted_contacts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="100dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_contact"
+                tools:itemCount="2" />
 
-    </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginVertical="16dp"
+                android:background="#555"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <!-- 4. Lista 2: Todos los Contactos (del Teléfono) -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="Contactos del Teléfono"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_phone_contacts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_contact"
+                tools:itemCount="5"
+                />
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

@@ -4,10 +4,10 @@
         <!-- Customize your light theme here. -->
         <!-- Colores primarios (acentos, botones importantes) -->
 
-        <item name="colorPrimary">@color/magenta</item>
-        <item name="colorSecondary">@color/turquesa</item>
-        <item name="colorPrimaryVariant">@color/magenta_transparente</item>
-        <item name="colorSecondaryVariant">@color/turquesa_transparente</item>
+        <item name="colorPrimary">@color/turquesa</item>
+        <item name="colorSecondary">@color/magenta</item>
+        <item name="colorPrimaryVariant">@color/turquesa_transparente</item>
+        <item name="colorSecondaryVariant">@color/magenta_transparente</item>
 
 
 

@@ -7,123 +7,191 @@
     android:layout_height="match_parent"
     android:background="?attr/android:colorBackground"
     android:fillViewport="true"
-    tools:context=".ui.activities.LoginActivity"
-    android:layout_marginHorizontal="34dp"
-    android:layout_marginVertical="52dp"
-    >
+    tools:context=".ui.activities.LoginActivity">
 
-    <!-- Tarjeta de Login usando LinearLayout para simplicidad -->
-    <LinearLayout
+    <!-- FrameLayout para superponer el logo sobre la card -->
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:background="@drawable/button_outline_gradient"
-        android:padding="44dp"
-        android:fontFamily="@font/k2d_regular">
+        android:clipToPadding="false" 
+        android:clipChildren="false"
+        android:paddingHorizontal="34dp"
+        android:paddingVertical="52dp">
 
-        <ImageView
-            android:id="@+id/logo"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+        <!-- Tarjeta de Login -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp" 
+            app:cardCornerRadius="20dp"
+            app:cardElevation="8dp"
+            app:cardBackgroundColor="?attr/colorSurface">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:paddingTop="64dp"
+                android:paddingBottom="32dp"
+                android:paddingHorizontal="32dp">
+
+                <!-- Title -->
+                <TextView
+                    android:id="@+id/text_title_aurora"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/k2d_regular"
+                    android:text="Aurora"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="32sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.05"/>
+
+                <TextView
+                    android:id="@+id/text_subtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Inicia sesión para continuar"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="16sp"
+                    android:alpha="0.7"/>
+
+                <EditText
+                    android:id="@+id/input_email"
+                    style="@style/RegisterInputField"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="20dp"
+                    android:hint="Email"
+                    android:inputType="textEmailAddress"
+                    android:drawablePadding="12dp"
+                    android:paddingVertical="14dp"/>
+
+                <!-- Campo Contraseña -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    app:passwordToggleEnabled="true"
+                    app:boxBackgroundMode="none">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/input_password"
+                        style="@style/RegisterInputField"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Contraseña"
+                        android:inputType="textPassword" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Botón Iniciar Sesión -->
+                <Button
+                    android:id="@+id/btn_ingresar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:background="@drawable/button_fillgradient_ripple_effect"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:fontFamily="@font/k2d_bold"
+                    android:paddingVertical="16dp"
+                    android:text="Iniciar Sesión"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:elevation="4dp"
+                    app:backgroundTint="@null" />
+
+                <!-- Link de registro -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/no_account_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="¿No tienes cuenta? "
+                        android:textColor="?attr/colorOnSurface"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/register_link"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Regístrate aquí"
+                        android:textColor="?attr/colorPrimary"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:clickable="true"
+                        android:focusable="true"/>
+                </LinearLayout>
+
+                <!-- Divider -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="#555"
+                    android:alpha="0.12"/>
+
+                <!-- Link de Términos y Condiciones -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Al continuar, aceptas nuestros "
+                        android:textColor="?attr/colorOnSurface"
+                        android:textSize="12sp"
+                        android:alpha="0.6"/>
+
+                    <TextView
+                        android:id="@+id/terms_link"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Términos y Condiciones"
+                        android:textColor="?attr/colorPrimary"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackgroundBorderless"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Logo flotante -->
+        <FrameLayout
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:layout_gravity="top|center_horizontal"
             android:background="@drawable/circle_background"
-            android:contentDescription="Icono de Aurora"
-            android:padding="15dp"
-            android:src="@drawable/ic_location"
-            app:tint="@color/white" />
+            android:elevation="12dp">
 
-        <TextView
-            android:id="@+id/text_title_aurora"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:fontFamily="@font/k2d_regular"
-            android:text="Aurora"
-            android:textColor="?attr/colorPrimary"
-            android:textSize="28sp"
-            android:textStyle="bold" />
+            <ImageView
+                android:id="@+id/logo"
+                android:layout_width="58dp"
+                android:layout_height="58dp"
+                android:layout_gravity="center"
+                android:contentDescription="Icono de Aurora"
+                android:src="@drawable/ic_location"
+                app:tint="@color/white" />
 
-        <TextView
-            android:id="@+id/text_subtitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Inicia sesión para continuar"
-            android:textColor="?attr/colorOnSurface"
-            android:textSize="16sp" />
+        </FrameLayout>
 
-        <TextView
-            android:id="@+id/label_email"
-            style="@style/RegisterLabel"
-            android:layout_width="match_parent"
-            android:layout_marginTop="24dp"
-            android:text="Email"
-            android:textColor="?attr/colorOnSurface" />
-
-        <EditText
-            android:id="@+id/input_email"
-            style="@style/RegisterInputField"
-            android:layout_width="match_parent"
-            android:layout_marginTop="10dp"
-            android:hint="tu@email.com"
-            android:inputType="textEmailAddress" />
-
-        <TextView
-            android:id="@+id/label_password"
-            style="@style/RegisterLabel"
-            android:layout_width="match_parent"
-            android:text="Contraseña"
-            android:textColor="?attr/colorOnSurface" />
-
-        <EditText
-            android:id="@+id/input_password"
-            style="@style/RegisterInputField"
-            android:layout_width="match_parent"
-            android:layout_marginTop="10dp"
-            android:hint="********"
-            android:inputType="textPassword" />
-
-        <Button
-            android:id="@+id/btn_ingresar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:background="@drawable/button_fillgradient_ripple_effect"
-            android:clickable="true"
-            android:focusable="true"
-            android:fontFamily="@font/k2d_bold"
-            android:paddingVertical="14dp"
-            android:text="Iniciar Sesión"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:backgroundTint="@null" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/no_account_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="¿No tienes cuenta? "
-                android:textColor="?attr/colorOnSurface"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/register_link"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Regístrate aquí"
-                android:textColor="?attr/colorPrimary"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-    </LinearLayout>
+    </FrameLayout>
 
 </ScrollView>

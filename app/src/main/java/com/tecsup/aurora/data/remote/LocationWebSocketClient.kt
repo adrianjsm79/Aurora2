@@ -29,7 +29,7 @@ class LocationWebSocketClient {
     }
 
     fun connect(token: String) {
-        // Construye la URL con el token en la query
+
         val wsUrl = "wss://aurorabackend.up.railway.app/ws/location/?token=$token"
 
         val request = Request.Builder()

@@ -8,6 +8,8 @@ import io.realm.kotlin.Realm
 import io.realm.kotlin.ext.query
 import com.tecsup.aurora.data.model.DeviceRequest
 import com.tecsup.aurora.data.model.UserProfile
+import com.tecsup.aurora.data.model.AddContactRequest
+import com.tecsup.aurora.data.model.TrustedContact
 
 
 // 1. El Repositorio ahora también necesita Realm
@@ -99,6 +101,40 @@ class AuthRepository(
         realm.write {
             val session = this.query<UserSession>().find()
             delete(session)
+        }
+    }
+
+    //obtener contactos
+    suspend fun getTrustedContacts(token: String): List<TrustedContact> {
+        val authToken = "Bearer $token"
+        val response = apiService.getTrustedContacts(authToken)
+        if (!response.isSuccessful) {
+            throw Exception("Error al cargar contactos de confianza: ${response.code()}")
+        }
+        return response.body() ?: emptyList()
+    }
+    //añadir contactos
+    suspend fun addTrustedContact(token: String, numero: String): TrustedContact {
+        val authToken = "Bearer $token"
+        val response = apiService.addTrustedContact(authToken, AddContactRequest(numero))
+
+        if (response.code() == 404) {
+            throw Exception("Usuario no encontrado con ese número.")
+        }
+        if (response.code() == 400) {
+            throw Exception("Contacto ya existe o no puedes agregarte a ti mismo.")
+        }
+        if (!response.isSuccessful) {
+            throw Exception("Error al añadir contacto: ${response.code()}")
+        }
+        return response.body() ?: throw Exception("Respuesta de contacto vacía")
+    }
+    //quitar contactos
+    suspend fun removeTrustedContact(token: String, contactId: Int) {
+        val authToken = "Bearer $token"
+        val response = apiService.removeTrustedContact(authToken, contactId)
+        if (!response.isSuccessful) {
+            throw Exception("Error al eliminar contacto: ${response.code()}")
         }
     }
 

@@ -128,7 +128,13 @@ class HomeActivity : AppCompatActivity() {
                 }
             }
         }
-        showLocationOptInDialog()
+
+        // ¡CAMBIO CLAVE AQUÍ!
+        // Revisa si LoginActivity nos envió la señal para mostrar el diálogo.
+        val shouldShowDialog = intent.getBooleanExtra("SHOW_LOCATION_DIALOG", false)
+        if (shouldShowDialog) {
+            showLocationOptInDialog()
+        }
     }
 
     private fun showLocationOptInDialog() {
@@ -230,9 +236,13 @@ class HomeActivity : AppCompatActivity() {
         // --- Cards ---
         // (Configura los listeners para las 4 cards)
         binding.cardLocation.setOnClickListener {
-
+            val intent = Intent(this, LocationActivity::class.java)
+            startActivity(intent)
         }
         binding.cardContacts.setOnClickListener {
+
+            val intent = Intent(this, ContactsActivity::class.java)
+            startActivity(intent)
 
         }
         binding.cardSecurity.setOnClickListener {
