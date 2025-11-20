@@ -2,10 +2,14 @@ package com.tecsup.aurora.data.repository
 
 import com.tecsup.aurora.data.remote.LocationWebSocketClient
 import org.json.JSONObject
+import kotlinx.coroutines.flow.SharedFlow
 
 class LocationRepository(
     private val webSocketClient: LocationWebSocketClient
 ) {
+
+    //Exponemos el flujo de mensajes
+    val incomingLocationUpdates: SharedFlow<String> = webSocketClient.incomingMessages
 
     fun connect(token: String) {
         webSocketClient.connect(token)

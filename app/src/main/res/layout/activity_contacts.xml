@@ -15,6 +15,7 @@
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorSurface"
         app:navigationIcon="@drawable/ic_arrow_left"
+        app:navigationIconTint="?attr/colorOnSurface"
         app:title="Contactos"
         app:menu="@menu/menu_contacts2" /> <!-- Tu menu con 'Ayuda' y 'Añadir por Número' -->
 

@@ -41,7 +41,7 @@ class MyApplication : Application() {
     // --- Database (Realm) ---
     val realm: Realm by lazy {
         val config = RealmConfiguration.Builder(
-            schema = setOf(UserSession::class) // (Añade aquí futuros RealmObjects)
+            schema = setOf(UserSession::class)
         ).build()
         Realm.open(config)
     }
@@ -57,34 +57,29 @@ class MyApplication : Application() {
         LocationRepository(locationWebSocketClient)
     }
 
-    // 4. AÑADE EL REPOSITORIO DE CONFIGURACIÓN
     val settingsRepository by lazy {
         SettingsRepository(applicationContext)
     }
 
-    // --- Managers (Controladores de Servicios) ---
-
-    // 5. AÑADE EL MANAGER DEL SERVICIO DE TRACKING
-    val trackingServiceManager by lazy {
-        TrackingServiceManager(applicationContext)
-    }
-
-    // --- ViewModel Factories (Las "Fábricas" para las Vistas) ---
-    val homeViewModelFactory by lazy {
-        HomeViewModelFactory(authRepository, deviceRepository)
-    }
-
-    // 6. AÑADE LA FÁBRICA PARA LA LOCATIONACTIVITY
-    val locationViewModelFactory by lazy {
-        LocationViewModelFactory(settingsRepository, trackingServiceManager)
-    }
-
-    // --- AÑADE ESTO ---
     val contactsRepository by lazy {
         ContactsRepository(applicationContext)
     }
 
-    // AÑADE ESTA FÁBRICA
+    // --- Managers (Controladores de Servicios) ---
+
+    val trackingServiceManager by lazy {
+        TrackingServiceManager(applicationContext)
+    }
+
+    // --- ViewModel Factories ---
+    val homeViewModelFactory by lazy {
+        HomeViewModelFactory(authRepository, deviceRepository, locationRepository)
+    }
+
+    val locationViewModelFactory by lazy {
+        LocationViewModelFactory(settingsRepository, trackingServiceManager)
+    }
+
     val contactsViewModelFactory by lazy {
         ContactsViewModelFactory(authRepository, contactsRepository)
     }

@@ -6,10 +6,6 @@ import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 
-/**
- * Gestiona la persistencia de las configuraciones del usuario.
- * Usa SharedPreferences para guardar valores simples.
- */
 class SettingsRepository(context: Context) {
 
     companion object {
@@ -21,26 +17,25 @@ class SettingsRepository(context: Context) {
     private val sharedPrefs: SharedPreferences =
         context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
-    // --- LiveData para observar cambios en tiempo real ---
-
-    // LiveData privado
-    private val _isTrackingEnabled = MutableLiveData<Boolean>(isTrackingEnabled())
-    // LiveData público (solo lectura)
+    // LiveData para que la UI (y el ViewModel) reaccionen a cambios
+    private val _isTrackingEnabled = MutableLiveData<Boolean>(getTrackingState())
     val isTrackingEnabled: LiveData<Boolean> = _isTrackingEnabled
 
-
-    // --- Funciones de guardado y lectura ---
+    // --- ESTADO DEL TRACKING ---
 
     fun saveTrackingState(isEnabled: Boolean) {
         sharedPrefs.edit {
             putBoolean(KEY_TRACKING_ENABLED, isEnabled)
         }
-        _isTrackingEnabled.postValue(isEnabled) // Notifica a los observadores
+        // PostValue es seguro para llamar desde hilos de fondo (como el Servicio)
+        _isTrackingEnabled.postValue(isEnabled)
     }
 
-    fun isTrackingEnabled(): Boolean {
-        return sharedPrefs.getBoolean(KEY_TRACKING_ENABLED, false) // Default: false
+    fun getTrackingState(): Boolean {
+        return sharedPrefs.getBoolean(KEY_TRACKING_ENABLED, false)
     }
+
+    // --- INTERVALO DE TIEMPO ---
 
     fun saveTrackingInterval(intervalSeconds: Int) {
         sharedPrefs.edit {

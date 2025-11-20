@@ -9,6 +9,7 @@ import com.tecsup.aurora.data.model.PhoneContact
 import com.tecsup.aurora.data.model.TrustedContact
 import com.tecsup.aurora.data.repository.AuthRepository
 import com.tecsup.aurora.data.repository.ContactsRepository
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 // Estado de la UI

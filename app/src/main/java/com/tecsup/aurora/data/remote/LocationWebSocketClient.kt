@@ -1,6 +1,10 @@
 package com.tecsup.aurora.data.remote
 
 import android.util.Log
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -12,9 +16,24 @@ class LocationWebSocketClient {
     private var webSocket: WebSocket? = null
     private val client = OkHttpClient()
 
+    //tubo de datos para mensajes entrantes
+    private val _incomingMessages = MutableSharedFlow<String>(
+        replay = 0,
+        extraBufferCapacity = 10,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
+    val incomingMessages: SharedFlow<String> = _incomingMessages.asSharedFlow()
+
     private val listener = object : WebSocketListener() {
         override fun onOpen(webSocket: WebSocket, response: Response) {
             Log.d("WebSocket", "Conectado al servidor")
+        }
+
+        //Cuando llega un mensaje del Backend (Redis -> Django -> App)
+        override fun onMessage(webSocket: WebSocket, text: String) {
+            Log.d("WebSocket", "Mensaje recibido: $text")
+            // Lo "emitimos" para que el viewmodel lo reciba
+            _incomingMessages.tryEmit(text)
         }
 
         override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
@@ -48,6 +67,6 @@ class LocationWebSocketClient {
     }
 
     fun disconnect() {
-        webSocket?.close(1000, "Servicio detenido")
+        webSocket?.close(1000, "Cerrando")
     }
 }

@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+
+    <!-- Colores para el tema color serio -->
     <color name="black">#FF000000</color>
     <color name="background_primary">#0F0F0F</color>
     <color name="background_secondary">#1C1D21</color>
@@ -8,6 +11,8 @@
     <color name="text_secondary">#d9d9d9</color>
     <color name="text_tertiary">#818181</color>
 
+
+    <!-- Colores varios -->
     <color name="turquesa">#01D9F6</color>
     <color name="magenta">#CA01F6</color>
     <color name="white">#FFFFFFFF</color>
@@ -27,22 +32,24 @@
     <color name="method_toggle_text_color">@color/white</color>
     <color name="input_code_background">#272931</color>
     <color name="input_code_border">#5D5D68</color>
-
-
-
-
-
-    <color name="background_light">#F5F5F5</color>  <!-- Un gris muy claro -->
-    <color name="surface_light">#FFFFFF</color>     <!-- Blanco puro para tarjetas -->
-    <color name="background_tertiary_light">#fbfeff</color>
-    <color name="text_primary_light">#212121</color> <!-- Negro/gris oscuro para texto -->
-    <color name="text_secondary_light">#757575</color>
-    <color name="text_tertiary_light">#BDBDBD</color>
-
-
-
+    <color name="red_error">#D32F2F</color>
+    <color name="green_success">#388E3C</color>
+    <color name="orange_warning">#FFA000</color>
     <color name="turquesa_transparente">#8000BCD4</color>
     <color name="magenta_transparente">#80CA01F6</color>
     <color name="grey_400">#BDBDBD</color>
     <color name="grey_600">#757575</color>
+
+
+
+    <!-- colores para tema quema retinas -->
+
+    <color name="background_light">#F5F5F5</color>
+    <color name="surface_light">#FFFFFF</color>
+    <color name="background_tertiary_light">#fbfeff</color>
+    <color name="text_primary_light">#212121</color>
+    <color name="text_secondary_light">#757575</color>
+    <color name="text_tertiary_light">#BDBDBD</color>
+
+
 </resources>

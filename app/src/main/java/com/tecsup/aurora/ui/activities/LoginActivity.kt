@@ -10,6 +10,7 @@ import com.tecsup.aurora.databinding.ActivityLoginBinding // Usa el binding de L
 import com.tecsup.aurora.viewmodel.AuthViewModel
 import com.tecsup.aurora.viewmodel.AuthViewModelFactory
 import com.tecsup.aurora.viewmodel.LoginState
+import com.tecsup.aurora.ui.fragments.ProgressDialogFragment
 
 class LoginActivity : AppCompatActivity() {
 
@@ -38,12 +39,12 @@ class LoginActivity : AppCompatActivity() {
             when (state) {
                 is LoginState.Loading -> {
                     binding.btnIngresar.isEnabled = false
-                    // binding.progressBar.visibility = View.VISIBLE
+                    ProgressDialogFragment.show(supportFragmentManager)
                 }
                 is LoginState.Success -> {
                     // ÉXITO: Realm ya tiene el token.
                     binding.btnIngresar.isEnabled = true
-                    // binding.progressBar.visibility = View.GONE
+                    ProgressDialogFragment.hide(supportFragmentManager)
 
                     // ¡CAMBIO CLAVE AQUÍ!
                     // Le decimos a HomeActivity que muestre el diálogo.
@@ -55,12 +56,12 @@ class LoginActivity : AppCompatActivity() {
                 }
                 is LoginState.Error -> {
                     binding.btnIngresar.isEnabled = true
-                    // binding.progressBar.visibility = View.GONE
+                    ProgressDialogFragment.hide(supportFragmentManager)
                     Toast.makeText(this, state.message, Toast.LENGTH_LONG).show()
                 }
                 is LoginState.Idle -> {
                     binding.btnIngresar.isEnabled = true
-                    // binding.progressBar.visibility = View.GONE
+                    ProgressDialogFragment.hide(supportFragmentManager)
                 }
             }
         }

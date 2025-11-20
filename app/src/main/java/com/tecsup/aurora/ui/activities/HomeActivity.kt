@@ -31,6 +31,8 @@ import androidx.core.content.ContextCompat
 import com.tecsup.aurora.service.TrackingService
 import com.tecsup.aurora.utils.NotificationHelper
 import android.provider.Settings
+import android.util.Log
+import com.tecsup.aurora.ui.fragments.ProgressDialogFragment
 
 class HomeActivity : AppCompatActivity() {
 
@@ -92,48 +94,74 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        //Crea el canal de notificación (solo una vez)
+        //Crea el canal de notificación
         NotificationHelper.createNotificationChannel(this)
-        //Configura todos los listeners de navegación
+        //listeners de navegación
         setupRecyclerView()
         setupNavigation()
 
-        // 4. Observa el estado del ViewModel
+        observeViewModel()
+
+    }
+
+    private fun setupRecyclerView() {
+        Log.d("AURORA_DEBUG", "HomeActivity: Configurando RecyclerView...")
+        deviceAdapter = DeviceAdapter()
+        binding.devicesRecyclerView.apply {
+            adapter = deviceAdapter
+            layoutManager = LinearLayoutManager(this@HomeActivity)
+            setHasFixedSize(true) // Optimización
+        }
+    }
+
+    private fun observeViewModel() {
         homeViewModel.homeState.observe(this) { state ->
             when (state) {
                 is HomeState.Loading -> {
-                    // Muestra un ProgressBar
-                    // binding.progressBar.visibility = View.VISIBLE
+                    Log.d("AURORA_DEBUG", "HomeActivity: Estado LOADING")
+                    // (Opcional) Mostrar progress bar
                 }
                 is HomeState.Success -> {
-                    // binding.progressBar.visibility = View.GONE
+                    Log.d("AURORA_DEBUG", "HomeActivity: Estado SUCCESS")
 
-                    // Actualiza el nombre de usuario en el Drawer
-                    val headerView = binding.navView.getHeaderView(0)
-                    val userNameTextView = headerView.findViewById<TextView>(R.id.text_username_nav)
-                    userNameTextView.text = state.userProfile.nombre
+                    // 1. Actualizar Drawer (Nombre de Usuario)
+                    updateNavigationHeader(state.userProfile.nombre, state.userProfile.email)
 
-
-                    // Actualiza la lista de dispositivos
-                    deviceAdapter.submitList(state.devices)
-
+                    // 2. Actualizar Lista de Dispositivos
+                    if (state.devices.isEmpty()) {
+                        Log.w("AURORA_DEBUG", "HomeActivity: La lista de dispositivos llegó VACÍA del backend.")
+                    } else {
+                        Log.d("AURORA_DEBUG", "HomeActivity: Enviando ${state.devices.size} dispositivos al adaptador.")
+                        deviceAdapter.submitList(state.devices)
+                    }
                 }
                 is HomeState.Error -> {
-                    // binding.progressBar.visibility = View.GONE
+                    Log.e("AURORA_DEBUG", "HomeActivity: Estado ERROR -> ${state.message}")
                     Toast.makeText(this, state.message, Toast.LENGTH_LONG).show()
-                    // Si el error es de autenticación, hacer logout
                     if (state.message.contains("401") || state.message.contains("Sesión")) {
                         handleLogout()
                     }
                 }
             }
         }
+    }
 
-        // ¡CAMBIO CLAVE AQUÍ!
-        // Revisa si LoginActivity nos envió la señal para mostrar el diálogo.
-        val shouldShowDialog = intent.getBooleanExtra("SHOW_LOCATION_DIALOG", false)
-        if (shouldShowDialog) {
-            showLocationOptInDialog()
+
+    private fun updateNavigationHeader(nombre: String, email: String) {
+        try {
+            // Accedemos al HeaderView (índice 0)
+            val headerView = binding.navView.getHeaderView(0)
+            if (headerView != null) {
+                val nameText = headerView.findViewById<TextView>(R.id.text_username_nav)
+
+                // Asegúrate de tener estos IDs en tu nav_header.xml
+                nameText?.text = nombre
+                Log.d("AURORA_DEBUG", "HomeActivity: Drawer actualizado con: $nombre")
+            } else {
+                Log.e("AURORA_DEBUG", "HomeActivity: No se encontró el HeaderView en el NavigationView")
+            }
+        } catch (e: Exception) {
+            Log.e("AURORA_DEBUG", "HomeActivity: Error actualizando Drawer", e)
         }
     }
 
@@ -194,13 +222,7 @@ class HomeActivity : AppCompatActivity() {
         Toast.makeText(this, "Rastreo iniciado", Toast.LENGTH_SHORT).show()
     }
 
-    private fun setupRecyclerView() {
-        deviceAdapter = DeviceAdapter() // Inicializa el adaptador
-        binding.devicesRecyclerView.apply { // <-- Usa el ID del RecyclerView del XML
-            adapter = deviceAdapter
-            layoutManager = LinearLayoutManager(this@HomeActivity)
-        }
-    }
+
 
     private fun setupNavigation() {
         // --- Toolbar ---

@@ -7,10 +7,11 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import androidx.compose.ui.res.colorResource
+import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import com.tecsup.aurora.R
 import com.tecsup.aurora.service.TrackingService
+import com.tecsup.aurora.ui.activities.LocationActivity
 
 object NotificationHelper {
 
@@ -25,10 +26,7 @@ object NotificationHelper {
                 NotificationManager.IMPORTANCE_LOW // Baja importancia para que no suene
             ).apply {
                 description = "Notificación persistente de rastreo de ubicación"
-
-                // --- TU REQUISITO DE SEGURIDAD ---
-                // Oculta la notificación en la pantalla de bloqueo
-                lockscreenVisibility = Notification.VISIBILITY_SECRET
+                lockscreenVisibility = Notification.VISIBILITY_SECRET //oculta en la pantalla de bloqueo
             }
 
             val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -37,32 +35,42 @@ object NotificationHelper {
     }
 
     fun createNotification(context: Context): Notification {
-        // --- TU REQUISITO DE "PARAR" ---
-        // 1. Crea un Intent que llame a nuestro TrackingService
+
+        val openAppIntent = Intent(context, LocationActivity::class.java)
+        val openPendingIntent = PendingIntent.getActivity(
+            context, 0, openAppIntent, PendingIntent.FLAG_IMMUTABLE
+        )
+
+        //acción de parar
         val stopServiceIntent = Intent(context, TrackingService::class.java).apply {
             action = TrackingService.ACTION_STOP_SERVICE
         }
 
-        // 2. Crea el PendingIntent (la "acción pendiente")
         val stopPendingIntent = PendingIntent.getService(
             context,
             0,
             stopServiceIntent,
-            PendingIntent.FLAG_IMMUTABLE
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        // 3. Construye la notificación
+        //configuracion de remoteviews para el layout de la notify
+        val remoteViews = RemoteViews(context.packageName, R.layout.notification_tracking)
+
+        // Asignar la acción al botón del layout XML
+        // "Cuando toquen R.id.btn_stop_tracking, ejecuta stopPendingIntent"
+        remoteViews.setOnClickPendingIntent(R.id.stop, stopPendingIntent)
+
+        // Cambiar texto dinámicamente (opcional)
+        //remoteViews.setTextViewText(R.id.notification_status, "texto ejemplo")
+
+        // Construye la notificación
         return NotificationCompat.Builder(context, CHANNEL_ID)
-            .setContentTitle("Aurora")
-            .setContentText("Enviando tu ubicación en tiempo real")
-            .setSmallIcon(R.drawable.ic_location) // Asegúrate de tener este icono
-            .setOngoing(true) // Hace que no se pueda descartar deslizándola
-            .setVisibility(NotificationCompat.VISIBILITY_SECRET) // Doble seguridad
-            .addAction(
-                R.drawable.ic_stop,  // Un icono para "Parar"
-                "Parar Localización", // El texto del botón
-                stopPendingIntent // La acción que se ejecuta
-            )
+            .setSmallIcon(R.drawable.ic_aurora) // Icono obligatorio para la barra de estado (pequeño)
+            .setStyle(NotificationCompat.DecoratedCustomViewStyle()) // Estilo esquinas redondeadas
+            .setCustomContentView(remoteViews) // insertamos el layout
+            .setContentIntent(openPendingIntent) // Al tocar la notificación, abre la app
+            .setOngoing(true) // No se puede deslizar para borrar
+            .setVisibility(NotificationCompat.VISIBILITY_SECRET) // Oculto en pantalla de bloqueo
             .build()
     }
 }

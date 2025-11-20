@@ -47,7 +47,8 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
-    implementation("androidx.activity:activity-ktx:1.11.0") // Dependencia para by viewModels
+    implementation("androidx.activity:activity-ktx:1.11.0") // Dependencia para by viewModels en Activity
+    implementation("androidx.fragment:fragment-ktx:1.8.1") // Dependencia para by activityViewModels en Fragment
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.material3)
     testImplementation(libs.junit)

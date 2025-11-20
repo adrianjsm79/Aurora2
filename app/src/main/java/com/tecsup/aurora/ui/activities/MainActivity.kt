@@ -11,6 +11,7 @@ import com.tecsup.aurora.viewmodel.AuthViewModel
 import com.tecsup.aurora.viewmodel.AuthViewModelFactory
 import com.tecsup.aurora.viewmodel.SessionState
 import kotlinx.coroutines.launch
+import com.tecsup.aurora.ui.fragments.ProgressDialogFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -31,7 +32,7 @@ class MainActivity : AppCompatActivity() {
                 when (state) {
                     is SessionState.Authenticated -> navigateToHome()
                     is SessionState.Unauthenticated -> navigateToLogin()
-                    is SessionState.Loading -> { /* La UI ya muestra el ProgressBar */ }
+                    is SessionState.Loading -> { ProgressDialogFragment.show(supportFragmentManager) }
                 }
             }
         }

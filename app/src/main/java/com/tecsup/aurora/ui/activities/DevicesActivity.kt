@@ -8,7 +8,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.tecsup.aurora.R
 import com.tecsup.aurora.ui.adapter.DeviceAdapter
 import com.tecsup.aurora.databinding.ActivityDevicesBinding
-import com.tecsup.aurora.data.model.Device
 
 class DevicesActivity : BaseActivity() {
 

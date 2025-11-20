@@ -11,6 +11,7 @@ import com.tecsup.aurora.viewmodel.AuthViewModel
 import com.tecsup.aurora.viewmodel.RegistrationState
 import com.tecsup.aurora.MyApplication
 import com.tecsup.aurora.viewmodel.AuthViewModelFactory
+import com.tecsup.aurora.ui.fragments.ProgressDialogFragment
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -53,12 +54,12 @@ class RegisterActivity : AppCompatActivity() {
                 is RegistrationState.Loading -> {
                     // Muestra un ProgressBar, deshabilita el botón
                     binding.btnCreateAccount.isEnabled = false
-                    // binding.progressBar.visibility = View.VISIBLE
+                    ProgressDialogFragment.show(supportFragmentManager)
                 }
                 is RegistrationState.Success -> {
                     // Éxito: Muestra un mensaje y ve al Login
                     binding.btnCreateAccount.isEnabled = true
-                    // binding.progressBar.visibility = View.GONE
+                    ProgressDialogFragment.hide(supportFragmentManager)
                     Toast.makeText(this, "¡Registro exitoso!", Toast.LENGTH_SHORT).show()
                     startActivity(Intent(this, LoginActivity::class.java))
                     finish()
@@ -67,13 +68,13 @@ class RegisterActivity : AppCompatActivity() {
                     // Error: Muestra el error
                     // Re-habilita el botón solo si el checkbox está marcado
                     binding.btnCreateAccount.isEnabled = binding.checkboxTerms.isChecked
-                    // binding.progressBar.visibility = View.GONE
+                    ProgressDialogFragment.hide(supportFragmentManager)
                     Toast.makeText(this, state.message, Toast.LENGTH_LONG).show()
                 }
-                is Registration.Idle -> {
+                is RegistrationState.Idle -> {
                     // Estado inicial, el botón se controla por el checkbox
                     binding.btnCreateAccount.isEnabled = binding.checkboxTerms.isChecked
-                    // binding.progressBar.visibility = View.GONE
+                    ProgressDialogFragment.hide(supportFragmentManager)
                 }
             }
         }

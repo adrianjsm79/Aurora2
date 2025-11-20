@@ -95,7 +95,7 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <!-- Contenido principal con scroll -->
+
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -163,14 +163,12 @@
 
                         <!-- RecyclerView de dispositivos -->
                         <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/devicesRecyclerView"
+                            android:id="@+id/devices_recycler_view"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:maxHeight="300dp"
+                            android:layout_height="60dp"
                             android:nestedScrollingEnabled="false"
-                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                            tools:itemCount="2"
-                            tools:listitem="@layout/fragment_device" />
+                            tools:itemCount="3"
+                            tools:listitem="@layout/item_device" />
 
                     </LinearLayout>
 

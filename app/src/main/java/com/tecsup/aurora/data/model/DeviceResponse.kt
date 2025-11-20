@@ -7,5 +7,5 @@ data class DeviceResponse(
     val is_lost: Boolean,
     val latitude: Double?,
     val longitude: Double?,
-    val last_seen: String // Las fechas de Django suelen ser Strings en JSON
+    val last_seen: String
 )

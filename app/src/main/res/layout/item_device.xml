@@ -24,10 +24,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="20dp"
+        android:layout_marginEnd="5dp"
         android:paddingStart="20dp"
         android:paddingTop="2dp"
-        android:paddingEnd="20dp"
+        android:paddingEnd="5dp"
         android:paddingBottom="2dp"
         android:text="informacion relevante"
         android:textColor="?attr/colorOnBackground" />
