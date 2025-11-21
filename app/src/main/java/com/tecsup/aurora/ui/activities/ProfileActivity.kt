@@ -1,133 +1,147 @@
 package com.tecsup.aurora.ui.activities
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.widget.AppCompatImageButton
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import com.tecsup.aurora.MyApplication
 import com.tecsup.aurora.R
 import com.tecsup.aurora.databinding.ActivityProfileBinding
+import com.tecsup.aurora.service.TrackingService
+import com.tecsup.aurora.utils.NavigationDrawerController
+import com.tecsup.aurora.viewmodel.ProfileState
+import com.tecsup.aurora.viewmodel.ProfileViewModel
+import com.tecsup.aurora.viewmodel.ProfileViewModelFactory
+import com.tecsup.aurora.data.model.UserProfile
+import com.tecsup.aurora.ui.fragments.ProgressDialogFragment
+import com.tecsup.aurora.viewmodel.AuthViewModel
+import com.tecsup.aurora.viewmodel.AuthViewModelFactory
 
-class ProfileActivity : BaseActivity() {
+class ProfileActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityProfileBinding
+    private lateinit var drawerController: NavigationDrawerController
+
+    private val viewModel: ProfileViewModel by viewModels {
+        ProfileViewModelFactory((application as MyApplication).authRepository)
+    }
+
+    private val authViewModel: AuthViewModel by viewModels {
+        val repository = (application as MyApplication).authRepository
+        AuthViewModelFactory(repository, application)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setupSystemBars()
-
         setupDrawer()
-        setupBottomNavigation()
-        setupClickListeners()
-        setupOnBackPressed()
+        setupToolbar()
+        setupListeners()
+        observeViewModel()
+
+        // Cargar datos al iniciar
+        viewModel.loadProfile()
     }
 
-    // Listeners para botones y demás intents usando View Binding
-    private fun setupClickListeners() {
-        binding.goToSecurity.setOnClickListener {
-            startActivity(Intent(this, SecurityActivity::class.java))
-        }
-        binding.btnEditUser.setOnClickListener {
-            Toast.makeText(this, "Editar usuario", Toast.LENGTH_SHORT).show()
-        }
-        binding.btnEditNumber.setOnClickListener {
-            Toast.makeText(this, "Editar numero", Toast.LENGTH_SHORT).show()
-        }
-        binding.btnEditEmail.setOnClickListener {
-            Toast.makeText(this, "Editar email", Toast.LENGTH_SHORT).show()
-        }
-
-        binding.linkWeb.setOnClickListener {
-            val webIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://auroraweb-zoe5.onrender.com"))
-            startActivity(webIntent)
-        }
-    }
-
-    // Configuracion del menu lateral usando View Binding
     private fun setupDrawer() {
-        val toggle = ActionBarDrawerToggle(
-            this, binding.drawerLayout, binding.toolbar, R.string.drawer_open, R.string.drawer_close
+        val drawerLayout = binding.root as DrawerLayout
+
+        drawerController = NavigationDrawerController(
+            this,
+            drawerLayout,
+            binding.navView
         )
-        toggle.isDrawerIndicatorEnabled = false
-        binding.drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
+        drawerController.setup(onLogout = { handleLogout() })
+    }
 
+    private fun setupToolbar() {
+        binding.toolbar.setNavigationOnClickListener { finish() } // Botón atrás
+    }
+
+    private fun setupListeners() {
+        // Botón Hamburguesa
         binding.hamburgerButtonRight.setOnClickListener {
-            binding.drawerLayout.openDrawer(GravityCompat.END)
+            drawerController.openDrawer()
         }
 
-        binding.navView.setNavigationItemSelectedListener { menuItem ->
-            handleDrawerNavigation(menuItem.itemId)
-            true
+        // Botón Guardar
+        binding.btnSave.setOnClickListener {
+            val nombre = binding.inputNombre.text.toString()
+            val numero = binding.inputNumero.text.toString()
+            viewModel.saveProfile(nombre, numero)
         }
 
-        val headerView = binding.navView.getHeaderView(0)
-        headerView.findViewById<AppCompatImageButton>(R.id.back_button_header)?.setOnClickListener {
-            binding.drawerLayout.closeDrawer(GravityCompat.END)
-        }
-    }
-
-    // Barra de navegacion inferior usando View Binding
-    private fun setupBottomNavigation() {
+        // --- Bottom Navigation ---
         binding.bottomNavView.selectedItemId = R.id.bottom_profile
-        binding.bottomNavView.setOnItemSelectedListener { menuItem ->
-            if (menuItem.itemId == binding.bottomNavView.selectedItemId) return@setOnItemSelectedListener false
-
-            when (menuItem.itemId) {
-                R.id.bottom_home -> startActivity(Intent(this, HomeActivity::class.java))
-                R.id.bottom_settings -> startActivity(Intent(this, SettingsActivity::class.java))
+        binding.bottomNavView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.bottom_profile -> true
+                R.id.bottom_home -> {
+                    startActivity(Intent(this, HomeActivity::class.java))
+                    true
+                }
+                R.id.bottom_settings -> {
+                    startActivity(Intent(this, SettingsActivity::class.java))
+                    true
+                }
+                else -> false
             }
-            true
         }
     }
 
-    // Opciones del menu lateral
-    private fun handleDrawerNavigation(itemId: Int) {
-        when (itemId) {
-            R.id.nav_notifications -> Toast.makeText(this, "Notificaciones", Toast.LENGTH_SHORT).show()
-            R.id.nav_about -> Toast.makeText(this, "Acerca de", Toast.LENGTH_SHORT).show()
-            R.id.nav_support -> Toast.makeText(this, "Soporte", Toast.LENGTH_SHORT).show()
-            R.id.nav_share -> shareApp()
-            R.id.nav_logout -> logout()
+    private fun observeViewModel() {
+        viewModel.state.observe(this) { state ->
+            when (state) {
+                is ProfileState.Loading -> {
+                    ProgressDialogFragment.show(supportFragmentManager)
+                    binding.btnSave.isEnabled = false
+                    binding.btnSave.text = "Guardando..."
+                }
+                is ProfileState.DataLoaded -> {
+                    ProgressDialogFragment.hide(supportFragmentManager)
+                    binding.btnSave.isEnabled = true
+                    binding.btnSave.text = "Guardar Cambios"
+
+                    // Rellenar campos
+                    binding.inputNombre.setText(state.userProfile.nombre)
+                    binding.inputEmail.setText(state.userProfile.email)
+                    binding.inputNumero.setText(state.userProfile.numero)
+
+                    drawerController.updateHeaderUserInfo(
+                        state.userProfile.nombre,
+                        state.userProfile.email
+                    )
+                    }
+                is ProfileState.UpdateSuccess -> {
+                    ProgressDialogFragment.hide(supportFragmentManager)
+                    binding.btnSave.isEnabled = true
+                    binding.btnSave.text = "Guardar Cambios"
+                    Toast.makeText(this, "Perfil actualizado correctamente", Toast.LENGTH_SHORT).show()
+                }
+                is ProfileState.Error -> {
+                    ProgressDialogFragment.hide(supportFragmentManager)
+                    binding.btnSave.isEnabled = true
+                    binding.btnSave.text = "Guardar Cambios"
+                    Toast.makeText(this, state.message, Toast.LENGTH_LONG).show()
+                }
+            }
         }
-        binding.drawerLayout.closeDrawer(GravityCompat.END)
     }
 
-    // Acción para cerrar la sesión
-    private fun logout() {
-        val intent = Intent(this, MainActivity::class.java)
+    private fun handleLogout() {
+        val stopIntent = Intent(this, TrackingService::class.java).apply {
+            action = TrackingService.ACTION_STOP_SERVICE
+        }
+        startService(stopIntent)
+        authViewModel.onLogoutClicked()
+        val intent = Intent(this, LoginActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         finish()
-    }
-
-    // Intent implícito para compartir la app desde el menu lateral
-    private fun shareApp() {
-        val shareIntent = Intent(Intent.ACTION_SEND).apply {
-            type = "text/plain"
-            putExtra(Intent.EXTRA_SUBJECT, "Descarga Aurora App")
-            putExtra(Intent.EXTRA_TEXT, "¡Te recomiendo Aurora! Una app increíble para nuestra seguridad. https://github.com/adrianjsm79/Aurora2/releases/tag/debug1")
-        }
-        startActivity(Intent.createChooser(shareIntent, "Compartir vía"))
-    }
-
-    // Comportamiento del boton de regresar
-    private fun setupOnBackPressed() {
-        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                if (binding.drawerLayout.isDrawerOpen(GravityCompat.END)) {
-                    binding.drawerLayout.closeDrawer(GravityCompat.END)
-                } else {
-                    // Al estar en una pantalla secundaria, simplemente volvemos atrás
-                    super@ProfileActivity.onBackPressed()
-                }
-            }
-        })
     }
 }

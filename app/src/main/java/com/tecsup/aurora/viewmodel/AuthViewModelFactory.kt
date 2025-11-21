@@ -12,7 +12,7 @@ import com.tecsup.aurora.data.repository.AuthRepository
  */
 class AuthViewModelFactory(
     private val repository: AuthRepository,
-    private val application: Application // 1. AÑADIR Application al constructor
+    private val application: Application
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

@@ -10,6 +10,7 @@ import com.tecsup.aurora.data.model.DeviceRequest
 import com.tecsup.aurora.data.model.UserProfile
 import com.tecsup.aurora.data.model.AddContactRequest
 import com.tecsup.aurora.data.model.TrustedContact
+import com.tecsup.aurora.data.model.UpdateProfileRequest
 
 
 // 1. El Repositorio ahora también necesita Realm
@@ -136,6 +137,18 @@ class AuthRepository(
         if (!response.isSuccessful) {
             throw Exception("Error al eliminar contacto: ${response.code()}")
         }
+    }
+
+    //actualizar info de usuarios
+    suspend fun updateProfile(token: String, nombre: String, numero: String): UserProfile {
+        val authToken = "Bearer $token"
+        val request = UpdateProfileRequest(nombre, numero)
+        val response = apiService.updateProfile(authToken, request)
+
+        if (!response.isSuccessful) {
+            throw Exception("Error al actualizar perfil: ${response.code()}")
+        }
+        return response.body() ?: throw Exception("Respuesta vacía")
     }
 
 }

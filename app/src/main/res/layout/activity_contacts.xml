@@ -1,93 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="?attr/android:colorBackground"
-    tools:context=".ui.activities.ContactsActivity">
+    android:background="?attr/colorSurface">
 
-    <!-- 1. Toolbar -->
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorSurface"
-        app:navigationIcon="@drawable/ic_arrow_left"
-        app:navigationIconTint="?attr/colorOnSurface"
-        app:title="Contactos"
-        app:menu="@menu/menu_contacts2" /> <!-- Tu menu con 'Ayuda' y 'Añadir por Número' -->
-
-    <!-- 2. Barra de Búsqueda -->
-    <androidx.appcompat.widget.SearchView
-        android:id="@+id/search_view"
+    <!-- 1. AppBar: Barra superior limpia y sin elevación inicial -->
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:background="@drawable/button_outline_gradient"
-        app:queryHint="Buscar por nombre o número..."
-        app:iconifiedByDefault="false" />
+        android:background="@android:color/transparent"
+        app:elevation="0dp">
 
-    <!-- Usamos un ScrollView porque tenemos dos listas que no deben anidarse -->
-    <ScrollView
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorSurface"
+            app:navigationIcon="@drawable/ic_arrow_left"
+            app:title="Contactos"
+            app:titleCentered="true"
+            app:menu="@menu/menu_contacts2"/>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- 2. Contenido Scrollable -->
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:background="?attr/colorSurface"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="24dp">
 
-            <!-- 3. Lista 1: Contactos de Confianza (del Backend) -->
+            <!-- 3. Búsqueda Estilizada (Tipo Píldora) -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="2dp"
+                app:strokeWidth="0dp"
+                app:cardBackgroundColor="?attr/colorSurfaceContainer">
+                <!-- Si no tienes colorSurfaceContainer, usa un color gris muy claro o blanco -->
+
+                <androidx.appcompat.widget.SearchView
+                    android:id="@+id/search_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    app:iconifiedByDefault="false"
+                    app:queryBackground="@android:color/transparent"
+                    app:queryHint="Buscar nombre o número..."
+                    android:background="@android:color/transparent"/>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- SECCIÓN 1: CONFIANZA -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:text="Contactos de Confianza"
+                android:layout_marginStart="20dp"
+                android:layout_marginBottom="8dp"
+                android:text="CÍRCULO DE CONFIANZA"
                 android:textColor="?attr/colorPrimary"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textSize="12sp"
+                android:letterSpacing="0.05"
+                android:textStyle="bold"
+                android:fontFamily="@font/k2d_medium" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_trusted_contacts"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="100dp"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_contact"
-                tools:itemCount="2" />
+                android:nestedScrollingEnabled="false"
+                tools:itemCount="2"
+                tools:listitem="@layout/item_contact" />
 
-            <View
+            <!-- Divisor con Inset (Margen) -->
+            <com.google.android.material.divider.MaterialDivider
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginHorizontal="16dp"
+                android:layout_height="wrap_content"
                 android:layout_marginVertical="16dp"
-                android:background="#555"/>
+                app:dividerInsetStart="20dp"
+                app:dividerInsetEnd="20dp"
+                app:dividerColor="#E0E0E0"/>
 
-            <!-- 4. Lista 2: Todos los Contactos (del Teléfono) -->
+            <!-- SECCIÓN 2: TODOS -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:text="Contactos del Teléfono"
-                android:textColor="?attr/colorOnSurface"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:layout_marginStart="20dp"
+                android:layout_marginBottom="8dp"
+                android:text="TODOS LOS CONTACTOS"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:textSize="12sp"
+                android:letterSpacing="0.05"
+                android:textStyle="bold"
+                android:fontFamily="@font/k2d_medium" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_phone_contacts"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_contact"
                 tools:itemCount="5"
-                />
+                tools:listitem="@layout/item_contact" />
 
         </LinearLayout>
-    </ScrollView>
 
-</LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

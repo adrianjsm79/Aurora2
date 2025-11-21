@@ -1,41 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:showIn="navigation_view">
 
+    <!-- Grupo Principal (Navegación) -->
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_home"
+            android:title="Inicio" />
+
+        <item
             android:id="@+id/nav_notifications"
-            android:title="Notificaciones"
-            />
-
-        <item
-            android:id="@+id/nav_about"
-            android:title="Acerca de"
-            />
-
-        <item
-            android:id="@+id/nav_support"
-            android:title="Soporte"
-            />
-
-        <item
-            android:id="@+id/nav_share"
-            android:title="Compartir"
-            />
-
+            android:icon="@drawable/ic_notifications"
+            android:title="Notificaciones" />
     </group>
 
-    <item
-        android:id="@+id/text_username_nav"
-        android:title="Nombre de Usuario"
-        >
+    <!-- Subtítulo: Información -->
+    <item android:title="Información">
+        <menu>
+            <item
+                android:id="@+id/nav_about"
+                android:icon="@drawable/ic_info"
+                android:title="Acerca de Aurora" />
+
+            <item
+                android:id="@+id/nav_support"
+                android:icon="@drawable/ic_support"
+                android:title="Soporte Técnico" />
+
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_share"
+                android:title="Compartir App" />
+        </menu>
+    </item>
+
+    <!-- Sección Inferior: Cuenta -->
+    <item android:title="Cuenta">
         <menu>
             <item
                 android:id="@+id/nav_logout"
-                android:title="Cerrar sesion"
-                />
+                android:icon="@drawable/ic_logout"
+                android:title="Cerrar Sesión"
+                android:titleCondensed="Salir" />
         </menu>
     </item>
+
 </menu>

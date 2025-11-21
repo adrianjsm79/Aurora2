@@ -1,309 +1,169 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.activities.ProfileActivity"
-    tools:openDrawer="end"
-    >
+    tools:openDrawer="end">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/main"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="?attr/android:colorBackground">
 
         <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            android:outlineSpotShadowColor="@color/turquesa"
-            android:outlineAmbientShadowColor="@color/turquesa"
-            android:fitsSystemWindows="true"
-            >
+            android:background="?attr/colorSurface"
+            app:elevation="0dp">
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:theme="@style/ThemeOverlay.MaterialComponents.Toolbar.Primary"
-                android:background="?attr/colorSurface"
-                >
+                app:title="Mi Perfil"
+                app:titleCentered="true"
+                app:navigationIcon="@drawable/ic_arrow_left"
+                app:navigationIconTint="?attr/colorOnSurface">
 
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_logo_aurora" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:fontFamily="@font/k2d_regular"
-                        android:text="Aurora"
-                        android:textColor="?attr/colorOnBackground"
-                        android:textSize="24sp"
-
-                        />
-
-                </LinearLayout>
-
-                <FrameLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="start">
-
-                    <ImageButton
-                        android:id="@+id/link_web"
-                        android:layout_width="?attr/actionBarSize"
-                        android:layout_height="?attr/actionBarSize"
-                        android:src="@drawable/ic_web1"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="Abrir menú"
-
-                        />
-                </FrameLayout>
-
-                <FrameLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="end">
-
-                    <ImageButton
-                        android:id="@+id/hamburger_button_right"
-                        android:layout_width="?attr/actionBarSize"
-                        android:layout_height="?attr/actionBarSize"
-                        android:src="@drawable/ic_menu_hamburger"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="Abrir menú"
-                        android:layout_marginEnd="15dp"
-                        />
-                </FrameLayout>
+                <!-- Botón Hamburguesa a la derecha -->
+                <ImageButton
+                    android:id="@+id/hamburger_button_right"
+                    android:layout_width="?attr/actionBarSize"
+                    android:layout_height="?attr/actionBarSize"
+                    android:layout_gravity="end"
+                    android:src="@drawable/ic_menu_hamburger"
+                    app:tint="?attr/colorOnSurface"
+                    android:background="@color/transparent"
+                    android:contentDescription="Menú" />
             </com.google.android.material.appbar.MaterialToolbar>
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:fillViewport="true"
-            app:layout_constraintBottom_toTopOf="@id/bottom_nav_view"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/app_bar_layout">
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="12dp">
+                android:padding="24dp"
+                android:gravity="center_horizontal">
 
-                <LinearLayout
+                <!-- 1. Foto de Perfil Grande -->
+                <RelativeLayout
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_marginBottom="32dp">
+
+                    <ImageView
+                        android:id="@+id/profile_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_person"
+                        android:background="@drawable/circle_white_background"
+                        android:padding="24dp"
+                        app:tint="?attr/colorPrimary"
+                        android:elevation="4dp"/>
+
+                    <!-- Botón flotante de cámara (decorativo por ahora) -->
+                    <ImageView
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentEnd="true"
+                        android:background="@drawable/circle_white_background"
+                        android:src="@android:drawable/ic_menu_camera"
+                        android:padding="8dp"
+                        app:tint="?attr/colorOnSurface"
+                        android:elevation="6dp"/>
+                </RelativeLayout>
+
+                <!-- 2. Campos de Texto -->
+
+                <!-- Nombre -->
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
-                    app:cardBackgroundColor="@android:color/transparent"
-                    app:cardCornerRadius="15dp"
-                    app:cardElevation="0dp">
+                    android:hint="Nombre Completo"
+                    android:layout_marginBottom="16dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-                    <LinearLayout
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/input_nombre"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="5dp"
-                        android:background="@drawable/card_background"
-                        android:orientation="vertical"
-                        android:padding="18dp">
+                        android:inputType="textPersonName" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_marginBottom="16dp"
-                            android:text="Mi Perfil"
-                            android:textColor="?attr/colorOnBackground"
-                            android:textSize="24sp"
-                            android:fontFamily="@font/k2d_regular"
+                <!-- Email (Solo lectura) -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Correo Electrónico"
+                    android:layout_marginBottom="16dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-                            />
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/input_email"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:alpha="0.7"
+                        android:inputType="textEmailAddress" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="#555" />
+                <!-- Teléfono -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Número de Teléfono"
+                    android:layout_marginBottom="32dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-                        <!-- Campo: Usuario -->
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="24dp"
-                            android:layout_marginBottom="8dp"
-                            android:text="Usuario :"
-                            android:textColor="?attr/colorOnSurface"
-                            android:textSize="16sp" />
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/input_numero"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="phone" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/button_outline_default">
+                <!-- 3. Botón Guardar -->
+                <Button
+                    android:id="@+id/btn_save"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:text="Guardar Cambios"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:backgroundTint="?attr/colorPrimary"
+                    android:textColor="?attr/colorOnBackground"
+                    app:cornerRadius="20dp"/>
 
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_centerVertical="true"
-                                android:layout_toStartOf="@+id/btnEditUser"
-                                android:background="@android:color/transparent"
-                                android:padding="12dp"
-                                android:text="Juanito 123"
-                                android:textColor="?attr/colorOnBackground"
-                                android:textSize="16sp" />
-
-                            <TextView
-                                android:id="@+id/btnEditUser"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentEnd="true"
-                                android:layout_centerVertical="true"
-                                android:padding="12dp"
-                                android:text="Editar"
-                                android:textColor="?attr/colorPrimary"
-                                android:background="@drawable/button_ripple_effect"
-                                android:clickable="true"
-                                android:focusable="true"
-                                />
-                        </RelativeLayout>
-
-                        <!-- Campo: Numero registrado -->
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="24dp"
-                            android:layout_marginBottom="8dp"
-                            android:text="Numero registrado :"
-                            android:textColor="?attr/colorOnSurface"
-                            android:textSize="16sp" />
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/button_outline_default">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_centerVertical="true"
-                                android:layout_toStartOf="@+id/btnEditNumber"
-                                android:background="@android:color/transparent"
-                                android:padding="12dp"
-                                android:text="+51 923945344"
-                                android:textColor="?attr/colorOnBackground"
-                                android:textSize="16sp" />
-
-                            <TextView
-                                android:id="@+id/btnEditNumber"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentEnd="true"
-                                android:layout_centerVertical="true"
-                                android:padding="12dp"
-                                android:text="Editar"
-                                android:textColor="?attr/colorPrimary"
-                                android:background="@drawable/button_ripple_effect"
-                                android:clickable="true"
-                                android:focusable="true"
-                                />
-                        </RelativeLayout>
-
-
-                        <!-- Campo: Correo Electrónico -->
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="24dp"
-                            android:layout_marginBottom="8dp"
-                            android:text="Correo Electrónico :"
-                            android:textColor="?attr/colorOnSurface"
-                            android:textSize="16sp" />
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/button_outline_default">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_centerVertical="true"
-                                android:layout_toStartOf="@+id/btnEditEmail"
-                                android:background="@android:color/transparent"
-                                android:padding="12dp"
-                                android:text="Juanitope@gmail.com"
-                                android:textColor="?attr/colorOnBackground"
-                                android:textSize="16sp" />
-
-                            <TextView
-                                android:id="@+id/btnEditEmail"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentEnd="true"
-                                android:layout_centerVertical="true"
-                                android:padding="12dp"
-                                android:text="Editar"
-                                android:textColor="?attr/colorPrimary"
-                                android:background="@drawable/button_ripple_effect"
-                                android:clickable="true"
-                                android:focusable="true"
-                                android:layout_marginEnd="0dp"/>
-                        </RelativeLayout>
-
-                        <!-- Botón Cambiar Contraseña -->
-                        <Button
-                            android:id="@+id/goToSecurity"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_marginTop="32dp"
-                            android:layout_marginBottom="16dp"
-                            android:background="@drawable/button_fillgradient_ripple_effect"
-                            android:clickable="true"
-                            android:focusable="true"
-                            app:backgroundTint="@null"
-                            android:paddingHorizontal="32dp"
-                            android:text="configurar seguridad"
-                            android:textColor="?attr/colorOnBackground" />
-
-
-                    </LinearLayout>
-                </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
 
+        <!-- Bottom Navigation -->
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_nav_view"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
             android:background="@color/black"
+            android:elevation="8dp"
+            app:itemActiveIndicatorStyle="@style/App.Material.BottomNav.Indicator"
             app:itemIconTint="@color/bottom_nav_icon_color_selector"
             app:labelVisibilityMode="unlabeled"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:menu="@menu/menu_bottom_nav"
-            app:itemActiveIndicatorStyle="@style/App.Material.BottomNav.Indicator"
-            />
+            app:menu="@menu/menu_bottom_nav" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <!-- Drawer (Menú Lateral) -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="300dp"
@@ -312,6 +172,6 @@
         app:headerLayout="@layout/nav_header"
         app:menu="@menu/menu_drawer"
         android:background="?attr/colorSurface"
-        app:itemTextColor="?attr/colorOnBackground"/>
+        app:itemTextColor="?attr/colorOnSurface"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>
