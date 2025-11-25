@@ -1,120 +1,351 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/android:colorBackground"
-    tools:context=".ui.activities.SecurityActivity">
+    android:background="?attr/android:colorBackground">
 
-    <!-- 1. Barra de herramientas con menú -->
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbar_security"
-        android:layout_width="0dp"
-        android:layout_height="?attr/actionBarSize"
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:background="?attr/colorSurface"
-        android:fitsSystemWindows="true"
-        android:theme="@style/ThemeOverlay.Material3.Toolbar.Surface"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:navigationIcon="@drawable/ic_arrow_left"
-        app:title="Seguridad"
-        app:titleTextColor="?attr/colorOnSurface"
-        app:menu="@menu/security_menu" /> <!-- ¡Aquí se infla el menú! -->
+        app:elevation="0dp">
 
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@drawable/ic_arrow_left"
+            app:navigationIconTint="?attr/colorOnSurface"
+            app:title="Centro de Seguridad"
+            app:titleCentered="true" />
+    </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- 2. Contenedor Scrollable para las opciones -->
     <androidx.core.widget.NestedScrollView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_security">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingTop="16dp"
-            android:paddingBottom="16dp">
+            android:padding="20dp">
 
-            <!-- Card 1: Seguridad de la Cuenta -->
+            <!-- Header / Intro -->
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_security"
+                app:tint="?attr/colorPrimary"
+                android:layout_marginBottom="16dp"/>
+
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:text="SEGURIDAD DE LA CUENTA"
-                android:textColor="?attr/colorPrimary"
-                android:textStyle="bold" />
+                android:text="Blinda tu Dispositivo"
+                android:fontFamily="@font/k2d_bold"
+                android:textSize="24sp"
+                android:textColor="?attr/colorOnSurface"
+                android:textAlignment="center"/>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Sigue estos pasos para evitar que desconecten tu teléfono desde la pantalla de bloqueo."
+                android:textSize="16sp"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:textAlignment="center"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="32dp"/>
+
+            <!-- CARD 3: APAGADO FALSO (ANTI-ROBO) -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="8dp"
-                app:cardBackgroundColor="?attr/colorSurface"
-                app:cardElevation="2dp">
+                android:layout_marginBottom="20dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#E0E0E0"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerLow">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp">
+
+                        <!-- Usamos un icono de seguridad o alerta -->
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_security"
+                            app:tint="?attr/colorPrimary"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Modo Apagado Falso"
+                            android:textSize="18sp"
+                            android:fontFamily="@font/k2d_bold"
+                            android:textColor="?attr/colorOnSurface"
+                            android:layout_marginStart="12dp"/>
+                    </LinearLayout>
 
                     <TextView
-                        android:id="@+id/option_change_password"
-                        style="@style/SecurityOptionStyle"
-                        android:text="Cambiar contraseña"
-                        app:drawableStartCompat="@drawable/ic_password" />
-
-                    <View
-                        android:layout_width="300dp"
-                        android:layout_height="1dp"
-                        android:background="#555"
-                        android:layout_gravity="center_horizontal"/>
-
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Si intentan apagar el teléfono, se mostrará una animación falsa mientras sigues rastreando en secreto."
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:layout_marginBottom="16dp"/>
 
                     <TextView
-                        android:id="@+id/option_2fa"
-                        style="@style/SecurityOptionStyle"
-                        android:text="Autenticación de dos factores (2FA)"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Requiere permiso de Accesibilidad para interceptar el botón de apagado."
+                        android:textSize="13sp"
+                        android:textStyle="italic"
+                        android:textColor="?attr/colorOutline"
+                        android:layout_marginBottom="16dp"/>
 
-                        />
+                    <Button
+                        android:id="@+id/btn_enable_fake_shutdown"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Activar Protección"
+                        style="@style/Widget.Material3.Button.TonalButton"/>
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-
-            <!-- Card 2: Sesiones -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="24dp"
-                android:text="SESIONES"
-                android:textColor="?attr/colorPrimary"
-                android:textStyle="bold" />
-
+            <!-- CARD 1: BLOQUEAR BARRA DE ESTADO -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="8dp"
-                app:cardBackgroundColor="?attr/colorSurface"
-                app:cardElevation="2dp">
+                android:layout_marginBottom="20dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#E0E0E0"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerLow">
 
-                <TextView
-                    android:id="@+id/option_manage_sessions"
-                    style="@style/SecurityOptionStyle"
-                    android:text="Gestionar sesiones activas"
-                    app:drawableStartCompat="@drawable/ic_devices" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_lock"
+                            app:tint="?attr/colorError"/>
+                        <!-- Usa ic_lock o ic_security -->
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Bloquear Panel Rápido"
+                            android:textSize="18sp"
+                            android:fontFamily="@font/k2d_bold"
+                            android:textColor="?attr/colorOnSurface"
+                            android:layout_marginStart="12dp"/>
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Evita que activen el 'Modo Avión' o apaguen los Datos/GPS sin tu contraseña."
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:layout_marginBottom="16dp"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Busca: 'Ajustes de bloqueo seguro' o 'Bloquear red y seguridad'."
+                        android:textSize="13sp"
+                        android:textStyle="italic"
+                        android:textColor="?attr/colorPrimary"
+                        android:layout_marginBottom="16dp"/>
+
+                    <Button
+                        android:id="@+id/btn_open_lock_settings"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Ir a Configuración de Bloqueo"
+                        style="@style/Widget.Material3.Button.TonalButton"/>
+
+                </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- CARD 2: BLOQUEAR APAGADO -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#E0E0E0"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerLow">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_power_off"
+                            app:tint="?attr/colorError"/>
+                        <!-- Crea ic_power_off si no lo tienes -->
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Bloquear Apagado"
+                            android:textSize="18sp"
+                            android:fontFamily="@font/k2d_bold"
+                            android:textColor="?attr/colorOnSurface"
+                            android:layout_marginStart="12dp"/>
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Exige tu PIN o huella para poder apagar el teléfono."
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:layout_marginBottom="16dp"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Nota: Disponible principalmente en dispositivos Samsung y algunos Xiaomi."
+                        android:textSize="13sp"
+                        android:textStyle="italic"
+                        android:textColor="?attr/colorOutline"
+                        android:layout_marginBottom="16dp"/>
+
+                    <Button
+                        android:id="@+id/btn_open_security_settings"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Ir a Seguridad"
+                        style="@style/Widget.Material3.Button.TonalButton"/>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- CARD 4: SONAR DE EMERGENCIA (Nuevo) -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#E0E0E0"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerLow">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_mic"
+                            app:tint="?attr/colorPrimary"/>
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Búsqueda Acústica"
+                            android:textSize="18sp"
+                            android:fontFamily="@font/k2d_bold"
+                            android:textColor="?attr/colorOnSurface"
+                            android:layout_marginStart="12dp"/>
+
+                        <!-- SWITCH ACTIVADOR -->
+                        <com.google.android.material.materialswitch.MaterialSwitch
+                            android:id="@+id/switch_sound_listener"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="El teléfono escuchará señales de auxilio cercanas y sonará la alarma si detecta una."
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:layout_marginBottom="16dp"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="⚠️ Consume mucha batería. Úsalo solo en emergencias."
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:textColor="#FF9800"
+                        android:layout_marginBottom="16dp"/>
+
+                    <!-- Botón para PROBAR enviar sonido (útil para demos) -->
+                    <Button
+                        android:id="@+id/btn_test_emit_signal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Emitir Señal de Prueba"
+                        style="@style/Widget.Material3.Button.OutlinedButton"/>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Footer -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Si configuras esto correctamente, Aurora podrá seguir enviando tu ubicación incluso si roban tu teléfono."
+                android:textAlignment="center"
+                android:textSize="12sp"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:layout_marginTop="10dp"/>
+
         </LinearLayout>
-
     </androidx.core.widget.NestedScrollView>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

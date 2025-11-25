@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="?attr/colorSurface">
 
-    <!-- 1. AppBar: Barra superior limpia y sin elevación inicial -->
+    <!-- 1. AppBar (Transparente ) -->
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -18,39 +18,37 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorSurface"
             app:navigationIcon="@drawable/ic_arrow_left"
+            app:navigationIconTint="?attr/colorSurface"
             app:title="Contactos"
             app:titleCentered="true"
-            app:menu="@menu/menu_contacts2"/>
-
+            app:menu="@menu/menu_contacts2" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <!-- 2. Contenido Scrollable -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?attr/colorSurface"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="24dp">
+            android:paddingBottom="80dp"> <!-- Padding extra al final -->
 
-            <!-- 3. Búsqueda Estilizada (Tipo Píldora) -->
+            <!-- 3. Barra de Búsqueda Estilizada -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="24dp"
-                app:cardElevation="2dp"
-                app:strokeWidth="0dp"
-                app:cardBackgroundColor="?attr/colorSurfaceContainer">
-                <!-- Si no tienes colorSurfaceContainer, usa un color gris muy claro o blanco -->
+                android:layout_marginBottom="24dp"
+                app:cardCornerRadius="28dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#E0E0E0"
+                app:cardBackgroundColor="?attr/colorSurface"> <!-- O ?attr/colorSurfaceContainerLow -->
 
                 <androidx.appcompat.widget.SearchView
                     android:id="@+id/search_view"
@@ -58,63 +56,125 @@
                     android:layout_height="50dp"
                     app:iconifiedByDefault="false"
                     app:queryBackground="@android:color/transparent"
-                    app:queryHint="Buscar nombre o número..."
+                    app:queryHint="Buscar personas..."
                     android:background="@android:color/transparent"/>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- SECCIÓN 1: CONFIANZA -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginBottom="8dp"
-                android:text="CÍRCULO DE CONFIANZA"
-                android:textColor="?attr/colorPrimary"
-                android:textSize="12sp"
-                android:letterSpacing="0.05"
-                android:textStyle="bold"
-                android:fontFamily="@font/k2d_medium" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_trusted_contacts"
+            <!-- SECCIÓN 1 (Trusted Contacts) -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"
-                tools:itemCount="2"
-                tools:listitem="@layout/item_contact" />
+                android:orientation="vertical"
+                android:paddingHorizontal="20dp">
 
-            <!-- Divisor con Inset (Margen) -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CONTACTOS DE CONFIANZA"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="12sp"
+                    android:letterSpacing="0.1"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="12dp"/>
+
+                <TextView
+                    android:id="@+id/empty_trusted_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Aún no has añadido contactos de confianza."
+                    android:textSize="14sp"
+                    android:textColor="#808080"
+                    android:visibility="gone"
+                    android:layout_marginBottom="8dp"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_trusted_contacts"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    tools:itemCount="2"
+                    tools:listitem="@layout/item_contact" />
+            </LinearLayout>
+
             <com.google.android.material.divider.MaterialDivider
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="16dp"
+                android:layout_marginVertical="24dp"
                 app:dividerInsetStart="20dp"
                 app:dividerInsetEnd="20dp"
-                app:dividerColor="#E0E0E0"/>
+                app:dividerColor="#EEEEEE"/>
 
-            <!-- SECCIÓN 2: TODOS -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginBottom="8dp"
-                android:text="TODOS LOS CONTACTOS"
-                android:textColor="?attr/colorOnSurfaceVariant"
-                android:textSize="12sp"
-                android:letterSpacing="0.05"
-                android:textStyle="bold"
-                android:fontFamily="@font/k2d_medium" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_phone_contacts"
+            <!-- SECCIÓN 2 (Trusted By) -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"
-                tools:itemCount="5"
-                tools:listitem="@layout/item_contact" />
+                android:orientation="vertical"
+                android:paddingHorizontal="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="USUARIOS QUE CONFIAN EN TI"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="12sp"
+                    android:letterSpacing="0.1"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="12dp"/>
+
+                <TextView
+                    android:id="@+id/empty_trusted_by_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Nadie te ha añadido todavía."
+                    android:textSize="14sp"
+                    android:textColor="#808080"
+                    android:visibility="gone"
+                    android:layout_marginBottom="8dp"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_trusted_by_contacts"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    tools:itemCount="1"
+                    tools:listitem="@layout/item_contact" />
+            </LinearLayout>
+
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="24dp"
+                app:dividerInsetStart="20dp"
+                app:dividerInsetEnd="20dp"
+                app:dividerColor="#EEEEEE"/>
+
+            <!-- SECCIÓN 3: TODOS LOS CONTACTOS -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="AGENDA DEL TELÉFONO"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:textSize="12sp"
+                    android:letterSpacing="0.1"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="12dp"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_phone_contacts"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    tools:itemCount="5"
+                    tools:listitem="@layout/item_contact" />
+            </LinearLayout>
 
         </LinearLayout>
-
     </androidx.core.widget.NestedScrollView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

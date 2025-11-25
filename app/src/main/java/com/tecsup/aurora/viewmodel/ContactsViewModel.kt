@@ -15,9 +15,11 @@ import kotlinx.coroutines.launch
 // Estado de la UI
 data class ContactsUiState(
     val isLoading: Boolean = true,
-    val allPhoneContacts: List<PhoneContact> = emptyList(), // Lista completa
-    val trustedContacts: List<TrustedContact> = emptyList(), // Lista de confianza
-    val filteredPhoneContacts: List<PhoneContact> = emptyList(), // Lista para la UI
+    val allPhoneContacts: List<PhoneContact> = emptyList(),
+    val trustedContacts: List<TrustedContact> = emptyList(),
+
+    val trustedByContacts: List<TrustedContact> = emptyList(),
+    val filteredPhoneContacts: List<PhoneContact> = emptyList(),
     val toastMessage: String? = null
 )
 
@@ -44,14 +46,17 @@ class ContactsViewModel(
                 // Cargar ambas listas en paralelo
                 val phoneContactsDeferred = viewModelScope.async { contactsRepository.getPhoneContacts() }
                 val trustedContactsDeferred = viewModelScope.async { authRepository.getTrustedContacts(token) }
+                val trustedByDeferred = async { authRepository.getTrustedByContacts(token) }
 
                 val phoneContacts = phoneContactsDeferred.await()
                 val trustedContacts = trustedContactsDeferred.await()
+                val trustedByContacts = trustedByDeferred.await()
 
                 _uiState.value = ContactsUiState(
                     isLoading = false,
                     allPhoneContacts = phoneContacts,
                     trustedContacts = trustedContacts,
+                    trustedByContacts = trustedByContacts,
                     filteredPhoneContacts = phoneContacts // Al inicio, mostrar todos
                 )
             } catch (e: Exception) {

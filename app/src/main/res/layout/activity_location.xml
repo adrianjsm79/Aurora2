@@ -53,6 +53,32 @@
                 android:layout_marginVertical="24dp"
                 android:background="#555" />
 
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/switch_boot"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:minHeight="48dp"
+                android:text="Iniciar automáticamente al encender"
+                android:textSize="16sp"
+                android:fontFamily="@font/k2d_medium"
+                android:textColor="?attr/colorOnSurface"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="Si el teléfono se reinicia, el rastreo comenzará solo."
+                android:textSize="12sp"
+                android:textColor="?attr/colorOnSurfaceVariant"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="24dp"
+                android:background="#555" />
+
             <!-- 3. Otras Configuraciones -->
             <TextView
                 android:layout_width="wrap_content"
@@ -95,6 +121,39 @@
                     android:layout_height="wrap_content"
                     android:text="Ahorro de Batería (Cada 60 segundos)" />
             </RadioGroup>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="24dp"
+                android:background="#555" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Emitir Señal de codigo morse"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="?attr/colorOnBackground"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="emite una señal para encontrar dispositivos perdidos de tus contactos de confianza. (en un rango corto)"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/btn_emit_signal"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Enviar Señal Morse"
+
+                />
+
+
 
         </LinearLayout>
     </ScrollView>

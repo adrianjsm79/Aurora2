@@ -10,6 +10,7 @@ import com.tecsup.aurora.data.model.TrustedContact
 import com.tecsup.aurora.databinding.ItemContactBinding
 
 class TrustedContactAdapter(
+    private val isEditable: Boolean = true,
     private val onRemoveClick: (TrustedContact) -> Unit
 ) : ListAdapter<TrustedContact, TrustedContactAdapter.TrustedViewHolder>(DiffCallback) {
 
@@ -26,7 +27,6 @@ class TrustedContactAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         init {
-            // El icono de "borrar" es clickeable
             binding.actionIcon.setOnClickListener {
                 if (adapterPosition != RecyclerView.NO_POSITION) {
                     onRemoveClick(getItem(adapterPosition))
@@ -37,7 +37,13 @@ class TrustedContactAdapter(
         fun bind(contact: TrustedContact) {
             binding.contactName.text = contact.nombre
             binding.contactNumber.text = contact.numero
-            binding.actionIcon.visibility = View.VISIBLE // Muestra el botón de borrar
+            if (isEditable) {
+                binding.actionIcon.visibility = View.VISIBLE
+                binding.actionIcon.isEnabled = true
+            } else {
+                binding.actionIcon.visibility = View.GONE
+                binding.actionIcon.isEnabled = false
+            }
         }
     }
 

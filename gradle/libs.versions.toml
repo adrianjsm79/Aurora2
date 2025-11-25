@@ -16,6 +16,7 @@ coroutines = "1.8.0"
 retrofit = "2.11.0"
 realm = "2.1.0"  #version compatible con kotlin
 ccp = "2.7.3"
+swiperefreshlayout = "1.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -42,6 +43,7 @@ realm-library-base = { group = "io.realm.kotlin", name = "library-base", version
 
 # --- Librería para CCP ---
 ccp = { group = "com.hbb20", name = "ccp", version.ref = "ccp" }
+androidx-swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swiperefreshlayout" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

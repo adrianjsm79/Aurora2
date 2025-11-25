@@ -20,7 +20,6 @@ import retrofit2.http.Path
 
 interface ApiService {
 
-    // Apunta a tu endpoint de registro en Railway/Django
     @POST("/api/users/register/")
     suspend fun registerUser(
         @Body request: RegisterRequest
@@ -34,7 +33,7 @@ interface ApiService {
     @GET("/api/users/profile/")
     suspend fun getUserProfile(
         @Header("Authorization") token: String
-    ): Response<UserProfile> // <-- NUEVO
+    ): Response<UserProfile>
 
     // Endpoint para registrar un dispositivo
     @POST("/api/devices/") // Apunta al 'create' de tu DeviceViewSet
@@ -47,6 +46,21 @@ interface ApiService {
     suspend fun getDevices(
         @Header("Authorization") token: String
     ): Response<List<DeviceResponse>>
+
+    @PATCH("/api/devices/{id}/")
+    suspend fun updateDevice(
+        @Header("Authorization") token: String,
+        @Path("id") deviceId: Int,
+        // Añadimos @JvmSuppressWildcards para que Retrofit entienda el 'Any'
+        @Body updates: Map<String, @JvmSuppressWildcards Any>
+    ): Response<DeviceResponse>
+    // ---------------------------
+
+    @DELETE("/api/devices/{id}/")
+    suspend fun deleteDevice(
+        @Header("Authorization") token: String,
+        @Path("id") deviceId: Int
+    ): Response<Void>
 
     // Endpoints para contactos confiables
     @GET("/api/users/trusted-contacts/")
@@ -65,6 +79,11 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("id") contactId: Int
     ): Response<Void>
+
+    @GET("/api/users/trusted-contacts/trusted-by/")
+    suspend fun getTrustedByContacts(
+        @Header("Authorization") token: String
+    ): Response<List<TrustedContact>>
 
     @PATCH("/api/users/profile/")
     suspend fun updateProfile(

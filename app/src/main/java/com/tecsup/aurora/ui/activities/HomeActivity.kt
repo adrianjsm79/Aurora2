@@ -8,6 +8,9 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.view.View
+import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -17,6 +20,7 @@ import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tecsup.aurora.MyApplication
 import com.tecsup.aurora.R
+import com.tecsup.aurora.data.model.DeviceResponse
 import com.tecsup.aurora.databinding.ActivityHomeBinding
 import com.tecsup.aurora.service.TrackingService
 import com.tecsup.aurora.ui.adapter.DeviceAdapter
@@ -27,26 +31,31 @@ import com.tecsup.aurora.viewmodel.AuthViewModel
 import com.tecsup.aurora.viewmodel.AuthViewModelFactory
 import com.tecsup.aurora.viewmodel.HomeState
 import com.tecsup.aurora.viewmodel.HomeViewModel
+import com.tecsup.aurora.viewmodel.HomeViewModelFactory
+
 
 class HomeActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityHomeBinding
     private lateinit var deviceAdapter: DeviceAdapter
 
-    // [COPIAR] Declarar el controlador del Drawer
     private lateinit var drawerController: NavigationDrawerController
 
     private val homeViewModel: HomeViewModel by viewModels {
-        (application as MyApplication).homeViewModelFactory
+        val app = application as MyApplication
+        HomeViewModelFactory(
+            app.authRepository,
+            app.deviceRepository,
+            app.locationRepository,
+            app.settingsRepository
+        )
     }
 
-    // [COPIAR] Necesitas el AuthViewModel para la lógica de Logout
     private val authViewModel: AuthViewModel by viewModels {
         val repository = (application as MyApplication).authRepository
         AuthViewModelFactory(repository, application)
     }
 
-    // --- MANEJO DE PERMISOS (Específico de HomeActivity) ---
     private val locationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
@@ -67,30 +76,24 @@ class HomeActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         NotificationHelper.createNotificationChannel(this)
-
-        // [COPIAR] Inicializar el Drawer
         setupDrawer()
-
         setupRecyclerView()
-        setupClickListeners() // (Contiene la lógica de botones y navegación)
+        setupClickListeners()
         observeViewModel()
 
-        // Lógica de permisos (específico de Home)
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 showLocationOptInDialog()
             }
         }
     }
 
-    // [COPIAR] Función para configurar el Drawer Controller
     private fun setupDrawer() {
         drawerController = NavigationDrawerController(
             this,
             binding.drawerLayout,
             binding.navView
         )
-        // Le pasamos nuestra función de logout
         drawerController.setup(onLogout = {
             handleLogout()
         })
@@ -98,7 +101,21 @@ class HomeActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
         Log.d("AURORA_DEBUG", "HomeActivity: Configurando RecyclerView...")
-        deviceAdapter = DeviceAdapter()
+        deviceAdapter = DeviceAdapter { device, action ->
+            when (action) {
+                DeviceAdapter.DeviceAction.TOGGLE_LOST -> {
+                    val statusMsg = if (device.is_lost) "seguro" else "perdido"
+                    Toast.makeText(this, "Marcando como $statusMsg...", Toast.LENGTH_SHORT).show()
+                    homeViewModel.toggleDeviceLostState(device)
+                }
+                DeviceAdapter.DeviceAction.DELETE -> {
+                    showDeleteConfirmationDialog(device)
+                }
+                DeviceAdapter.DeviceAction.EDIT_NAME -> {
+                    showRenameDialog(device)
+                }
+            }
+        }
         binding.devicesRecyclerView.apply {
             adapter = deviceAdapter
             layoutManager = LinearLayoutManager(this@HomeActivity)
@@ -114,21 +131,29 @@ class HomeActivity : AppCompatActivity() {
                 }
                 is HomeState.Success -> {
                     ProgressDialogFragment.hide(supportFragmentManager)
-                    // [COPIAR] Actualizar Header del Drawer con datos reales
+                    Log.d("AURORA_DEBUG", "HomeActivity: Datos actualizados")
+
+                    binding.swipeRefresh.isRefreshing = false
                     drawerController.updateHeaderUserInfo(
                         state.userProfile.nombre,
                         state.userProfile.email
                     )
 
-                    // Lógica específica de Home (Lista de dispositivos)
                     if (state.devices.isEmpty()) {
-                        Log.w("AURORA_DEBUG", "Lista de dispositivos vacía.")
+                        binding.devicesRecyclerView.visibility = View.GONE
+                        binding.emptyDevicesView.visibility = View.VISIBLE
                     } else {
+                        binding.devicesRecyclerView.visibility = View.VISIBLE
+                        binding.emptyDevicesView.visibility = View.GONE
                         deviceAdapter.submitList(state.devices)
                     }
                 }
                 is HomeState.Error -> {
                     ProgressDialogFragment.hide(supportFragmentManager)
+                    Log.e("AURORA_DEBUG", "HomeActivity: Error -> ${state.message}")
+
+                    binding.swipeRefresh.isRefreshing = false
+
                     if (state.message.contains("401") || state.message.contains("Sesión")) {
                         handleLogout()
                     } else {
@@ -140,7 +165,16 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun setupClickListeners() {
-        // [COPIAR] Botón Hamburguesa usando el controlador
+
+        binding.swipeRefresh.apply {
+            setColorSchemeResources(R.color.turquesa)
+
+            setOnRefreshListener {
+                Log.d("AURORA_DEBUG", "HomeActivity: Swipe detectado, recargando...")
+                homeViewModel.loadData()
+            }
+        }
+
         binding.hamburgerButtonRight.setOnClickListener {
             drawerController.openDrawer()
         }
@@ -150,21 +184,22 @@ class HomeActivity : AppCompatActivity() {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
         }
 
-        // --- Cards ---
-        binding.cardLocation.setOnClickListener {
-            startActivity(Intent(this, LocationActivity::class.java))
-        }
-        binding.cardContacts.setOnClickListener {
-            startActivity(Intent(this, ContactsActivity::class.java))
-        }
-        binding.cardSecurity.setOnClickListener {
-            // TODO: Implementar ActivitySecurity
-        }
-        binding.cardDevices.setOnClickListener {
-            // TODO: Implementar ActivityDevices
+        binding.findDevicesButton.setOnClickListener {
+            Toast.makeText(this, "Abriendo mapa...", Toast.LENGTH_SHORT).show()
         }
 
-        // --- Bottom Navigation ---
+        binding.btnActionLocation.setOnClickListener {
+            startActivity(Intent(this, LocationActivity::class.java))
+        }
+
+        binding.btnActionContacts.setOnClickListener {
+            startActivity(Intent(this, ContactsActivity::class.java))
+        }
+
+        binding.btnActionSecurity.setOnClickListener {
+            startActivity(Intent(this, SecurityActivity::class.java))
+        }
+
         binding.bottomNavView.selectedItemId = R.id.bottom_home
         binding.bottomNavView.setOnItemSelectedListener { item ->
             when (item.itemId) {
@@ -182,7 +217,6 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
-    // [COPIAR] Lógica de Logout estándar
     private fun handleLogout() {
         val stopIntent = Intent(this, TrackingService::class.java).apply {
             action = TrackingService.ACTION_STOP_SERVICE
@@ -194,8 +228,6 @@ class HomeActivity : AppCompatActivity() {
         startActivity(intent)
         finish()
     }
-
-    // --- FUNCIONES DE PERMISOS (Específicas de Home, no copiar a otras activities) ---
 
     private fun showLocationOptInDialog() {
         AlertDialog.Builder(this)
@@ -249,5 +281,52 @@ class HomeActivity : AppCompatActivity() {
             startService(intent)
         }
         Toast.makeText(this, "Rastreo iniciado", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun showDeleteConfirmationDialog(device: DeviceResponse) {
+        AlertDialog.Builder(this)
+            .setTitle("Eliminar Dispositivo")
+            .setMessage("¿Estás seguro de que quieres eliminar '${device.name}'? Dejarás de ver su ubicación.")
+            .setPositiveButton("Eliminar") { _, _ ->
+                homeViewModel.deleteDevice(device.id)
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    private fun showRenameDialog(device: DeviceResponse) {
+
+        val input = EditText(this).apply {
+            hint = "Nuevo nombre"
+            setText(device.name)
+            setSelection(text.length)
+            setPadding(60, 40, 60, 0)
+            background = null
+        }
+
+        val container = FrameLayout(this)
+        val params = FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.MATCH_PARENT,
+            FrameLayout.LayoutParams.WRAP_CONTENT
+        )
+        params.leftMargin = 50
+        params.rightMargin = 50
+        input.layoutParams = params
+        container.addView(input)
+
+        AlertDialog.Builder(this)
+            .setTitle("Cambiar nombre")
+            .setMessage("Introduce un nuevo nombre para este dispositivo:")
+            .setView(container)
+            .setPositiveButton("Guardar") { _, _ ->
+                val newName = input.text.toString().trim()
+                if (newName.isNotEmpty()) {
+                    homeViewModel.renameDevice(device.id, newName)
+                } else {
+                    Toast.makeText(this, "El nombre no puede estar vacío", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
     }
 }

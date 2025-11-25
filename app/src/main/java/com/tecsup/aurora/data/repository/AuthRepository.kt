@@ -114,6 +114,17 @@ class AuthRepository(
         }
         return response.body() ?: emptyList()
     }
+
+    //obtener contactos que confian en el usuario
+    suspend fun getTrustedByContacts(token: String): List<TrustedContact> {
+        val authToken = "Bearer $token"
+        val response = apiService.getTrustedByContacts(authToken)
+        if (!response.isSuccessful) {
+            throw Exception("Error al cargar lista 'confían en mí': ${response.code()}")
+        }
+        return response.body() ?: emptyList()
+    }
+
     //añadir contactos
     suspend fun addTrustedContact(token: String, numero: String): TrustedContact {
         val authToken = "Bearer $token"

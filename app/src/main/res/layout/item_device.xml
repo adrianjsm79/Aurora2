@@ -1,35 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:layout_marginHorizontal="8dp"
-    android:layout_marginBottom="12dp"
-    android:background="@drawable/background_dispositivos">
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:layout_marginHorizontal="4dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="2dp">
 
-    <TextView
-        android:id="@+id/device_name"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="20dp"
-        android:text="Nombre Dispositivo"
-        android:textColor="?attr/colorOnSurface"
-        android:textSize="16sp"
-        android:fontFamily="@font/k2d_regular" />
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical"
+        android:background="?attr/colorSurface">
 
-    <TextView
-        android:id="@+id/device_info"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="5dp"
-        android:paddingStart="20dp"
-        android:paddingTop="2dp"
-        android:paddingEnd="5dp"
-        android:paddingBottom="2dp"
-        android:text="informacion relevante"
-        android:textColor="?attr/colorOnBackground" />
+        <!-- Icono del Dispositivo -->
+        <FrameLayout
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/circle_white_background"
+            android:backgroundTint="?attr/android:colorBackground">
 
-</RelativeLayout>
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="29dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_phone"
+                app:tint="?attr/colorOnSurface"
+                android:padding="3dp"
+                />
+        </FrameLayout>
+
+        <!-- Información -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="16dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/device_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Samsung Galaxy S21"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/k2d_medium"
+                android:textColor="?attr/colorOnSurface"
+                android:maxLines="1"
+                android:ellipsize="end"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="4dp">
+
+                <!-- Punto de estado (se colorea en el Adapter) -->
+                <ImageView
+                    android:id="@+id/status_dot"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:src="@drawable/shape_circle_dot"
+                    app:tint="#CCCCCC"
+                    android:layout_marginEnd="6dp"/>
+                <!-- Nota: Necesitas crear shape_circle_dot.xml o usar un ic_circle simple -->
+
+                <TextView
+                    android:id="@+id/device_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Hace 5 min"
+                    android:textSize="12sp"
+                    android:textColor="?attr/colorOnSurface"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/more_options"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_more_vert"
+            app:tint="?attr/colorOnSurface"
+            tools:ignore="ContentDescription" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

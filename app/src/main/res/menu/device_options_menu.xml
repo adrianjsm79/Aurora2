@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_toggle_lost"
+        android:title="Marcar como perdido"
+        android:icon="@drawable/ic_security" />
+
+    <item
+        android:id="@+id/action_edit_name"
+        android:title="Cambiar nombre"
+        android:icon="@drawable/ic_edit" />
+
+    <item
+        android:id="@+id/action_delete"
+        android:title="Eliminar dispositivo"
+        android:titleCondensed="Eliminar" />
+
+</menu>

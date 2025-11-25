@@ -51,6 +51,7 @@ dependencies {
     implementation("androidx.fragment:fragment-ktx:1.8.1") // Dependencia para by activityViewModels en Fragment
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.swiperefreshlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

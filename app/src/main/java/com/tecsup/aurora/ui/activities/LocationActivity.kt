@@ -1,14 +1,18 @@
 package com.tecsup.aurora.ui.activities
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.tecsup.aurora.MyApplication
 import com.tecsup.aurora.R
 import com.tecsup.aurora.databinding.ActivityLocationBinding
 import com.tecsup.aurora.ui.fragments.ProgressDialogFragment // Tu fragmento
+import com.tecsup.aurora.utils.MorseEmitter
 import com.tecsup.aurora.viewmodel.LocationViewModel
 import com.tecsup.aurora.viewmodel.LocationViewModelFactory
+import kotlinx.coroutines.launch
 
 class LocationActivity : AppCompatActivity() {
 
@@ -45,6 +49,8 @@ class LocationActivity : AppCompatActivity() {
             else -> R.id.radio_10s
         }
         binding.radioGroupInterval.check(radioId)
+
+        binding.switchBoot.isChecked = viewModel.isStartOnBootEnabled()
     }
 
     private fun setupListeners() {
@@ -52,6 +58,13 @@ class LocationActivity : AppCompatActivity() {
         binding.switchTracking.setOnCheckedChangeListener { _, isChecked ->
             if (!isUpdatingSwitch) {
                 viewModel.onTrackingSwitchChanged(isChecked)
+            }
+        }
+
+        binding.switchBoot.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.onStartOnBootChanged(isChecked)
+            if (isChecked) {
+                Toast.makeText(this, "Protección de localizacion contra reinicio activada", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -63,6 +76,15 @@ class LocationActivity : AppCompatActivity() {
                 else -> 10
             }
             viewModel.onIntervalChanged(seconds)
+        }
+
+        // Botón "Emitir Señal de Búsqueda"
+        binding.btnEmitSignal.setOnClickListener {
+            Toast.makeText(this, "Emitiendo señal sónica...", Toast.LENGTH_SHORT).show()
+            lifecycleScope.launch {
+                val emitter = MorseEmitter()
+                emitter.sendSignal("SOS")
+            }
         }
     }
 

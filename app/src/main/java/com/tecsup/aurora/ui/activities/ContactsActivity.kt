@@ -2,6 +2,7 @@ package com.tecsup.aurora.ui.activities
 
 import android.Manifest
 import android.content.Intent
+import android.view.View
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.Menu
@@ -36,6 +37,7 @@ class ContactsActivity : AppCompatActivity() {
     // 2. Declarar los adaptadores para las dos listas
     private lateinit var phoneAdapter: PhoneContactAdapter
     private lateinit var trustedAdapter: TrustedContactAdapter
+    private lateinit var trustedByAdapter: TrustedContactAdapter
 
     // --- MANEJO DE PERMISOS ---
     private val requestPermissionLauncher = registerForActivityResult(
@@ -96,22 +98,34 @@ class ContactsActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerViews() {
-        // --- Adapter para Contactos del Teléfono (Lista Larga) ---
+        // 1. Agenda del Teléfono
         phoneAdapter = PhoneContactAdapter { phoneContact ->
-            // Este es el listener 'onLongClick'
-            // Muestra un diálogo para confirmar si se añade
             showAddContactDialog(phoneContact)
         }
-        binding.recyclerPhoneContacts.layoutManager = LinearLayoutManager(this)
-        binding.recyclerPhoneContacts.adapter = phoneAdapter
-
-        // --- Adapter para Contactos de Confianza (Lista Corta) ---
-        trustedAdapter = TrustedContactAdapter { trustedContact ->
-            // Este es el listener 'onRemoveClick'
-            viewModel.removeTrustedContact(trustedContact)
+        binding.recyclerPhoneContacts.apply {
+            layoutManager = LinearLayoutManager(this@ContactsActivity)
+            adapter = phoneAdapter
         }
-        binding.recyclerTrustedContacts.layoutManager = LinearLayoutManager(this)
-        binding.recyclerTrustedContacts.adapter = trustedAdapter
+
+        // 2. A quién cuido (Editable = true, puedo borrar)
+        trustedAdapter = TrustedContactAdapter(isEditable = true) { trustedContact ->
+            showRemoveContactDialog(trustedContact)
+        }
+        binding.recyclerTrustedContacts.apply {
+            layoutManager = LinearLayoutManager(this@ContactsActivity)
+            adapter = trustedAdapter
+        }
+
+        // 3. Quién me cuida (Editable = false, NO puedo borrar) <-- NUEVA SECCIÓN
+        trustedByAdapter = TrustedContactAdapter(isEditable = false) {
+            // El click en borrar no hará nada porque el botón estará oculto,
+            // pero el adaptador requiere el lambda, así que lo dejamos vacío o con un aviso.
+            Toast.makeText(this@ContactsActivity, "No puedes eliminar a quien te cuida desde aquí.", Toast.LENGTH_SHORT).show()
+        }
+        binding.recyclerTrustedByContacts.apply {
+            layoutManager = LinearLayoutManager(this@ContactsActivity)
+            adapter = trustedByAdapter
+        }
     }
 
     /**
@@ -123,6 +137,17 @@ class ContactsActivity : AppCompatActivity() {
             .setMessage("¿Deseas añadir a ${contact.name} (${contact.number}) a tu lista de confianza?")
             .setPositiveButton("Añadir") { _, _ ->
                 viewModel.addTrustedContact(contact.number)
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    private fun showRemoveContactDialog(contact: com.tecsup.aurora.data.model.TrustedContact) {
+        AlertDialog.Builder(this)
+            .setTitle("Eliminar Contacto")
+            .setMessage("¿Deseas eliminar a ${contact.nombre} de tu lista de confianza?")
+            .setPositiveButton("Eliminar") { _, _ ->
+                viewModel.removeTrustedContact(contact)
             }
             .setNegativeButton("Cancelar", null)
             .show()
@@ -143,21 +168,24 @@ class ContactsActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
-        // Observa el estado de la UI desde el ViewModel
         viewModel.uiState.observe(this) { state ->
 
-            // (Aquí puedes manejar el 'state.isLoading' con un ProgressBar)
-
-            // Actualiza la lista de contactos de confianza
-            trustedAdapter.submitList(state.trustedContacts)
-
-            // Actualiza la lista filtrada de contactos del teléfono
+            // Actualizar listas
             phoneAdapter.submitList(state.filteredPhoneContacts)
+            trustedAdapter.submitList(state.trustedContacts)
+            trustedByAdapter.submitList(state.trustedByContacts) // <-- NUEVO: Actualizar lista
 
-            // Muestra mensajes de error o éxito (ej. "Usuario no encontrado")
+            // Manejar vistas vacías (Mostrar texto si la lista está vacía)
+            binding.emptyTrustedView.visibility =
+                if (state.trustedContacts.isEmpty()) View.VISIBLE else View.GONE
+
+            binding.emptyTrustedByView.visibility =
+                if (state.trustedByContacts.isEmpty()) View.VISIBLE else View.GONE // <-- NUEVO
+
+            // Mensajes
             state.toastMessage?.let { message ->
                 Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-                viewModel.toastShown() // Marca el mensaje como "consumido"
+                viewModel.toastShown()
             }
         }
     }

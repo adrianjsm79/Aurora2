@@ -3,6 +3,7 @@ package com.tecsup.aurora.ui.adapter
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -15,18 +16,26 @@ import java.time.Instant
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 
-class DeviceAdapter : ListAdapter<DeviceResponse, DeviceAdapter.DeviceViewHolder>(DeviceDiffCallback()) {
+class DeviceAdapter(
 
+    private val onDeviceAction: (DeviceResponse, DeviceAction) -> Unit
+
+) : ListAdapter<DeviceResponse, DeviceAdapter.DeviceViewHolder>(DeviceDiffCallback()) {
     // Constante para identificar la actualización "ligera" de solo tiempo
     companion object {
         const val PAYLOAD_UPDATE_TIME = "PAYLOAD_UPDATE_TIME"
     }
 
+    // Definimos un enum para saber qué acción se eligió
+    enum class DeviceAction {
+        TOGGLE_LOST,
+        DELETE,
+        EDIT_NAME
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeviceViewHolder {
         val binding = ItemDeviceBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
+            LayoutInflater.from(parent.context), parent, false
         )
         return DeviceViewHolder(binding)
     }
@@ -55,6 +64,45 @@ class DeviceAdapter : ListAdapter<DeviceResponse, DeviceAdapter.DeviceViewHolder
         fun bind(device: DeviceResponse) {
             binding.deviceName.text = device.name
             updateTimeOnly(device)
+
+            // --- LÓGICA DEL MENÚ ---
+            binding.moreOptions.setOnClickListener { view ->
+                // 1. Crear el PopupMenu anclado al botón de 3 puntos
+                val popup = PopupMenu(view.context, view)
+                popup.inflate(R.menu.device_options_menu)
+
+                // 2. Configurar texto dinámico
+                // Si ya está perdido, el menú debe decir "Marcar como seguro"
+                val lostItem = popup.menu.findItem(R.id.action_toggle_lost)
+                if (device.is_lost) {
+                    lostItem.title = "Marcar como seguro"
+                    // Opcional: cambiar icono
+                } else {
+                    lostItem.title = "Marcar como perdido"
+                }
+
+                // 3. Escuchar clicks
+                popup.setOnMenuItemClickListener { item ->
+                    when (item.itemId) {
+                        R.id.action_toggle_lost -> {
+                            onDeviceAction(device, DeviceAction.TOGGLE_LOST)
+                            true
+                        }
+                        R.id.action_edit_name -> {
+                            onDeviceAction(device, DeviceAction.EDIT_NAME)
+                            true
+                        }
+                        R.id.action_delete -> {
+                            onDeviceAction(device, DeviceAction.DELETE)
+                            true
+                        }
+                        else -> false
+                    }
+                }
+
+                // 4. Mostrar
+                popup.show()
+            }
         }
 
         // Carga ligera (Solo Estado: Texto y Color)
@@ -77,9 +125,10 @@ class DeviceAdapter : ListAdapter<DeviceResponse, DeviceAdapter.DeviceViewHolder
                     secondsAgo > 86400 -> R.color.orange_warning // Más de 24h (Naranja)
                     else -> R.color.green_success // Reciente (Verde)
                 }
-                binding.deviceInfo.setTextColor(
-                    ContextCompat.getColor(context, colorRes)
-                )
+                val color = ContextCompat.getColor(context, colorRes)
+                binding.deviceInfo.text = formatTime(secondsAgo)
+                binding.deviceInfo.setTextColor(color)
+                binding.statusDot.setColorFilter(color)
             }
         }
     }

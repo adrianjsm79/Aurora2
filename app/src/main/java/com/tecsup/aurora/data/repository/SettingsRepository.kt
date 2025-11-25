@@ -12,6 +12,12 @@ class SettingsRepository(context: Context) {
         private const val PREFS_NAME = "AuroraSettings"
         private const val KEY_TRACKING_ENABLED = "isTrackingEnabled"
         private const val KEY_TRACKING_INTERVAL = "trackingInterval"
+        private const val KEY_START_ON_BOOT = "startOnBoot"
+
+        private const val KEY_DEVICE_IS_LOST = "deviceIsLost"
+        private const val KEY_FAKE_SHUTDOWN_MANUAL = "fakeShutdownManual"
+
+        private const val KEY_SOUND_LISTENER = "soundListenerEnabled"
     }
 
     private val sharedPrefs: SharedPreferences =
@@ -45,5 +51,44 @@ class SettingsRepository(context: Context) {
 
     fun getTrackingInterval(): Int {
         return sharedPrefs.getInt(KEY_TRACKING_INTERVAL, 10) // Default: 10 segundos
+    }
+
+    fun saveStartOnBoot(isEnabled: Boolean) {
+        sharedPrefs.edit {
+            putBoolean(KEY_START_ON_BOOT, isEnabled)
+        }
+    }
+
+    fun isStartOnBootEnabled(): Boolean {
+        return sharedPrefs.getBoolean(KEY_START_ON_BOOT, false) // Default: false
+    }
+
+    // --- NUEVO: ESTADO DE ROBO ---
+
+    fun setDeviceLost(isLost: Boolean) {
+        sharedPrefs.edit { putBoolean(KEY_DEVICE_IS_LOST, isLost) }
+    }
+
+    fun isDeviceLost(): Boolean {
+        return sharedPrefs.getBoolean(KEY_DEVICE_IS_LOST, false)
+    }
+
+    // --- NUEVO: ACTIVACIÓN MANUAL (Por el usuario en SecurityActivity) ---
+
+    fun setFakeShutdownEnabled(isEnabled: Boolean) {
+        sharedPrefs.edit { putBoolean(KEY_FAKE_SHUTDOWN_MANUAL, isEnabled) }
+    }
+
+    fun isFakeShutdownEnabled(): Boolean {
+        return sharedPrefs.getBoolean(KEY_FAKE_SHUTDOWN_MANUAL, false)
+    }
+
+    // --- BÚSQUEDA POR SONIDO ---
+    fun setSoundListenerEnabled(isEnabled: Boolean) {
+        sharedPrefs.edit { putBoolean(KEY_SOUND_LISTENER, isEnabled) }
+    }
+
+    fun isSoundListenerEnabled(): Boolean {
+        return sharedPrefs.getBoolean(KEY_SOUND_LISTENER, false)
     }
 }

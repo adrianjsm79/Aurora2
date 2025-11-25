@@ -66,6 +66,14 @@ class LocationViewModel(
             }
         }
     }
+
+    fun isStartOnBootEnabled(): Boolean {
+        return settingsRepository.isStartOnBootEnabled()
+    }
+
+    fun onStartOnBootChanged(isEnabled: Boolean) {
+        settingsRepository.saveStartOnBoot(isEnabled)
+    }
 }
 
 // Fábrica del ViewModel

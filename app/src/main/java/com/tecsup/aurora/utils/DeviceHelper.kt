@@ -1,11 +1,30 @@
 package com.tecsup.aurora.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.provider.Settings
-import android.annotation.SuppressLint
 
 object DeviceHelper {
+
+    private val PROBLEMATIC_MANUFACTURERS = listOf(
+        "xiaomi",
+        "oppo",
+        "vivo",
+        "huawei",
+        "honor",
+        "meizu",
+        "oneplus"
+    )
+
+    /**
+     * Checks if the device is from a manufacturer known for aggressive
+     * battery optimization that can kill background services.
+     */
+    fun isProblematicManufacturer(): Boolean {
+        val manufacturer = Build.MANUFACTURER.lowercase()
+        return PROBLEMATIC_MANUFACTURERS.contains(manufacturer)
+    }
 
     /**
      * Obtiene el ID único del dispositivo.
@@ -25,9 +44,9 @@ object DeviceHelper {
     fun getDeviceName(): String {
         val manufacturer = Build.MANUFACTURER
         val model = Build.MODEL
-        if (model.startsWith(manufacturer)) {
-            return model.capitalize()
+        if (model.startsWith(manufacturer, ignoreCase = true)) {
+            return model.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
         }
-        return "${manufacturer.capitalize()} $model"
+        return "${manufacturer.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }} $model"
     }
 }

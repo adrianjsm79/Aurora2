@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="24dp"
+    tools:context=".ui.activities.BatteryOptimizationActivity">
+
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/ic_battery_alert"
+        app:tint="?attr/colorPrimary"
+        android:layout_marginBottom="24dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ajustes de Batería Requeridos"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tu teléfono parece ser de una marca (como Xiaomi, Huawei, etc.) que cierra aplicaciones en segundo plano. Para que el rastreo de ubicación funcione correctamente, por favor, ajusta los siguientes parámetros:"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:layout_marginBottom="24dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="1. Busca la app en los ajustes de batería y selecciona 'Sin Restricciones'.\n2. Activa el 'Inicio Automático' para la app."
+        android:layout_marginBottom="32dp"/>
+
+    <Button
+        android:id="@+id/btn_open_settings"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="Abrir Ajustes de Batería"
+        app:cornerRadius="12dp"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_continue_anyway"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Continuar de todos modos"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_marginTop="8dp"/>
+
+</LinearLayout>

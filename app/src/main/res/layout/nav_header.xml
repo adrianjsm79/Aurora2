@@ -11,16 +11,16 @@
     <!-- Avatar (Círculo) -->
     <ImageView
         android:id="@+id/image_profile_nav"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
         android:src="@drawable/ic_person"
         android:background="@drawable/circle_white_background"
-        android:padding="12dp"
+        android:padding="7dp"
         app:tint="?attr/colorPrimary"
         android:contentDescription="Avatar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@id/text_username_nav"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="8dp"/>
 
     <TextView
         android:id="@+id/text_username_nav"

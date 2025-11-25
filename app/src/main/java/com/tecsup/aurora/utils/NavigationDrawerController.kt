@@ -38,7 +38,7 @@ class NavigationDrawerController(
                     //intent a activity acerca de
                 }
                 R.id.nav_support -> {
-                    //intent a activity soporte
+                    Toast.makeText(activity, "Proximamente soporte", Toast.LENGTH_SHORT).show()
                 }
                 R.id.nav_share -> {
                     shareApp()
