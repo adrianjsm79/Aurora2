@@ -67,7 +67,6 @@ class LoginActivity : AppCompatActivity() {
         }
 
         binding.registerLink.setOnClickListener {
-            // Lógica para ir a RegisterActivity
             startActivity(Intent(this, RegisterActivity::class.java))
         }
     }

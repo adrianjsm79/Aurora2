@@ -8,7 +8,6 @@
         <item name="colorPrimaryVariant">@color/turquesa_transparente</item>
         <item name="colorSecondaryVariant">@color/magenta_transparente</item>
 
-
         <!-- Colores de superficie (fondos de la app, tarjetas) -->
         <item name="android:colorBackground">@color/background_primary</item> <!-- Fondo principal claro -->
         <item name="colorSurface">@color/background_secondary</item> <!-- Fondo de tarjetas claro -->

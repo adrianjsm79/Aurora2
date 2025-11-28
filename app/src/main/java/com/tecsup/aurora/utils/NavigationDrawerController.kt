@@ -8,7 +8,9 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 import com.tecsup.aurora.R
+import com.tecsup.aurora.ui.activities.AboutActivity
 import com.tecsup.aurora.ui.activities.HomeActivity
+import com.tecsup.aurora.ui.activities.NotificationsActivity
 
 class NavigationDrawerController(
     private val activity: Activity,
@@ -21,7 +23,6 @@ class NavigationDrawerController(
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.nav_home -> {
-                    // Si ya estamos en Home, solo cerramos el drawer
                     if (activity !is HomeActivity) {
                         val intent = Intent(activity, HomeActivity::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
@@ -30,34 +31,33 @@ class NavigationDrawerController(
                     }
                 }
                 R.id.nav_notifications -> {
-                    Toast.makeText(activity, "Próximamente: Notificaciones", Toast.LENGTH_SHORT).show()
-                    //intent a notificaciones
+                    val intent = Intent(activity, NotificationsActivity::class.java)
+                    activity.startActivity(intent)
+                    activity.finish()
                 }
                 R.id.nav_about -> {
-                    Toast.makeText(activity, "Aurora v1.0 - Tecsup", Toast.LENGTH_SHORT).show()
-                    //intent a activity acerca de
+                    val intent = Intent(activity, AboutActivity::class.java)
+                    activity.startActivity(intent)
+                    activity.finish()
                 }
                 R.id.nav_support -> {
-                    Toast.makeText(activity, "Proximamente soporte", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(activity, AboutActivity::class.java)
+                    activity.startActivity(intent)
+                    activity.finish()
                 }
                 R.id.nav_share -> {
                     shareApp()
                 }
                 R.id.nav_logout -> {
-                    // Delegamos la lógica de logout a la Activity
                     onLogout()
                 }
             }
 
-            // Cerrar el drawer después de seleccionar
             drawerLayout.closeDrawer(GravityCompat.END)
             true
         }
     }
 
-    /**
-     * Actualiza la cabecera del drawer con los datos del usuario.
-     */
     fun updateHeaderUserInfo(name: String, email: String) {
         val headerView = navigationView.getHeaderView(0)
         if (headerView != null) {
@@ -69,14 +69,10 @@ class NavigationDrawerController(
         }
     }
 
-    /**
-     * Abre el drawer (se llama desde el botón hamburguesa).
-     */
     fun openDrawer() {
         drawerLayout.openDrawer(GravityCompat.END)
     }
 
-    // --- Funciones Auxiliares ---
 
     private fun shareApp() {
         val sendIntent = Intent().apply {

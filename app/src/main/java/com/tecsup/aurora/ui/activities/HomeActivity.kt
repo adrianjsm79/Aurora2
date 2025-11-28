@@ -185,7 +185,7 @@ class HomeActivity : AppCompatActivity() {
         }
 
         binding.findDevicesButton.setOnClickListener {
-            Toast.makeText(this, "Abriendo mapa...", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Abriendo mapa", Toast.LENGTH_SHORT).show()
         }
 
         binding.btnActionLocation.setOnClickListener {
