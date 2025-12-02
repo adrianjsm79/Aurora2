@@ -9,6 +9,7 @@ data class UserProfile(
     val email: String,
     val nombre: String,
     val numero: String,
+    val image: String?,
     val browser_latitude: Double?,    // El '?' lo hace nulable
     val browser_longitude: Double?,
     val browser_last_seen: String?

@@ -17,6 +17,10 @@ import retrofit2.http.Header
 import retrofit2.http.DELETE
 import retrofit2.http.PATCH
 import retrofit2.http.Path
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import retrofit2.http.Multipart
+import retrofit2.http.Part
 
 interface ApiService {
 
@@ -85,10 +89,15 @@ interface ApiService {
         @Header("Authorization") token: String
     ): Response<List<TrustedContact>>
 
+    @Multipart
     @PATCH("/api/users/profile/")
     suspend fun updateProfile(
         @Header("Authorization") token: String,
-        @Body request: UpdateProfileRequest
+        @Part("nombre") nombre: RequestBody,
+        @Part("email") email: RequestBody,
+        @Part("numero") numero: RequestBody,
+        @Part("password") password: RequestBody?,
+        @Part image: MultipartBody.Part?
     ): Response<UserProfile>
 
 }

@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.tecsup.aurora.data.model.UserProfile
 import com.tecsup.aurora.data.repository.AuthRepository
 import kotlinx.coroutines.launch
+import android.net.Uri
+import java.io.File
 
 sealed class ProfileState {
     object Loading : ProfileState()
@@ -20,6 +22,9 @@ class ProfileViewModel(private val authRepository: AuthRepository) : ViewModel()
 
     private val _state = MutableLiveData<ProfileState>()
     val state: LiveData<ProfileState> = _state
+
+    private val _selectedImageUri = MutableLiveData<Uri?>()
+    val selectedImageUri: LiveData<Uri?> = _selectedImageUri
 
     fun loadProfile() {
         viewModelScope.launch {
@@ -34,18 +39,29 @@ class ProfileViewModel(private val authRepository: AuthRepository) : ViewModel()
         }
     }
 
-    fun saveProfile(nombre: String, numero: String) {
+    fun onImageSelected(uri: Uri) {
+        _selectedImageUri.value = uri
+    }
+
+    fun saveProfile(nombre: String, email: String, numero: String, password: String?, imageFile: File?) {
         viewModelScope.launch {
             _state.value = ProfileState.Loading
             try {
-                val token = authRepository.getToken() ?: throw Exception("No hay sesión")
-                authRepository.updateProfile(token, nombre, numero)
+                val token = authRepository.getToken() ?: throw Exception("No sesión")
+
+                // Llamamos a la nueva función del repositorio
+                val newProfile = authRepository.updateProfileComplete(
+                    token, nombre, email, numero, password, imageFile
+                )
+
+                _state.value = ProfileState.DataLoaded(newProfile)
                 _state.value = ProfileState.UpdateSuccess
             } catch (e: Exception) {
-                _state.value = ProfileState.Error(e.message ?: "Error al guardar")
+                _state.value = ProfileState.Error(e.message ?: "Error")
             }
         }
     }
+
 }
 
 class ProfileViewModelFactory(private val authRepository: AuthRepository) : ViewModelProvider.Factory {

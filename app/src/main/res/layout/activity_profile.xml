@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 1. RAÍZ: DrawerLayout (Obligatorio para el menú lateral) -->
 <androidx.drawerlayout.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -8,7 +9,9 @@
     android:layout_height="match_parent"
     tools:openDrawer="end">
 
+    <!-- 2. CONTENIDO PRINCIPAL: CoordinatorLayout -->
     <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/main_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="?attr/android:colorBackground">
@@ -23,25 +26,28 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:title="Mi Perfil"
-                app:titleCentered="true"
                 app:navigationIcon="@drawable/ic_arrow_left"
-                app:navigationIconTint="?attr/colorOnSurface">
+                app:navigationIconTint="?attr/colorOnSurface"
+                app:title="Mi Perfil"
+                app:titleCentered="true">
 
-                <!-- Botón Hamburguesa a la derecha -->
+                <!-- Botón Hamburguesa (A la derecha) -->
                 <ImageButton
                     android:id="@+id/hamburger_button_right"
-                    android:layout_width="?attr/actionBarSize"
-                    android:layout_height="?attr/actionBarSize"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:layout_gravity="end"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Menú"
+                    android:padding="12dp"
+                    android:scaleType="centerInside"
                     android:src="@drawable/ic_menu_hamburger"
-                    app:tint="?attr/colorOnSurface"
-                    android:background="@color/transparent"
-                    android:contentDescription="Menú" />
-            </com.google.android.material.appbar.MaterialToolbar>
+                    app:tint="?attr/colorOnSurface" />
 
+            </com.google.android.material.appbar.MaterialToolbar>
         </com.google.android.material.appbar.AppBarLayout>
 
+        <!-- Formulario Scrollable -->
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -50,46 +56,47 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
                 android:orientation="vertical"
-                android:padding="24dp"
-                android:gravity="center_horizontal">
+                android:padding="24dp">
 
-                <!-- 1. Foto de Perfil Grande -->
-                <RelativeLayout
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:layout_marginBottom="32dp">
+                <!-- FOTO DE PERFIL (Clickeable) -->
+                <FrameLayout
+                    android:id="@+id/profile_image_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="32dp"
+                    android:clickable="true"
+                    android:focusable="true">
 
                     <ImageView
                         android:id="@+id/profile_image"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/ic_person"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
                         android:background="@drawable/circle_white_background"
-                        android:padding="24dp"
-                        app:tint="?attr/colorPrimary"
-                        android:elevation="4dp"/>
+                        android:elevation="4dp"
+                        android:padding="5dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_person"
+                        />
+                    <!-- Nota: El tint se quita programáticamente si se carga una foto real -->
 
-                    <!-- Botón flotante de cámara (decorativo por ahora) -->
+                    <!-- Icono de cámara flotante -->
                     <ImageView
                         android:layout_width="36dp"
                         android:layout_height="36dp"
-                        android:layout_alignParentBottom="true"
-                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="bottom|end"
                         android:background="@drawable/circle_white_background"
-                        android:src="@android:drawable/ic_menu_camera"
+                        android:backgroundTint="?attr/colorPrimary"
+                        android:elevation="6dp"
                         android:padding="8dp"
-                        app:tint="?attr/colorOnSurface"
-                        android:elevation="6dp"/>
-                </RelativeLayout>
+                        android:src="@android:drawable/ic_menu_camera"/>
+                </FrameLayout>
 
-                <!-- 2. Campos de Texto -->
-
-                <!-- Nombre -->
+                <!-- CAMPO: NOMBRE -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Nombre Completo"
                     android:layout_marginBottom="16dp"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
@@ -97,32 +104,32 @@
                         android:id="@+id/input_nombre"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textPersonName" />
+                        android:inputType="textPersonName"
+                        android:hint="Nombre Completo"
+                        />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Email (Solo lectura) -->
+                <!-- CAMPO: EMAIL -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Correo Electrónico"
                     android:layout_marginBottom="16dp"
+                    android:hint="Correo Electrónico"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/input_email"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:enabled="false"
-                        android:alpha="0.7"
                         android:inputType="textEmailAddress" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Teléfono -->
+                <!-- CAMPO: TELÉFONO -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
                     android:hint="Número de Teléfono"
-                    android:layout_marginBottom="32dp"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -132,23 +139,38 @@
                         android:inputType="phone" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- 3. Botón Guardar -->
+                <!-- BOTÓN CAMBIAR CONTRA -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_change_password"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginBottom="32dp"
+                    android:text="Cambiar Contraseña"
+                    android:textColor="?attr/colorPrimary"
+                    app:strokeColor="?attr/colorPrimary"
+                    app:icon="@drawable/ic_lock"
+                    app:iconTint="?attr/colorPrimary"
+                    app:iconGravity="textStart"/>
+
+                <!-- BOTÓN GUARDAR -->
                 <Button
                     android:id="@+id/btn_save"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
+                    android:backgroundTint="?attr/colorPrimary"
                     android:text="Guardar Cambios"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:backgroundTint="?attr/colorPrimary"
-                    android:textColor="?attr/colorOnBackground"
-                    app:cornerRadius="20dp"/>
+                    app:cornerRadius="12dp" />
 
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 
         <!-- Bottom Navigation -->
+
         <com.google.android.material.bottomnavigation.BottomNavigationView
+
             android:id="@+id/bottom_nav_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -160,18 +182,19 @@
             app:labelVisibilityMode="unlabeled"
             app:menu="@menu/menu_bottom_nav" />
 
-
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <!-- Drawer (Menú Lateral) -->
+
+    <!-- 3. MENÚ LATERAL (Navigation View) -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="300dp"
         android:layout_height="match_parent"
         android:layout_gravity="end"
-        app:headerLayout="@layout/nav_header"
-        app:menu="@menu/menu_drawer"
         android:background="?attr/colorSurface"
-        app:itemTextColor="?attr/colorOnSurface"/>
+        app:headerLayout="@layout/nav_header"
+        app:itemIconTint="?attr/colorOnSurfaceVariant"
+        app:itemTextColor="?attr/colorOnSurface"
+        app:menu="@menu/menu_drawer" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -15,8 +15,8 @@
         android:orientation="horizontal">
 
         <FrameLayout
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="@drawable/circle_background"
             android:layout_gravity="center"
             android:layout_marginRight="10dp"
@@ -24,12 +24,12 @@
 
             <ImageView
                 android:id="@+id/tracking_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/ic_location"
                 android:contentDescription="Rastreo activo"
-                android:padding="4dp"
+                android:padding="1dp"
 
                 />
         </FrameLayout>
@@ -38,9 +38,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Rastreo de dispositivo activo"
-            android:textColor="#fff"
+            android:textColor="@color/turquesa"
             android:fontFamily="@font/k2d_regular"
-            android:textSize="15sp"
             android:layout_gravity="center_vertical"/>
 
     </LinearLayout>

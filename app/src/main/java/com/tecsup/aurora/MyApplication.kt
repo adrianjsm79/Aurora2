@@ -14,6 +14,7 @@ import com.tecsup.aurora.viewmodel.ContactsViewModelFactory
 import com.tecsup.aurora.viewmodel.HomeViewModelFactory
 import com.tecsup.aurora.viewmodel.LocationViewModelFactory
 import com.tecsup.aurora.viewmodel.SecurityViewModelFactory
+import com.tecsup.aurora.viewmodel.ProfileViewModelFactory
 import io.realm.kotlin.Realm
 import io.realm.kotlin.RealmConfiguration
 import retrofit2.Retrofit
@@ -92,5 +93,9 @@ class MyApplication : Application() {
 
     val securityViewModelFactory by lazy {
         SecurityViewModelFactory(settingsRepository)
+    }
+
+    val profileViewModelFactory by lazy {
+        ProfileViewModelFactory(authRepository)
     }
 }

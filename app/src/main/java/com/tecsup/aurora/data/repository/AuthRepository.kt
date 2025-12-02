@@ -11,6 +11,11 @@ import com.tecsup.aurora.data.model.UserProfile
 import com.tecsup.aurora.data.model.AddContactRequest
 import com.tecsup.aurora.data.model.TrustedContact
 import com.tecsup.aurora.data.model.UpdateProfileRequest
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
 
 
 // 1. El Repositorio ahora también necesita Realm
@@ -150,16 +155,37 @@ class AuthRepository(
         }
     }
 
-    //actualizar info de usuarios
-    suspend fun updateProfile(token: String, nombre: String, numero: String): UserProfile {
-        val authToken = "Bearer $token"
-        val request = UpdateProfileRequest(nombre, numero)
-        val response = apiService.updateProfile(authToken, request)
+    suspend fun updateProfileComplete(
+        token: String,
+        nombre: String,
+        email: String,
+        numero: String,
+        password: String?,
+        imageFile: File?
+    ): UserProfile {
 
-        if (!response.isSuccessful) {
-            throw Exception("Error al actualizar perfil: ${response.code()}")
-        }
-        return response.body() ?: throw Exception("Respuesta vacía")
+        val authToken = "Bearer $token"
+
+        // Convertir textos a RequestBody
+        val nombreRB = nombre.toRequestBody("text/plain".toMediaTypeOrNull())
+        val emailRB = email.toRequestBody("text/plain".toMediaTypeOrNull())
+        val numeroRB = numero.toRequestBody("text/plain".toMediaTypeOrNull())
+
+        // Contraseña (solo si el usuario escribió algo)
+        val passwordRB = if (!password.isNullOrBlank()) {
+            password.toRequestBody("text/plain".toMediaTypeOrNull())
+        } else null
+
+        // Imagen (solo si seleccionó una nueva)
+        val imagePart = if (imageFile != null) {
+            val requestFile = imageFile.asRequestBody("image/*".toMediaTypeOrNull())
+            MultipartBody.Part.createFormData("image", imageFile.name, requestFile)
+        } else null
+
+        val response = apiService.updateProfile(authToken, nombreRB, emailRB, numeroRB, passwordRB, imagePart)
+
+        if (!response.isSuccessful) throw Exception("Error: ${response.code()}")
+        return response.body() ?: throw Exception("Error")
     }
 
 }

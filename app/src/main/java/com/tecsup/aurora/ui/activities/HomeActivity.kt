@@ -136,7 +136,8 @@ class HomeActivity : AppCompatActivity() {
                     binding.swipeRefresh.isRefreshing = false
                     drawerController.updateHeaderUserInfo(
                         state.userProfile.nombre,
-                        state.userProfile.email
+                        state.userProfile.email,
+                        state.userProfile.image
                     )
 
                     if (state.devices.isEmpty()) {
@@ -185,7 +186,7 @@ class HomeActivity : AppCompatActivity() {
         }
 
         binding.findDevicesButton.setOnClickListener {
-            Toast.makeText(this, "Abriendo mapa", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, SearchmapActivity::class.java))
         }
 
         binding.btnActionLocation.setOnClickListener {
@@ -200,16 +201,20 @@ class HomeActivity : AppCompatActivity() {
             startActivity(Intent(this, SecurityActivity::class.java))
         }
 
-        binding.bottomNavView.selectedItemId = R.id.bottom_home
+        binding.bottomNavView.selectedItemId = R.id.bottom_home // Marca Perfil como activo
         binding.bottomNavView.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.bottom_home -> true
+                R.id.bottom_home -> true // Ya estamos aquí
                 R.id.bottom_profile -> {
-                    startActivity(Intent(this, ProfileActivity::class.java))
+                    val intent = Intent(this, ProfileActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                    startActivity(intent)
+                    finish() // Cerramos Home para ahorrar memoria
                     true
                 }
                 R.id.bottom_settings -> {
                     startActivity(Intent(this, SettingsActivity::class.java))
+                    finish() // Cerramos ProfileActivity
                     true
                 }
                 else -> false

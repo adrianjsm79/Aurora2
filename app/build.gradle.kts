@@ -53,6 +53,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.swiperefreshlayout)
     implementation(libs.androidx.preference)
+    implementation(libs.common)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -75,4 +76,6 @@ dependencies {
 
     // --- BASE DE DATOS LOCAL: REALM ---
     implementation(libs.realm.library.base)
+
+    implementation("io.coil-kt:coil:2.5.0")
 }
