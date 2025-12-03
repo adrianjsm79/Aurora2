@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="2dp">
+    <!-- Padding evita que la sombra se corte al convertir a bitmap -->
+
+    <!-- Círculo con Imagen y Borde -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/marker_card"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        app:cardCornerRadius="26dp"
+        app:cardElevation="6dp"
+        app:cardBackgroundColor="@android:color/white"
+        app:contentPadding="0dp">
+
+        <!-- Este layout controla el color del borde (se cambia programáticamente) -->
+        <FrameLayout
+            android:id="@+id/marker_border"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="3dp"
+            android:background="@drawable/circle_white_background">
+            <!-- El background se tintará en el código -->
+
+            <!-- Imagen del Usuario/Icono -->
+            <ImageView
+                android:id="@+id/marker_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_phone"
+                android:padding="8dp"
+                android:scaleType="centerCrop"
+                android:background="@drawable/circle_white_background"/>
+        </FrameLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- El "pico" del pin -->
+    <ImageView
+        android:id="@+id/marker_arrow"
+        android:layout_width="18dp"
+        android:layout_height="14dp"
+        android:layout_marginTop="-3dp"
+        android:src="@drawable/ic_triangle_down"
+        app:tint="@color/black"
+        android:elevation="4dp"/>
+    <!-- El tint se cambia en código -->
+
+</LinearLayout>

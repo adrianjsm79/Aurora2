@@ -98,4 +98,8 @@ class MyApplication : Application() {
     val profileViewModelFactory by lazy {
         ProfileViewModelFactory(authRepository)
     }
+
+    val mapViewModelFactory by lazy {
+        MapViewModelFactory(authRepository, deviceRepository, locationRepository)
+    }
 }
