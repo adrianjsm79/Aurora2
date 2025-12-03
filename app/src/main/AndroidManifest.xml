@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <!-- Permisos existentes -->
+
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" /> <!-- Permisos para Localización -->
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" /> <!-- Permisos para Notificaciones -->
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" /> <!-- Permiso de arranque -->
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" /> <!-- Permisos para el micrófono y servicio -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" /> <!-- Para subir el volumen al máximo al encontrarlo -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
@@ -38,7 +38,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBijyV64POjqztyTFwbHH7D_L1W4aeIxHs" />
+            android:value="AIzaSyCg6OVwsYZni3vwLz7FtNO7ztViAsEvBKc" />
 
         <service
             android:name=".service.AntiTheftService"
@@ -59,17 +59,17 @@
         <service
             android:name=".service.TrackingService"
             android:exported="false"
-            android:foregroundServiceType="location" /> <!-- Receiver de Arranque -->
+            android:foregroundServiceType="location" />
         <receiver
             android:name=".service.BootReceiver"
             android:enabled="true"
-            android:exported="false"> <!-- false porque solo el sistema debe llamarlo -->
+            android:exported="false">
 
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" /> <!-- Para algunos HTC/Xiaomi -->
             </intent-filter>
-        </receiver> <!-- Actividad de Optimización de Batería -->
+        </receiver>
         <activity
             android:name=".ui.activities.FakeShutdownActivity"
             android:excludeFromRecents="true"
@@ -89,7 +89,7 @@
             android:name=".ui.activities.LocationActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.activities.SearchmapActivity"
+            android:name=".ui.activities.SearchMapActivity"
             android:exported="false" />
         <activity
             android:name=".ui.activities.TestActivity"

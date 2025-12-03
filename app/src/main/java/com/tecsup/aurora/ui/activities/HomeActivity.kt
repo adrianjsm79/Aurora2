@@ -186,7 +186,7 @@ class HomeActivity : AppCompatActivity() {
         }
 
         binding.findDevicesButton.setOnClickListener {
-            startActivity(Intent(this, SearchmapActivity::class.java))
+            startActivity(Intent(this, SearchMapActivity::class.java))
         }
 
         binding.btnActionLocation.setOnClickListener {

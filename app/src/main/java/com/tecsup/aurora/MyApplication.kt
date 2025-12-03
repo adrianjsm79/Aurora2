@@ -13,6 +13,7 @@ import com.tecsup.aurora.service.TrackingServiceManager
 import com.tecsup.aurora.viewmodel.ContactsViewModelFactory
 import com.tecsup.aurora.viewmodel.HomeViewModelFactory
 import com.tecsup.aurora.viewmodel.LocationViewModelFactory
+import com.tecsup.aurora.viewmodel.MapViewModelFactory
 import com.tecsup.aurora.viewmodel.SecurityViewModelFactory
 import com.tecsup.aurora.viewmodel.ProfileViewModelFactory
 import io.realm.kotlin.Realm
