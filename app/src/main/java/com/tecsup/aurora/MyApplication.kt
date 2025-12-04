@@ -101,6 +101,6 @@ class MyApplication : Application() {
     }
 
     val mapViewModelFactory by lazy {
-        MapViewModelFactory(authRepository, deviceRepository, locationRepository)
+        MapViewModelFactory(authRepository, deviceRepository, locationRepository, settingsRepository, trackingServiceManager)
     }
 }

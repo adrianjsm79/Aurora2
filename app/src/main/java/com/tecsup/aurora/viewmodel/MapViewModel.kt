@@ -10,6 +10,8 @@ import com.tecsup.aurora.data.model.DeviceResponse
 import com.tecsup.aurora.data.repository.AuthRepository
 import com.tecsup.aurora.data.repository.DeviceRepository
 import com.tecsup.aurora.data.repository.LocationRepository
+import com.tecsup.aurora.data.repository.SettingsRepository
+import com.tecsup.aurora.service.TrackingServiceManager
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.json.JSONObject
@@ -17,10 +19,11 @@ import org.json.JSONObject
 class MapViewModel(
     private val authRepository: AuthRepository,
     private val deviceRepository: DeviceRepository,
-    private val locationRepository: LocationRepository
+    private val locationRepository: LocationRepository,
+    private val settingsRepository: SettingsRepository,
+    private val trackingServiceManager: TrackingServiceManager
 ) : ViewModel() {
 
-    // Estado de la UI: Lista de dispositivos + ID del usuario actual (para diferenciar colores)
     data class MapUiState(
         val devices: List<DeviceResponse> = emptyList(),
         val currentUserId: Int = -1
@@ -28,6 +31,9 @@ class MapViewModel(
 
     private val _uiState = MutableLiveData<MapUiState>()
     val uiState: LiveData<MapUiState> = _uiState
+
+    // Observamos el estado del rastreo directamente del repo
+    val isTrackingActive: LiveData<Boolean> = settingsRepository.isTrackingEnabled
 
     init {
         loadData()
@@ -38,23 +44,31 @@ class MapViewModel(
         viewModelScope.launch {
             try {
                 val token = authRepository.getToken() ?: return@launch
-
-                // 1. Obtenemos el perfil para saber "quién soy yo" (mi ID)
                 val profileDeferred = async { authRepository.getUserProfile(token) }
-                // 2. Obtenemos todos los dispositivos (míos y de contactos)
                 val devicesDeferred = async { deviceRepository.getDevices(token) }
 
                 val profile = profileDeferred.await()
                 val devices = devicesDeferred.await()
 
-                _uiState.value = MapUiState(devices, profile.id)
+                Log.d("MAP_DEBUG", "Mi ID de Usuario: ${profile.id}")
 
-                // 3. Conectar WebSocket para recibir movimientos en vivo
+                _uiState.value = MapUiState(devices, profile.id)
                 locationRepository.connect(token)
 
             } catch (e: Exception) {
-                Log.e("MapViewModel", "Error cargando datos del mapa", e)
+                Log.e("MapViewModel", "Error", e)
             }
+        }
+    }
+
+    fun toggleTracking() {
+        val isEnabled = isTrackingActive.value == true
+        if (isEnabled) {
+            trackingServiceManager.stopTracking()
+            settingsRepository.saveTrackingState(false)
+        } else {
+            trackingServiceManager.startTracking()
+            settingsRepository.saveTrackingState(true)
         }
     }
 
@@ -63,47 +77,39 @@ class MapViewModel(
             locationRepository.incomingLocationUpdates.collect { jsonString ->
                 try {
                     val json = JSONObject(jsonString)
-                    val type = json.optString("type")
-
-                    // Si llega una actualización de ubicación
-                    if (type == "location_update" && json.has("latitude")) {
+                    if (json.optString("type") == "location_update" && json.has("latitude")) {
                         val deviceId = json.getInt("device_id")
                         val lat = json.getDouble("latitude")
                         val lon = json.getDouble("longitude")
+                        val acc = json.optDouble("accuracy", 0.0).toFloat()
 
-                        // Actualizamos la lista localmente para mover el marcador
-                        updateDeviceLocation(deviceId, lat, lon)
+                        updateDeviceLocation(deviceId, lat, lon, acc)
                     }
-                } catch (e: Exception) {
-                    Log.e("MapViewModel", "Error procesando update", e)
-                }
+                } catch (e: Exception) { }
             }
         }
     }
 
-    private fun updateDeviceLocation(deviceId: Int, lat: Double, lon: Double) {
-        val currentState = _uiState.value ?: return
-        val updatedList = currentState.devices.map { device ->
-            if (device.id == deviceId) {
-                device.copy(latitude = lat, longitude = lon)
-            } else {
-                device
-            }
+    private fun updateDeviceLocation(deviceId: Int, lat: Double, lon: Double, acc: Float) {
+        val current = _uiState.value ?: return
+        val updatedList = current.devices.map {
+            if (it.id == deviceId) it.copy(latitude = lat, longitude = lon, accuracy = acc) else it
         }
-        _uiState.postValue(currentState.copy(devices = updatedList))
+        _uiState.postValue(current.copy(devices = updatedList))
     }
 }
 
-// Fábrica para crear el MapViewModel
 class MapViewModelFactory(
     private val authRepository: AuthRepository,
     private val deviceRepository: DeviceRepository,
-    private val locationRepository: LocationRepository
+    private val locationRepository: LocationRepository,
+    private val settingsRepository: SettingsRepository,
+    private val trackingServiceManager: TrackingServiceManager
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MapViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return MapViewModel(authRepository, deviceRepository, locationRepository) as T
+            return MapViewModel(authRepository, deviceRepository, locationRepository, settingsRepository, trackingServiceManager) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

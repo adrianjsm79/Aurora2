@@ -8,6 +8,7 @@ data class DeviceResponse(
     val is_lost: Boolean,
     val latitude: Double?,
     val longitude: Double?,
+    val accuracy: Float?,
     val last_seen: String,
     val user_email: String?,
     val photoUrl: String?

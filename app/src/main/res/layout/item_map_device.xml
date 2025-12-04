@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:background="?attr/selectableItemBackground"
+    android:paddingHorizontal="20dp"
+    android:paddingVertical="12dp">
+
+    <!-- Punto de Estado -->
+    <View
+        android:id="@+id/status_dot"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:background="@drawable/shape_circle_dot"
+        android:backgroundTint="@color/green_success"/>
+
+    <!-- Textos (Clickeable: Mueve el mapa) -->
+    <LinearLayout
+        android:id="@+id/text_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_marginStart="16dp">
+
+        <TextView
+            android:id="@+id/device_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Samsung S21"
+            android:fontFamily="@font/k2d_medium"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="15sp"/>
+
+        <TextView
+            android:id="@+id/device_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hace 1 min"
+            android:textSize="12sp"
+            android:textColor="?attr/colorOnSurfaceVariant"/>
+    </LinearLayout>
+
+    <!-- Botón de Info (Clickeable: Abre detalles) -->
+    <!-- Añadimos padding y background para que sea fácil de tocar -->
+    <ImageView
+        android:id="@+id/info_device"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:padding="8dp"
+        android:src="@drawable/ic_chevron_right"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        app:tint="#CCCCCC"
+        android:clickable="true"
+        android:focusable="true" />
+
+</LinearLayout>
