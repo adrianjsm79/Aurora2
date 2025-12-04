@@ -28,6 +28,7 @@
         android:theme="@style/Theme.Aurora">
         <activity
             android:name=".ui.activities.AboutActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".ui.activities.SupportActivity"

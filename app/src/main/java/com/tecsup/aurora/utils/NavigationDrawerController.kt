@@ -14,6 +14,7 @@ import com.tecsup.aurora.R
 import com.tecsup.aurora.ui.activities.AboutActivity
 import com.tecsup.aurora.ui.activities.HomeActivity
 import com.tecsup.aurora.ui.activities.NotificationsActivity
+import com.tecsup.aurora.ui.activities.SupportActivity
 
 class NavigationDrawerController(
     private val activity: Activity,
@@ -44,7 +45,7 @@ class NavigationDrawerController(
                     activity.finish()
                 }
                 R.id.nav_support -> {
-                    val intent = Intent(activity, AboutActivity::class.java)
+                    val intent = Intent(activity, SupportActivity::class.java)
                     activity.startActivity(intent)
                     activity.finish()
                 }

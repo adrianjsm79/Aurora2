@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/map_follow"
+        android:icon="@drawable/ic_follow"
+        android:title="seguir rastro" />
+    <item
+        android:id="@+id/map_clean_follow"
+        android:icon="@drawable/ic_clean"
+        android:title="eliminar rastro" />
+    <item
+        android:id="@+id/map_routing"
+        android:icon="@drawable/ic_route"
+        android:title="trazar ruta" />
+    <item
+        android:id="@+id/map_device_lost"
+        android:icon="@drawable/ic_emergency"
+        android:title="marcar como perdido" />
+    <item
+        android:id="@+id/map_device_found"
+        android:icon="@drawable/ic_found"
+        android:title="marcar como encontrado" />
+
+
+
+</menu>

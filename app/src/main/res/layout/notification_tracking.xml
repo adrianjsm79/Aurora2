@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="30dp"
         android:orientation="horizontal">
 
         <FrameLayout
@@ -19,17 +19,17 @@
             android:layout_height="wrap_content"
             android:background="@drawable/circle_background"
             android:layout_gravity="center"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="15dp"
             >
 
             <ImageView
                 android:id="@+id/tracking_icon"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/ic_location"
                 android:contentDescription="Rastreo activo"
-                android:padding="1dp"
+                android:padding="4dp"
 
                 />
         </FrameLayout>
@@ -42,32 +42,17 @@
             android:fontFamily="@font/k2d_regular"
             android:layout_gravity="center_vertical"/>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/stop"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="30dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:background="@drawable/button_fillgradient_ripple_effect"
-        >
-
-        <TextView
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:text="Detener"
-            android:layout_gravity="center"
-            android:textColor="@color/white"
-            android:textStyle="bold"
-            android:paddingHorizontal="26dp"
-            android:paddingVertical="12dp"
-
+        <ImageButton
+            android:id="@+id/stop"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@drawable/ic_stop"
+            android:contentDescription="Detener rastreo"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="70dp"
+            android:background="?attr/selectableItemBackground"
+            app:tint="@color/red_error"
             />
-
     </LinearLayout>
-
 
 </LinearLayout>
