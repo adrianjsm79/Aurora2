@@ -159,7 +159,7 @@ class ProfileActivity : AppCompatActivity() {
                             binding.profileImage.load(imageUrl) {
                                 transformations(CircleCropTransformation())
                                 placeholder(R.drawable.ic_person)
-                                error(R.drawable.ic_lock)
+                                error(R.drawable.ic_person)
                             }
                         }
                     }

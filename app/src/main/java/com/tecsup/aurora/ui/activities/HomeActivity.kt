@@ -11,11 +11,13 @@ import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.FrameLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tecsup.aurora.MyApplication
@@ -24,8 +26,8 @@ import com.tecsup.aurora.data.model.DeviceResponse
 import com.tecsup.aurora.databinding.ActivityHomeBinding
 import com.tecsup.aurora.service.TrackingService
 import com.tecsup.aurora.ui.adapter.DeviceAdapter
-import com.tecsup.aurora.ui.fragments.ProgressDialogFragment
 import com.tecsup.aurora.utils.NavigationDrawerController
+import com.tecsup.aurora.ui.fragments.ProgressDialogFragment
 import com.tecsup.aurora.utils.NotificationHelper
 import com.tecsup.aurora.viewmodel.AuthViewModel
 import com.tecsup.aurora.viewmodel.AuthViewModelFactory
@@ -33,41 +35,42 @@ import com.tecsup.aurora.viewmodel.HomeState
 import com.tecsup.aurora.viewmodel.HomeViewModel
 import com.tecsup.aurora.viewmodel.HomeViewModelFactory
 
-
 class HomeActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityHomeBinding
     private lateinit var deviceAdapter: DeviceAdapter
-
     private lateinit var drawerController: NavigationDrawerController
 
+    // 1. Obtenemos el HomeViewModel
     private val homeViewModel: HomeViewModel by viewModels {
-        val app = application as MyApplication
-        HomeViewModelFactory(
-            app.authRepository,
-            app.deviceRepository,
-            app.locationRepository,
-            app.settingsRepository
-        )
+        (application as MyApplication).homeViewModelFactory
     }
 
+    // 2. Obtenemos el AuthViewModel para Logout
     private val authViewModel: AuthViewModel by viewModels {
         val repository = (application as MyApplication).authRepository
         AuthViewModelFactory(repository)
     }
 
+    // --- MANEJO DE PERMISOS ---
     private val locationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
-        if (isGranted) showBackgroundPermissionRationaleDialog()
-        else Toast.makeText(this, "Permiso de ubicación denegado", Toast.LENGTH_SHORT).show()
+        if (isGranted) {
+            showBackgroundPermissionRationaleDialog()
+        } else {
+            Toast.makeText(this, "Permiso de ubicación denegado", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private val backgroundLocationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
-        if (isGranted) startTrackingService()
-        else showPermissionDeniedDialog()
+        if (isGranted) {
+            startTrackingService()
+        } else {
+            showPermissionDeniedDialog()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,11 +79,15 @@ class HomeActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         NotificationHelper.createNotificationChannel(this)
+
         setupDrawer()
         setupRecyclerView()
         setupClickListeners()
+
+        // Observamos antes de lógica
         observeViewModel()
 
+        // Verificación inicial de permisos (si es necesario)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 showLocationOptInDialog()
@@ -90,6 +97,7 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        // Aseguramos que el tab correcto esté seleccionado al volver
         binding.bottomNavView.selectedItemId = R.id.bottom_home
     }
 
@@ -106,6 +114,7 @@ class HomeActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
         Log.d("AURORA_DEBUG", "HomeActivity: Configurando RecyclerView...")
+
         deviceAdapter = DeviceAdapter { device, action ->
             when (action) {
                 DeviceAdapter.DeviceAction.TOGGLE_LOST -> {
@@ -121,10 +130,13 @@ class HomeActivity : AppCompatActivity() {
                 }
             }
         }
+
         binding.devicesRecyclerView.apply {
             adapter = deviceAdapter
             layoutManager = LinearLayoutManager(this@HomeActivity)
-            setHasFixedSize(true)
+
+            isNestedScrollingEnabled = false
+            setHasFixedSize(false)
         }
     }
 
@@ -132,37 +144,26 @@ class HomeActivity : AppCompatActivity() {
         homeViewModel.homeState.observe(this) { state ->
             when (state) {
                 is HomeState.Loading -> {
-                    ProgressDialogFragment.show(supportFragmentManager)
+                    if (!binding.swipeRefresh.isRefreshing) {
+                        ProgressDialogFragment.show(supportFragmentManager)
+                    }
                 }
                 is HomeState.Success -> {
                     ProgressDialogFragment.hide(supportFragmentManager)
-                    Log.d("AURORA_DEBUG", "HomeActivity: Datos actualizados")
-
                     binding.swipeRefresh.isRefreshing = false
+
+                    Log.d("AURORA_DEBUG", "HomeActivity: Datos recibidos. Usuario ID: ${state.userProfile.id}")
+
                     drawerController.updateHeaderUserInfo(
                         state.userProfile.nombre,
                         state.userProfile.email,
                         state.userProfile.image
                     )
 
-                    // DIAGNÓSTICO DE FILTRADO de devices para debug
-                    // Estos logs te dirán por qué el filtro falla
-                    Log.d("AURORA_DEBUG", "--- INICIO DE DIAGNÓSTICO ---")
-                    Log.d("AURORA_DEBUG", "Mi ID de Usuario (Perfil): ${state.userProfile.id}")
-                    Log.d("AURORA_DEBUG", "Total dispositivos crudos: ${state.devices.size}")
-
-                    state.devices.forEach { dev ->
-                        Log.d("AURORA_DEBUG", " -> Dispositivo '${dev.name}' tiene owner_id: ${dev.user}")
-                    }
-                    //Solo mostramos MIS dispositivos en el Home
                     val myDevices = state.devices.filter { device ->
                         device.user == state.userProfile.id
                     }
 
-                    Log.d("AURORA_DEBUG", "Dispositivos MÍOS después del filtro: ${myDevices.size}")
-                    Log.d("AURORA_DEBUG", "--- FIN DE DIAGNÓSTICO ---")
-
-                    //lista filtrada para actualizar la UI
                     if (myDevices.isEmpty()) {
                         binding.devicesRecyclerView.visibility = View.GONE
                         binding.emptyDevicesView.visibility = View.VISIBLE
@@ -170,62 +171,68 @@ class HomeActivity : AppCompatActivity() {
                         binding.devicesRecyclerView.visibility = View.VISIBLE
                         binding.emptyDevicesView.visibility = View.GONE
 
-                        deviceAdapter.submitList(myDevices)
+                        deviceAdapter.submitList(myDevices) {
+                            binding.devicesRecyclerView.scrollToPosition(0)
+                            binding.devicesRecyclerView.requestLayout() // Fuerza el redibujado
+                        }
                     }
                 }
                 is HomeState.Error -> {
                     ProgressDialogFragment.hide(supportFragmentManager)
-                    Log.e("AURORA_DEBUG", "HomeActivity: Error -> ${state.message}")
-
                     binding.swipeRefresh.isRefreshing = false
+
+                    Log.e("AURORA_DEBUG", "HomeActivity: Error -> ${state.message}")
 
                     if (state.message.contains("401") || state.message.contains("Sesión")) {
                         handleLogout()
                     } else {
                         Toast.makeText(this, state.message, Toast.LENGTH_LONG).show()
                     }
-
                 }
             }
+        }
+
+        homeViewModel.timeUpdateEvent.observe(this) {
+             deviceAdapter.notifyItemRangeChanged(0, deviceAdapter.itemCount, DeviceAdapter.PAYLOAD_UPDATE_TIME)
         }
     }
 
     private fun setupClickListeners() {
-
+        // Swipe Refresh
         binding.swipeRefresh.apply {
-            setColorSchemeResources(R.color.turquesa)
-
+            setColorSchemeResources(R.color.magenta) // Asegúrate que este color exista, o usa R.color.purple_500
             setOnRefreshListener {
-                Log.d("AURORA_DEBUG", "HomeActivity: Swipe detectado, recargando...")
+                Log.d("AURORA_DEBUG", "HomeActivity: Swipe detectado...")
                 homeViewModel.loadData()
             }
         }
 
+        // Toolbar
         binding.hamburgerButtonRight.setOnClickListener {
             drawerController.openDrawer()
         }
-
         binding.linkWeb.setOnClickListener {
             val url = "https://auroraweb-topaz.vercel.app/"
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
         }
 
+        // Hero Button
         binding.findDevicesButton.setOnClickListener {
             startActivity(Intent(this, SearchMapActivity::class.java))
         }
 
+        // Lista de Acciones
         binding.btnActionLocation.setOnClickListener {
             startActivity(Intent(this, LocationActivity::class.java))
         }
-
         binding.btnActionContacts.setOnClickListener {
             startActivity(Intent(this, ContactsActivity::class.java))
         }
-
         binding.btnActionSecurity.setOnClickListener {
             startActivity(Intent(this, SecurityActivity::class.java))
         }
 
+        // Bottom Navigation
         binding.bottomNavView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.bottom_home -> true
@@ -235,26 +242,29 @@ class HomeActivity : AppCompatActivity() {
                     startActivity(intent)
                     true
                 }
-                R.id.bottom_settings -> {
-                    startActivity(Intent(this, SettingsActivity::class.java))
-                    true
-                }
                 else -> false
             }
         }
     }
 
     private fun handleLogout() {
+        // Parar servicio
         val stopIntent = Intent(this, TrackingService::class.java).apply {
             action = TrackingService.ACTION_STOP_SERVICE
         }
         startService(stopIntent)
+
+        // Limpiar datos
         authViewModel.onLogoutClicked()
+
+        // Ir a Login
         val intent = Intent(this, LoginActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         finish()
     }
+
+    // --- DIÁLOGOS Y PERMISOS ---
 
     private fun showLocationOptInDialog() {
         AlertDialog.Builder(this)
@@ -287,11 +297,10 @@ class HomeActivity : AppCompatActivity() {
     private fun showPermissionDeniedDialog() {
         AlertDialog.Builder(this)
             .setTitle("Permiso Requerido")
-            .setMessage("Sin permiso de segundo plano, el rastreo se detendrá al cerrar la app.")
+            .setMessage("Sin el permiso de ubicación en segundo plano, el rastreo no funcionará correctamente.")
             .setPositiveButton("Ir a Configuración") { _, _ ->
                 val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                val uri = Uri.fromParts("package", packageName, null)
-                intent.data = uri
+                intent.data = Uri.fromParts("package", packageName, null)
                 startActivity(intent)
             }
             .setNegativeButton("Cancelar", null)
@@ -310,6 +319,8 @@ class HomeActivity : AppCompatActivity() {
         Toast.makeText(this, "Rastreo iniciado", Toast.LENGTH_SHORT).show()
     }
 
+    // --- DIÁLOGOS DE ACCIÓN ---
+
     private fun showDeleteConfirmationDialog(device: DeviceResponse) {
         AlertDialog.Builder(this)
             .setTitle("Eliminar Dispositivo")
@@ -322,12 +333,12 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun showRenameDialog(device: DeviceResponse) {
-
         val input = EditText(this).apply {
             hint = "Nuevo nombre"
             setText(device.name)
             setSelection(text.length)
-            setPadding(60, 40, 60, 0)
+            // Padding para que no se vea pegado
+            setPadding(50, 30, 50, 30)
             background = null
         }
 
@@ -356,4 +367,6 @@ class HomeActivity : AppCompatActivity() {
             .setNegativeButton("Cancelar", null)
             .show()
     }
+
+
 }

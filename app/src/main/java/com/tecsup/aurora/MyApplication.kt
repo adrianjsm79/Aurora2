@@ -28,7 +28,6 @@ class MyApplication : Application() {
 
     private val BASE_URL = "https://aurorabackend.up.railway.app"
 
-    // --- 1. CAPA DE RED ---
     private val retrofit by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
@@ -44,7 +43,6 @@ class MyApplication : Application() {
         LocationWebSocketClient()
     }
 
-    // --- 2. CAPA DE DATOS LOCAL ---
     val realm: Realm by lazy {
         val config = RealmConfiguration.Builder(
             schema = setOf(
@@ -56,7 +54,6 @@ class MyApplication : Application() {
         Realm.open(config)
     }
 
-    // --- 3. REPOSITORIOS (Fuentes de Verdad) ---
     val authRepository by lazy {
         AuthRepository(apiService, realm)
     }
@@ -77,15 +74,12 @@ class MyApplication : Application() {
         ContactsRepository(applicationContext)
     }
 
-    // --- 4. MANAGERS (Controladores) ---
     val trackingServiceManager by lazy {
         TrackingServiceManager(applicationContext)
     }
 
-    // --- 5. VIEWMODEL FACTORIES (Inyección de Dependencias) ---
 
     val homeViewModelFactory by lazy {
-        // Home necesita Auth (logout), Device (lista) y Location (tiempo real)
         HomeViewModelFactory(
             authRepository, deviceRepository, locationRepository, settingsRepository
         )
@@ -107,12 +101,10 @@ class MyApplication : Application() {
         ProfileViewModelFactory(authRepository)
     }
 
-    // 1. Crear instancia del MapRepository
     val mapRepository by lazy {
         MapRepository(realm, apiService, applicationContext)
     }
 
-    // 2. Actualizar la fábrica del mapa
     val mapViewModelFactory by lazy {
         MapViewModelFactory(
             authRepository,

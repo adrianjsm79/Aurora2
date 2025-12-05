@@ -37,17 +37,14 @@ class NavigationDrawerController(
                 R.id.nav_notifications -> {
                     val intent = Intent(activity, NotificationsActivity::class.java)
                     activity.startActivity(intent)
-                    activity.finish()
                 }
                 R.id.nav_about -> {
                     val intent = Intent(activity, AboutActivity::class.java)
                     activity.startActivity(intent)
-                    activity.finish()
                 }
                 R.id.nav_support -> {
                     val intent = Intent(activity, SupportActivity::class.java)
                     activity.startActivity(intent)
-                    activity.finish()
                 }
                 R.id.nav_share -> {
                     shareApp()
