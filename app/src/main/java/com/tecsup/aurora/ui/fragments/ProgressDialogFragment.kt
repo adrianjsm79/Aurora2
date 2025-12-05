@@ -21,24 +21,20 @@ class ProgressDialogFragment : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // Haz que el diálogo no se pueda cancelar con el botón de atrás
         isCancelable = false
-        // Haz que el fondo del diálogo sea transparente para que solo se vea el ProgressBar
+
         dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
     }
 
     companion object {
         private const val TAG = "ProgressDialog"
 
-        // Función para MOSTRAR el diálogo
         fun show(fragmentManager: FragmentManager) {
-            // Evita mostrar múltiples diálogos si ya hay uno visible
             if (fragmentManager.findFragmentByTag(TAG) == null) {
                 ProgressDialogFragment().show(fragmentManager, TAG)
             }
         }
 
-        // Función para OCULTAR el diálogo
         fun hide(fragmentManager: FragmentManager) {
             (fragmentManager.findFragmentByTag(TAG) as? DialogFragment)?.dismissAllowingStateLoss()
         }

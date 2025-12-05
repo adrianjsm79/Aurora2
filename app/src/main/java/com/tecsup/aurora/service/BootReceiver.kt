@@ -12,18 +12,18 @@ class BootReceiver : BroadcastReceiver() {
         if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
             Log.d("BootReceiver", "Sistema reiniciado. Verificando configuración...")
 
-            // 1. Creamos el repositorio manualmente (no hay inyección aquí)
+            //repositorio manualmente
             val settingsRepository = SettingsRepository(context)
 
-            // 2. Verificamos si el usuario activó la opción
+            //Verifica si el usuario activó la opción
             if (settingsRepository.isStartOnBootEnabled()) {
                 Log.d("BootReceiver", "Auto-inicio activado. Iniciando servicio de rastreo...")
 
-                // 3. Iniciamos el servicio usando tu Manager existente
+                //inicia el servicio usando el Manager existente
                 val serviceManager = TrackingServiceManager(context)
                 serviceManager.startTracking()
 
-                // (Opcional) Aseguramos que la persistencia diga "true"
+                //Aseguramos que la persistencia diga "true"
                 settingsRepository.saveTrackingState(true)
             } else {
                 Log.d("BootReceiver", "Auto-inicio desactivado. No se hace nada.")

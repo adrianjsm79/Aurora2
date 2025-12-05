@@ -40,7 +40,7 @@ class ProfileActivity : AppCompatActivity() {
 
     private val authViewModel: AuthViewModel by viewModels {
         val repository = (application as MyApplication).authRepository
-        AuthViewModelFactory(repository, application)
+        AuthViewModelFactory(repository)
     }
 
     private val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -78,7 +78,6 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
-        // Botón Hamburguesa
         binding.hamburgerButtonRight.setOnClickListener {
             drawerController.openDrawer()
         }
@@ -110,10 +109,10 @@ class ProfileActivity : AppCompatActivity() {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
 
-        binding.bottomNavView.selectedItemId = R.id.bottom_profile // Marca Perfil como activo
+        binding.bottomNavView.selectedItemId = R.id.bottom_profile
         binding.bottomNavView.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.bottom_profile -> true // Ya estamos aquí
+                R.id.bottom_profile -> true
                 R.id.bottom_home -> {
                     val intent = Intent(this, HomeActivity::class.java)
                     // Flags para limpiar la pila y volver al Home existente si es posible
@@ -124,7 +123,7 @@ class ProfileActivity : AppCompatActivity() {
                 }
                 R.id.bottom_settings -> {
                     startActivity(Intent(this, SettingsActivity::class.java))
-                    finish() // Cerramos ProfileActivity
+                    finish()
                     true
                 }
                 else -> false
@@ -152,7 +151,6 @@ class ProfileActivity : AppCompatActivity() {
                     binding.inputEmail.setText(state.userProfile.email)
                     binding.inputNumero.setText(state.userProfile.numero)
 
-                    // Habilitar email para edición
                     binding.inputEmail.isEnabled = true
 
                     // Cargar imagen desde URL (si no hay una nueva seleccionada localmente)
@@ -221,7 +219,7 @@ class ProfileActivity : AppCompatActivity() {
         val numero = binding.inputNumero.text.toString()
         val email = binding.inputEmail.text.toString()
 
-        // Llamamos a saveProfile pero AHORA SÍ con contraseña
+        // Llamamos a saveProfile
         viewModel.saveProfile(nombre, email, numero, newPassword, null)
     }
 }

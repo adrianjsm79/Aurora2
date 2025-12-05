@@ -21,7 +21,6 @@ class LocationRepository(
         longitude: Double,
         accuracy: Float?
     ) {
-        // 1. Crea el objeto JSON que tu LocationConsumer espera
         val json = JSONObject().apply {
             put("type", "location_update")
             put("device_identifier", deviceId)

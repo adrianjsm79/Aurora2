@@ -1,26 +1,22 @@
 package com.tecsup.aurora.viewmodel
 
-import android.app.Application // <-- ¡Importante! Añadir este import
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tecsup.aurora.data.repository.AuthRepository
 
 /**
- * Esta fábrica crea el AuthViewModel y le pasa las dependencias necesarias:
- * - AuthRepository: Para la lógica de negocio y llamadas a la API.
- * - Application: Para que el ViewModel pueda acceder al contexto de forma segura.
+ * Fábrica para crear instancias de AuthViewModel.
+ * Necesaria porque AuthViewModel tiene un constructor con parámetros (el repositorio).
  */
 class AuthViewModelFactory(
-    private val repository: AuthRepository,
-    private val application: Application
+    private val repository: AuthRepository
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(AuthViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            // 2. PASAR ambas dependencias al crear el AuthViewModel
-            return AuthViewModel(repository, application) as T
+            return AuthViewModel(repository) as T
         }
-        throw IllegalArgumentException("Unknown ViewModel class")
+        throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
     }
 }

@@ -21,14 +21,12 @@ class FakeShutdownActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // 1. Configuración para pantalla completa total (ocultar barras)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         window.setFlags(
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
         )
 
-        // Mantener pantalla encendida (para que el proceso no muera)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         binding = ActivityFakeShutdownBinding.inflate(layoutInflater)
@@ -36,17 +34,15 @@ class FakeShutdownActivity : AppCompatActivity() {
 
         hideSystemUI()
 
-        // 2. Bloquear botón atrás
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 // No hacer nada. El ladrón creerá que está apagado.
             }
         })
 
-        // 3. Simular animación de apagado
         simulateShutdownProcess()
 
-        // 4. Puerta trasera (Salir con 4 toques rápidos)
+        //Salir con 4 toques rápidos
         binding.root.setOnClickListener {
             secretTapCount++
             if (secretTapCount >= 4) {
@@ -61,7 +57,6 @@ class FakeShutdownActivity : AppCompatActivity() {
     private fun simulateShutdownProcess() {
         // Mostrar spinner 3 segundos
         Handler(Looper.getMainLooper()).postDelayed({
-            // Ocultar spinner, dejar pantalla negra total
             binding.shutdownAnimation.visibility = View.GONE
         }, 3000)
     }

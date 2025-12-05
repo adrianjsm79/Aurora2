@@ -40,48 +40,36 @@ class DeviceAdapter(
         return DeviceViewHolder(binding)
     }
 
-    // --- Bind NORMAL (Carga completa inicial o cuando cambian datos grandes) ---
     override fun onBindViewHolder(holder: DeviceViewHolder, position: Int) {
         val device = getItem(position)
         holder.bind(device)
     }
 
-    // --- Bind PARCIAL (Optimizado para el cronómetro) ---
     override fun onBindViewHolder(holder: DeviceViewHolder, position: Int, payloads: MutableList<Any>) {
         if (payloads.isNotEmpty() && payloads.contains(PAYLOAD_UPDATE_TIME)) {
-            // Si recibimos la señal de tiempo, SOLO actualizamos texto y color
-            // Esto es muy rápido y no causa parpadeos
             holder.updateTimeOnly(getItem(position))
         } else {
-            // Si no es una actualización parcial, hacemos la carga completa
             super.onBindViewHolder(holder, position, payloads)
         }
     }
 
     inner class DeviceViewHolder(private val binding: ItemDeviceBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        // Carga completa (Nombre + Estado)
         fun bind(device: DeviceResponse) {
             binding.deviceName.text = device.name
             updateTimeOnly(device)
 
-            // --- LÓGICA DEL MENÚ ---
             binding.moreOptions.setOnClickListener { view ->
-                // 1. Crear el PopupMenu anclado al botón de 3 puntos
                 val popup = PopupMenu(view.context, view)
                 popup.inflate(R.menu.device_options_menu)
 
-                // 2. Configurar texto dinámico
-                // Si ya está perdido, el menú debe decir "Marcar como seguro"
                 val lostItem = popup.menu.findItem(R.id.action_toggle_lost)
                 if (device.is_lost) {
                     lostItem.title = "Marcar como seguro"
-                    // Opcional: cambiar icono
                 } else {
                     lostItem.title = "Marcar como perdido"
                 }
 
-                // 3. Escuchar clicks
                 popup.setOnMenuItemClickListener { item ->
                     when (item.itemId) {
                         R.id.action_toggle_lost -> {
@@ -100,30 +88,25 @@ class DeviceAdapter(
                     }
                 }
 
-                // 4. Mostrar
                 popup.show()
             }
         }
 
-        // Carga ligera (Solo Estado: Texto y Color)
         fun updateTimeOnly(device: DeviceResponse) {
             val context = binding.root.context
 
             if (device.is_lost) {
-                // Prioridad 1: Si está perdido, siempre rojo
                 binding.deviceInfo.text = "Perdido"
                 binding.deviceInfo.setTextColor(
                     ContextCompat.getColor(context, R.color.red_error)
                 )
             } else {
-                // Calcular tiempo relativo
                 val secondsAgo = getSecondsAgo(device.last_seen)
                 binding.deviceInfo.text = formatTime(secondsAgo)
 
-                // Prioridad 2 y 3: Colores según antigüedad
                 val colorRes = when {
                     secondsAgo > 86400 -> R.color.orange_warning // Más de 24h (Naranja)
-                    else -> R.color.green_success // Reciente (Verde)
+                    else -> R.color.green_success
                 }
                 val color = ContextCompat.getColor(context, colorRes)
                 binding.deviceInfo.text = formatTime(secondsAgo)
@@ -133,16 +116,10 @@ class DeviceAdapter(
         }
     }
 
-    // --- AYUDANTES DE TIEMPO ---
+    // AYUDANTES DE TIEMPo
 
-    /**
-     * Calcula cuántos segundos han pasado desde la fecha del servidor.
-     * Robusto para diferentes formatos ISO de Django.
-     */
     private fun getSecondsAgo(apiTimestamp: String): Long {
         return try {
-            // Intentamos parsear con Offset (ej. 2025-11-20T10:00:00+00:00)
-            // Si falla, intentamos como Instant directo (ej. 2025-11-20T10:00:00Z)
             val time = try {
                 OffsetDateTime.parse(apiTimestamp, DateTimeFormatter.ISO_DATE_TIME).toInstant()
             } catch (e: Exception) {
@@ -162,8 +139,8 @@ class DeviceAdapter(
             seconds < 0 -> "Desconocido"
             seconds < 60 -> "Hace un momento"
             seconds < 3600 -> "Hace ${seconds / 60} min"
-            seconds < 86400 -> "Hace ${seconds / 3600} h" // Menos de 24 horas
-            else -> "Hace ${seconds / 86400} días" // Más de 1 día
+            seconds < 86400 -> "Hace ${seconds / 3600} h"
+            else -> "Hace ${seconds / 86400} días"
         }
     }
 }

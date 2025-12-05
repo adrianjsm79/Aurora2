@@ -22,7 +22,6 @@ class ChangePasswordDialog(
             .setView(binding.root)
             .create()
 
-        // Fondo transparente para que se vean las esquinas redondeadas del layout
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
         binding.btnCancelPassword.setOnClickListener {

@@ -23,11 +23,11 @@ class SettingsRepository(context: Context) {
     private val sharedPrefs: SharedPreferences =
         context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
-    // LiveData para que la UI (y el ViewModel) reaccionen a cambios
+    // LiveData para que la UI reaccionen a cambios
     private val _isTrackingEnabled = MutableLiveData<Boolean>(getTrackingState())
     val isTrackingEnabled: LiveData<Boolean> = _isTrackingEnabled
 
-    // --- ESTADO DEL TRACKING ---
+    //ESTADO DEL TRACKING
 
     fun saveTrackingState(isEnabled: Boolean) {
         sharedPrefs.edit {
@@ -41,7 +41,7 @@ class SettingsRepository(context: Context) {
         return sharedPrefs.getBoolean(KEY_TRACKING_ENABLED, false)
     }
 
-    // --- INTERVALO DE TIEMPO ---
+    //INTERVALO DE TIEMPO
 
     fun saveTrackingInterval(intervalSeconds: Int) {
         sharedPrefs.edit {
@@ -50,7 +50,7 @@ class SettingsRepository(context: Context) {
     }
 
     fun getTrackingInterval(): Int {
-        return sharedPrefs.getInt(KEY_TRACKING_INTERVAL, 10) // Default: 10 segundos
+        return sharedPrefs.getInt(KEY_TRACKING_INTERVAL, 10)
     }
 
     fun saveStartOnBoot(isEnabled: Boolean) {
@@ -60,10 +60,10 @@ class SettingsRepository(context: Context) {
     }
 
     fun isStartOnBootEnabled(): Boolean {
-        return sharedPrefs.getBoolean(KEY_START_ON_BOOT, false) // Default: false
+        return sharedPrefs.getBoolean(KEY_START_ON_BOOT, false)
     }
 
-    // --- NUEVO: ESTADO DE ROBO ---
+    // ESTADO DE ROBO
 
     fun setDeviceLost(isLost: Boolean) {
         sharedPrefs.edit { putBoolean(KEY_DEVICE_IS_LOST, isLost) }
@@ -73,7 +73,7 @@ class SettingsRepository(context: Context) {
         return sharedPrefs.getBoolean(KEY_DEVICE_IS_LOST, false)
     }
 
-    // --- NUEVO: ACTIVACIÓN MANUAL (Por el usuario en SecurityActivity) ---
+    //ACTIVACIÓN MANUAL (Por el usuario en SecurityActivity)
 
     fun setFakeShutdownEnabled(isEnabled: Boolean) {
         sharedPrefs.edit { putBoolean(KEY_FAKE_SHUTDOWN_MANUAL, isEnabled) }
@@ -83,7 +83,7 @@ class SettingsRepository(context: Context) {
         return sharedPrefs.getBoolean(KEY_FAKE_SHUTDOWN_MANUAL, false)
     }
 
-    // --- BÚSQUEDA POR SONIDO ---
+    //BÚSQUEDA POR SONIDO
     fun setSoundListenerEnabled(isEnabled: Boolean) {
         sharedPrefs.edit { putBoolean(KEY_SOUND_LISTENER, isEnabled) }
     }

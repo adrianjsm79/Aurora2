@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.GravityCompat
 import com.tecsup.aurora.R
 import com.tecsup.aurora.databinding.ActivitySettingsBinding // ¡Importante! Añadir el import del binding
-
+//FALTA ESTE TMB XD
 class SettingsActivity : BaseActivity() {
 
 }

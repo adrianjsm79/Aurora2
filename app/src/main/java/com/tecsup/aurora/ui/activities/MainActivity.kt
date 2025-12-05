@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.tecsup.aurora.MyApplication
 import com.tecsup.aurora.databinding.ActivityMainBinding
+import com.tecsup.aurora.ui.fragments.ProgressDialogFragment
 import com.tecsup.aurora.utils.DeviceHelper
 import com.tecsup.aurora.viewmodel.AuthViewModel
 import com.tecsup.aurora.viewmodel.AuthViewModelFactory
@@ -21,7 +22,7 @@ class MainActivity : AppCompatActivity() {
 
     private val authViewModel: AuthViewModel by viewModels {
         val repository = (application as MyApplication).authRepository
-        AuthViewModelFactory(repository, application)
+        AuthViewModelFactory(repository)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,42 +30,44 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val prefs = getSharedPreferences(BatteryOptimizationActivity.PREFS_NAME, Context.MODE_PRIVATE)
-        val optimizationSeen = prefs.getBoolean(BatteryOptimizationActivity.KEY_OPTIMIZATION_SEEN, false)
+        try {
+            val prefs = getSharedPreferences("AuroraSettings", Context.MODE_PRIVATE) // Uso hardcoded para evitar error si la clase no existe
+            val optimizationSeen = prefs.getBoolean("optimizationSeen", false)
 
-        // If it's a problematic device and the user hasn't seen the optimization screen
-        if (!optimizationSeen && DeviceHelper.isProblematicManufacturer()) {
-            // Start the optimization activity and wait for the user to return.
-            // The auth flow will be triggered in onResume.
-            startActivity(Intent(this, BatteryOptimizationActivity::class.java))
-            return // Stop further execution in onCreate
+            // Si es un dispositivo problemático (Xiaomi, etc) y no ha visto la optimización
+            if (!optimizationSeen && DeviceHelper.isProblematicManufacturer()) {
+
+                startActivity(Intent(this, BatteryOptimizationActivity::class.java))
+                return
+            }
+        } catch (e: Exception) {
+
         }
 
-        // If not a problematic device, or if the screen has been seen, start the auth check immediately.
         startAuthCheck()
     }
 
     override fun onResume() {
         super.onResume()
-        // This will be called when returning from BatteryOptimizationActivity.
-        // We start the check here to continue the flow.
-        startAuthCheck()
+        if (!authCheckStarted) {
+            startAuthCheck()
+        }
     }
 
     private fun startAuthCheck() {
-        // Ensure this block runs only once.
         if (authCheckStarted) return
         authCheckStarted = true
 
         lifecycleScope.launch {
             authViewModel.sessionState.collect { state ->
-                // Prevent navigation if the activity is already finishing.
                 if (isFinishing) return@collect
 
                 when (state) {
                     is SessionState.Authenticated -> navigateToHome()
                     is SessionState.Unauthenticated -> navigateToLogin()
-                    is SessionState.Loading -> { /* The splash screen handles the loading state */ }
+                    is SessionState.Loading -> {
+                        ProgressDialogFragment.show(supportFragmentManager)
+                    }
                 }
             }
         }

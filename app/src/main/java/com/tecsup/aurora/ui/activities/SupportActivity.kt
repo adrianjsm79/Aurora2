@@ -26,7 +26,6 @@ class SupportActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
-        // 1. Botón Email (Consulta general)
         binding.cardEmail.setOnClickListener {
             sendEmail(
                 subject = "Consulta sobre Aurora App",
@@ -34,12 +33,10 @@ class SupportActivity : AppCompatActivity() {
             )
         }
 
-        // 2. Botón WhatsApp (Opcional)
         binding.cardWhatsapp.setOnClickListener {
             openWhatsApp()
         }
 
-        // 3. Botón Enviar Reporte (Bug Report)
         binding.btnSendReport.setOnClickListener {
             val description = binding.inputReport.text.toString().trim()
 
@@ -55,7 +52,6 @@ class SupportActivity : AppCompatActivity() {
             )
         }
 
-        // 4. FAQ (Abre tu web)
         binding.btnFaq.setOnClickListener {
             val url = "https://auroraweb-topaz.vercel.app/terms/faq.html" // Tu sección de FAQ
             try {
@@ -66,9 +62,6 @@ class SupportActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Construye el cuerpo del correo con información técnica útil para debuggear.
-     */
     private fun buildReportBody(userDescription: String): String {
         val sb = StringBuilder()
         sb.append("Descripción del problema:\n")

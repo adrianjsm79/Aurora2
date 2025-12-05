@@ -16,15 +16,15 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
+import android.util.Base64
+import kotlinx.coroutines.delay
 
 
-// 1. El Repositorio ahora también necesita Realm
 class AuthRepository(
     private val apiService: ApiService,
     private val realm: Realm
 ) {
 
-    // Función de Registro (ya la tenías)
     suspend fun registerUser(request: RegisterRequest) {
         val response = apiService.registerUser(request)
         if (!response.isSuccessful) {
@@ -32,8 +32,7 @@ class AuthRepository(
         }
     }
 
-    // --- Lógica de Login (Actualizada) ---
-    // Ahora devuelve el token para que el siguiente paso lo use
+    //Lógica de Login
     suspend fun login(email: String, pass: String): String {
         val response = apiService.loginUser(LoginRequest(email, pass))
 
@@ -57,14 +56,12 @@ class AuthRepository(
 
 
     suspend fun registerDevice(token: String, deviceName: String, deviceId: String) {
-        val authToken = "Bearer $token" // Prepara el token para el header
+        val authToken = "Bearer $token"
         val request = DeviceRequest(name = deviceName, device_identifier = deviceId)
 
         val response = apiService.registerDevice(authToken, request)
 
         if (!response.isSuccessful) {
-            // Si falla el registro del dispositivo, el login igual funcionó,
-            // pero deberíamos registrar el error.
             throw Exception("Login exitoso, pero falló el registro del dispositivo: ${response.code()}")
         }
         // Si tiene éxito, el dispositivo está registrado/actualizado en el backend
@@ -72,7 +69,6 @@ class AuthRepository(
 
 
     private suspend fun saveTokenToRealm(token: String, refreshToken: String) {
-        // Escribe en la base de datos de Realm
         realm.write {
             // Borra cualquier sesión antigua
             val oldSession = this.query<UserSession>().find()
@@ -186,6 +182,46 @@ class AuthRepository(
 
         if (!response.isSuccessful) throw Exception("Error: ${response.code()}")
         return response.body() ?: throw Exception("Error")
+    }
+
+    //funcion de obteeener los terminos desde el backend
+    suspend fun fetchTermsAndConditions(termCode: Int): String {
+        val response = apiService.getLegalDocument(termCode)
+
+        if (response.isSuccessful && response.body() != null) {
+            val legalDoc = response.body()!!
+
+            // Decodifica el Base64 que viene del servidor
+            // El servidor envía el HTML escondido en "content_base64"
+            val encodedString = legalDoc.content_base64
+
+            return try {
+                val decodedBytes = Base64.decode(encodedString, Base64.DEFAULT)
+                String(decodedBytes, Charsets.UTF_8)
+            } catch (e: Exception) {
+                throw Exception("Error al decodificar el documento legal")
+            }
+        } else {
+            throw Exception("Error al obtener términos: ${response.code()}")
+        }
+    }
+
+    //recuperar contraseña
+    suspend fun requestPasswordReset(email: String) {
+        val response = apiService.requestPasswordReset(mapOf("email" to email))
+        if (!response.isSuccessful) throw Exception("Error enviando código")
+    }
+
+    suspend fun verifyResetCode(email: String, code: String) {
+        val response = apiService.verifyResetCode(mapOf("email" to email, "code" to code))
+        if (!response.isSuccessful) throw Exception("Código inválido")
+    }
+
+    suspend fun confirmPasswordReset(email: String, code: String, newPass: String) {
+        val response = apiService.confirmPasswordReset(
+            mapOf("email" to email, "code" to code, "new_password" to newPass)
+        )
+        if (!response.isSuccessful) throw Exception("Error al cambiar contraseña")
     }
 
 }

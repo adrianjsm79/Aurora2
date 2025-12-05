@@ -1,6 +1,8 @@
 package com.tecsup.aurora
 
 import android.app.Application
+import com.tecsup.aurora.data.local.DeviceMapState
+import com.tecsup.aurora.data.local.TracePoint
 import com.tecsup.aurora.data.local.UserSession
 import com.tecsup.aurora.data.remote.ApiService
 import com.tecsup.aurora.data.remote.LocationWebSocketClient
@@ -8,14 +10,15 @@ import com.tecsup.aurora.data.repository.AuthRepository
 import com.tecsup.aurora.data.repository.ContactsRepository
 import com.tecsup.aurora.data.repository.DeviceRepository
 import com.tecsup.aurora.data.repository.LocationRepository
+import com.tecsup.aurora.data.repository.MapRepository
 import com.tecsup.aurora.data.repository.SettingsRepository
 import com.tecsup.aurora.service.TrackingServiceManager
 import com.tecsup.aurora.viewmodel.ContactsViewModelFactory
 import com.tecsup.aurora.viewmodel.HomeViewModelFactory
 import com.tecsup.aurora.viewmodel.LocationViewModelFactory
 import com.tecsup.aurora.viewmodel.MapViewModelFactory
-import com.tecsup.aurora.viewmodel.SecurityViewModelFactory
 import com.tecsup.aurora.viewmodel.ProfileViewModelFactory
+import com.tecsup.aurora.viewmodel.SecurityViewModelFactory
 import io.realm.kotlin.Realm
 import io.realm.kotlin.RealmConfiguration
 import retrofit2.Retrofit
@@ -44,7 +47,11 @@ class MyApplication : Application() {
     // --- 2. CAPA DE DATOS LOCAL ---
     val realm: Realm by lazy {
         val config = RealmConfiguration.Builder(
-            schema = setOf(UserSession::class)
+            schema = setOf(
+                UserSession::class,
+                DeviceMapState::class, // Registra el nuevo modelo
+                TracePoint::class      // Registra el nuevo modelo
+            )
         ).build()
         Realm.open(config)
     }
@@ -100,7 +107,20 @@ class MyApplication : Application() {
         ProfileViewModelFactory(authRepository)
     }
 
+    // 1. Crear instancia del MapRepository
+    val mapRepository by lazy {
+        MapRepository(realm, apiService)
+    }
+
+    // 2. Actualizar la fábrica del mapa
     val mapViewModelFactory by lazy {
-        MapViewModelFactory(authRepository, deviceRepository, locationRepository, settingsRepository, trackingServiceManager)
+        MapViewModelFactory(
+            authRepository,
+            deviceRepository,
+            locationRepository,
+            settingsRepository,
+            trackingServiceManager,
+            mapRepository
+        )
     }
 }

@@ -2,31 +2,31 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/map_routing"
+        android:icon="@drawable/ic_route"
+        android:title="Trazar ruta hacia aquí" />
+
+    <item
         android:id="@+id/map_follow"
         android:icon="@drawable/ic_follow"
-        android:iconTint="?attr/colorOnSurface"
-        android:title="seguir rastro" />
+        android:title="Seguir rastro (Migas de pan)" />
+
     <item
         android:id="@+id/map_clean_follow"
         android:icon="@drawable/ic_clean"
-        android:iconTint="?attr/colorOnSurface"
-        android:title="eliminar rastro" />
-    <item
-        android:id="@+id/map_routing"
-        android:icon="@drawable/ic_route"
-        android:iconTint="?attr/colorOnSurface"
-        android:title="trazar ruta" />
+        android:title="Borrar rastro del mapa" />
+
+    <!-- Grupo de estado (Solo se mostrará uno según la lógica del código) -->
     <item
         android:id="@+id/map_device_lost"
         android:icon="@drawable/ic_emergency"
-        android:iconTint="?attr/colorOnSurface"
-        android:title="marcar como perdido" />
+        android:title="¡Marcar como PERDIDO!"
+        android:iconTint="@color/red_error"/>
+
     <item
         android:id="@+id/map_device_found"
         android:icon="@drawable/ic_found"
-        android:iconTint="?attr/colorOnSurface"
-        android:title="marcar como encontrado" />
-
-
+        android:title="Marcar como Encontrado"
+        android:visible="false" />
 
 </menu>

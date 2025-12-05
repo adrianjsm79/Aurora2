@@ -27,9 +27,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Aurora">
         <activity
-            android:name=".ui.activities.AboutActivity"
-            android:screenOrientation="portrait"
+            android:name=".ui.activities.ResetPasswordActivity"
             android:exported="false" />
+        <activity
+            android:name=".ui.activities.ForgotPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activities.AboutActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activities.SupportActivity"
             android:exported="false" />
@@ -61,16 +67,17 @@
             android:name=".service.TrackingService"
             android:exported="false"
             android:foregroundServiceType="location" />
+
         <receiver
             android:name=".service.BootReceiver"
             android:enabled="true"
             android:exported="false">
-
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" /> <!-- Para algunos HTC/Xiaomi -->
             </intent-filter>
         </receiver>
+
         <activity
             android:name=".ui.activities.FakeShutdownActivity"
             android:excludeFromRecents="true"

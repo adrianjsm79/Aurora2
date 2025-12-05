@@ -3,6 +3,7 @@ package com.tecsup.aurora.ui.activities
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Point
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -25,15 +26,18 @@ import com.tecsup.aurora.data.model.DeviceResponse
 import com.tecsup.aurora.databinding.ActivitySearchMapBinding
 import com.tecsup.aurora.databinding.ViewMapMarkerBinding
 import com.tecsup.aurora.ui.adapter.MapDeviceAdapter
+import com.tecsup.aurora.ui.fragments.DeviceInfoBottomSheet
+import com.tecsup.aurora.ui.fragments.MapActionsBottomSheet
 import com.tecsup.aurora.utils.DeviceHelper
+import com.tecsup.aurora.viewmodel.MapOverlays
 import com.tecsup.aurora.viewmodel.MapViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import com.tecsup.aurora.ui.fragments.DeviceInfoBottomSheet
+import kotlin.math.pow
+import kotlin.math.sqrt
 
-
-class SearchMapActivity : AppCompatActivity(), OnMapReadyCallback {
+class SearchMapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
 
     private lateinit var binding: ActivitySearchMapBinding
     private lateinit var map: GoogleMap
@@ -42,7 +46,10 @@ class SearchMapActivity : AppCompatActivity(), OnMapReadyCallback {
     private val markersMap = mutableMapOf<Int, Marker>()
     private val circlesMap = mutableMapOf<Int, Circle>()
 
-    private var hasCenteredCamera = false // Bandera para centrar solo la primera vez
+    // Lista para limpiar las líneas (rutas) cuando cambian
+    private val activePolylines = mutableListOf<Polyline>()
+
+    private var hasCenteredCamera = false
 
     private val viewModel: MapViewModel by viewModels {
         (application as MyApplication).mapViewModelFactory
@@ -53,17 +60,13 @@ class SearchMapActivity : AppCompatActivity(), OnMapReadyCallback {
         binding = ActivitySearchMapBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Botón atrás
         binding.fabBack.setOnClickListener { finish() }
 
-        // Configurar mapa
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        // Configurar BottomSheet
         setupBottomSheet()
 
-        // Configurar Botón de Ubicación
         binding.btnToggleLocation.setOnClickListener {
             viewModel.toggleTracking()
         }
@@ -71,22 +74,132 @@ class SearchMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
-        map.uiSettings.isZoomControlsEnabled = false // Ocultar botones zoom default
+        map.uiSettings.isZoomControlsEnabled = false
         map.uiSettings.isCompassEnabled = true
 
-        // Observar datos del mapa
+        // Listener para Menú Contextual (Long Press)
+        map.setOnMapLongClickListener(this)
+
+        // Observar Dispositivos
         viewModel.uiState.observe(this) { state ->
             updateMapObjects(state.devices, state.currentUserId)
-
-            // Actualizar lista del bottom sheet
             (binding.mapDevicesRecycler.adapter as? MapDeviceAdapter)?.submitList(state.devices)
         }
 
-        // Observar estado del rastreo (Botón flotante)
+        // AQUÍ SE DIBUJA LA RUTA DE GOOGLE
+        viewModel.mapOverlays.observe(this) { overlays ->
+            drawMapOverlays(overlays)
+        }
+
         viewModel.isTrackingActive.observe(this) { isEnabled ->
             updateLocationButton(isEnabled)
         }
+
+        map.setOnMarkerClickListener { marker ->
+            val device = marker.tag as? DeviceResponse
+            if (device != null) {
+                showDeviceDetailsBottomSheet(device)
+            }
+            true
+        }
     }
+
+    // ESTO MANEJA LA RESPUESTA DE GOOGLE
+    private fun drawMapOverlays(overlays: MapOverlays) {
+        activePolylines.forEach { it.remove() }
+        activePolylines.clear()
+
+        //Dibujar Rastros
+        overlays.traces.forEach { (_, points) ->
+            if (points.size > 1) {
+                val line = map.addPolyline(
+                    PolylineOptions()
+                        .addAll(points)
+                        .color(ContextCompat.getColor(this, R.color.orange_warning))
+                        .width(12f)
+                        .pattern(listOf(Dash(20f), Gap(15f))) // Efecto punteado
+                        .geodesic(true)
+                        .zIndex(1f) // Por debajo de la ruta principal
+                )
+                activePolylines.add(line)
+            }
+        }
+
+        // Dibujar Ruta de Navegación (Google Directions
+        if (overlays.routePoints.isNotEmpty()) {
+            val line = map.addPolyline(
+                PolylineOptions()
+                    .addAll(overlays.routePoints) // Aquí vienen los puntos de la calle
+                    .color(ContextCompat.getColor(this, R.color.blue))
+                    .width(18f)
+                    .geodesic(true)
+                    .zIndex(2f)
+            )
+            activePolylines.add(line)
+
+            //Hacer zoom para ver toda la ruta
+            val builder = LatLngBounds.Builder()
+            overlays.routePoints.forEach { builder.include(it) }
+            try { map.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 100)) } catch(e:Exception){}
+        }
+    }
+
+    //Menú Contextual
+    override fun onMapLongClick(clickCoords: LatLng) {
+        val projection = map.projection
+        val clickPoint = projection.toScreenLocation(clickCoords)
+
+        for ((_, marker) in markersMap) {
+            val markerPosition = marker.position
+            val markerPoint = projection.toScreenLocation(markerPosition)
+
+            val distance = sqrt(
+                (clickPoint.x - markerPoint.x).toDouble().pow(2.0) +
+                        (clickPoint.y - markerPoint.y).toDouble().pow(2.0)
+            )
+
+            if (distance < 120) { // Radio de toque (en píxeles)
+                val device = marker.tag as? DeviceResponse
+                if (device != null) {
+                    showMapActionsMenu(device)
+                    return
+                }
+            }
+        }
+    }
+
+    private fun showMapActionsMenu(device: DeviceResponse) {
+        //vibración suave
+        binding.root.performHapticFeedback(android.view.HapticFeedbackConstants.LONG_PRESS)
+
+        val menu = MapActionsBottomSheet(device) { actionId ->
+            when (actionId) {
+                R.id.map_routing -> {
+                    Toast.makeText(this, "Calculando ruta por calles...", Toast.LENGTH_SHORT).show()
+                    viewModel.setRouteTarget(device.id)
+                }
+                R.id.map_follow -> {
+                    Toast.makeText(this, "Rastro activado", Toast.LENGTH_SHORT).show()
+                    viewModel.toggleTrace(device.id)
+                }
+                R.id.map_clean_follow -> {
+                    viewModel.clearTrace(device.id)
+                    Toast.makeText(this, "Rastro borrado", Toast.LENGTH_SHORT).show()
+                }
+                R.id.map_device_lost -> {
+                    viewModel.markAsLost(device.id, true)
+                    Toast.makeText(this, "¡COMANDO DE EMERGENCIA ENVIADO!", Toast.LENGTH_LONG).show()
+                }
+                R.id.map_device_found -> {
+                    viewModel.markAsLost(device.id, false)
+                    Toast.makeText(this, "Marcado como seguro", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+        menu.show(supportFragmentManager, "MapMenu")
+    }
+
+    //El resto de métodos de actualización
 
     private fun updateMapObjects(devices: List<DeviceResponse>, currentUserId: Int) {
         val currentDeviceID = DeviceHelper.getDeviceIdentifier(this)
@@ -94,20 +207,15 @@ class SearchMapActivity : AppCompatActivity(), OnMapReadyCallback {
         devices.forEach { device ->
             if (device.latitude != null && device.longitude != null) {
                 val position = LatLng(device.latitude, device.longitude)
-
-                // Lógica de colores corregida
-                // Asegúrate que device.user venga como INT desde el backend
                 val isMyDevice = device.user == currentUserId
                 val isThisPhone = device.device_identifier == currentDeviceID
 
-                // Colores: Rojo (Perdido) > Morado (Mío) > Verde (Contacto)
                 val colorRes = when {
                     device.is_lost -> R.color.red_error
                     isMyDevice -> R.color.purple
                     else -> R.color.green_success
                 }
 
-                // 1. ACTUALIZAR MARCADOR
                 if (markersMap.containsKey(device.id)) {
                     markersMap[device.id]?.position = position
                 } else {
@@ -117,18 +225,17 @@ class SearchMapActivity : AppCompatActivity(), OnMapReadyCallback {
                                 .position(position)
                                 .title(device.name)
                                 .icon(BitmapDescriptorFactory.fromBitmap(bitmap))
-                                .anchor(0.5f, 1f) // Ancla en la punta de abajo
+                                .anchor(0.5f, 1f)
                         )
                         marker?.tag = device
                         if (marker != null) markersMap[device.id] = marker
                     }
                 }
 
-                // 2. ACTUALIZAR CÍRCULO DE PRECISIÓN
+                // Círculos de precisión
                 val radius = device.accuracy?.toDouble() ?: 0.0
                 val circleColor = ContextCompat.getColor(this, colorRes)
-                // Color de relleno con 20% de opacidad (0x33)
-                val fillColor = Color.argb(0x33, Color.red(circleColor), Color.green(circleColor), Color.blue(circleColor))
+                val fillColor = Color.argb(0x22, Color.red(circleColor), Color.green(circleColor), Color.blue(circleColor))
 
                 if (circlesMap.containsKey(device.id)) {
                     circlesMap[device.id]?.center = position
@@ -145,23 +252,11 @@ class SearchMapActivity : AppCompatActivity(), OnMapReadyCallback {
                     circlesMap[device.id] = circle
                 }
 
-                // 3. CENTRAR CÁMARA (Solo la primera vez y si es ESTE dispositivo)
                 if (!hasCenteredCamera && isThisPhone) {
                     map.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 15f))
                     hasCenteredCamera = true
                 }
             }
-        }
-
-        // Listener click marcador
-        map.setOnMarkerClickListener { marker ->
-            val device = marker.tag as? DeviceResponse
-            if (device != null) {
-                // Mover cámara y mostrar info
-                map.animateCamera(CameraUpdateFactory.newLatLng(marker.position))
-                // Podrías expandir el bottom sheet aquí o mostrar dialog
-            }
-            false
         }
     }
 
@@ -182,20 +277,16 @@ class SearchMapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun setupBottomSheet() {
-        // Inicializamos el adaptador con DOS lambdas
         val adapter = MapDeviceAdapter(
-            // Acción 1: Clic en la fila -> Mover Cámara
             onRowClick = { device ->
                 if (device.latitude != null && device.longitude != null) {
                     val pos = LatLng(device.latitude, device.longitude)
                     map.animateCamera(CameraUpdateFactory.newLatLngZoom(pos, 16f))
-                    // Opcional: Colapsar sheet parcialmente para ver mapa
                     BottomSheetBehavior.from(binding.bottomSheet).state = BottomSheetBehavior.STATE_COLLAPSED
                 } else {
                     Toast.makeText(this, "Sin ubicación", Toast.LENGTH_SHORT).show()
                 }
             },
-            // Acción 2: Clic en el Chevron -> Mostrar Detalles
             onInfoClick = { device ->
                 showDeviceDetailsBottomSheet(device)
             }
@@ -209,9 +300,9 @@ class SearchMapActivity : AppCompatActivity(), OnMapReadyCallback {
         val sheet = DeviceInfoBottomSheet(
             deviceName = device.name,
             deviceId = device.device_identifier,
-            ownerEmail = device.user_email, // Asegúrate de que el modelo tenga este campo
+            ownerEmail = device.user_email,
             lastSeen = device.last_seen,
-            accuracy = device.accuracy?.toDouble() // Pasamos la precisión
+            accuracy = device.accuracy?.toDouble()
         )
         sheet.show(supportFragmentManager, "DeviceInfoSheet")
     }
@@ -224,27 +315,35 @@ class SearchMapActivity : AppCompatActivity(), OnMapReadyCallback {
     ) {
         CoroutineScope(Dispatchers.Main).launch {
             val markerBinding = ViewMapMarkerBinding.inflate(LayoutInflater.from(this@SearchMapActivity))
-
-            // 1. Configurar color del borde
             val color = ContextCompat.getColor(this@SearchMapActivity, colorRes)
+
             markerBinding.markerBorder.background.setTint(color)
             markerBinding.markerArrow.setColorFilter(color)
 
-            // 2. Borde azul para "Este Dispositivo" (usando FrameLayout padding hack)
             if (isThisPhone) {
                 val blueColor = ContextCompat.getColor(this@SearchMapActivity, R.color.blue)
                 markerBinding.markerContainer.background.setTint(blueColor)
                 markerBinding.markerContainer.setPadding(8, 8, 8, 8)
             } else {
-                markerBinding.markerContainer.background.setTintList(null) // Blanco default
+                markerBinding.markerContainer.background.setTintList(null)
                 markerBinding.markerContainer.setPadding(2, 2, 2, 2)
             }
 
-            // 3. Imagen (Simplificado por brevedad, igual que antes con Coil)
-            if (!device.photoUrl.isNullOrEmpty()) {
-                // Cargar coil...
-                markerBinding.markerImage.setImageResource(R.drawable.ic_phone)
-                markerBinding.markerImage.setColorFilter(color)
+            val imageUrl = device.user_image
+            if (!imageUrl.isNullOrEmpty()) {
+                val request = ImageRequest.Builder(this@SearchMapActivity)
+                    .data(imageUrl)
+                    .allowHardware(false)
+                    .build()
+                val result = imageLoader.execute(request).drawable
+                if (result != null) {
+                    markerBinding.markerImage.setImageDrawable(result)
+                    markerBinding.markerImage.clearColorFilter()
+                    markerBinding.markerImage.imageTintList = null
+                } else {
+                    markerBinding.markerImage.setImageResource(R.drawable.ic_phone)
+                    markerBinding.markerImage.setColorFilter(color)
+                }
             } else {
                 markerBinding.markerImage.setImageResource(R.drawable.ic_phone)
                 markerBinding.markerImage.setColorFilter(color)

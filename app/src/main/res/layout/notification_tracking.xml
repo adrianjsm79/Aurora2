@@ -1,58 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Layout para notificación expandida de rastreo activo -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:layout_height="64dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#121212"
+    android:padding="8dp">
 
+    <!-- 1. Icono: Fondo fijo, sin ?attr -->
+    <ImageView
+        android:id="@+id/notification_icon"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/ic_location"
+        android:padding="4dp"
+        android:background="@drawable/circle_background"
+        android:contentDescription="Icono"
+        android:layout_marginStart="20dp"
+        />
+
+    <!-- 2. Textos: Colores HEX fijos -->
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_marginStart="30dp"
-        android:orientation="horizontal">
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@id/notification_icon"
+        android:layout_toStartOf="@id/stop"
+        android:orientation="vertical"
+        android:paddingHorizontal="12dp">
 
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/circle_background"
-            android:layout_gravity="center"
-            android:layout_marginRight="15dp"
-            >
-
-            <ImageView
-                android:id="@+id/tracking_icon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_location"
-                android:contentDescription="Rastreo activo"
-                android:padding="4dp"
-
-                />
-        </FrameLayout>
         <TextView
-            android:id="@+id/notification_subtitle"
+            android:id="@+id/notification_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Rastreo de dispositivo activo"
-            android:textColor="@color/turquesa"
-            android:fontFamily="@font/k2d_regular"
-            android:layout_gravity="center_vertical"/>
-
-        <ImageButton
-            android:id="@+id/stop"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:src="@drawable/ic_stop"
-            android:contentDescription="Detener rastreo"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="70dp"
-            android:background="?attr/selectableItemBackground"
-            app:tint="@color/red_error"
-            />
+            android:textColor="#CCCCCC"
+            android:textSize="16sp"
+            android:singleLine="true"/>
     </LinearLayout>
 
-</LinearLayout>
+    <!-- 3. Botón Culpable (CORREGIDO) -->
+    <ImageButton
+        android:id="@+id/stop"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/ic_stop"
+        app:tint="@color/red_error"
+        android:background="@android:color/transparent"
+        android:contentDescription="Detener"
+        android:layout_marginEnd="15dp"
+        />
+
+</RelativeLayout>

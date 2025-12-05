@@ -17,10 +17,6 @@ object DeviceHelper {
         "oneplus"
     )
 
-    /**
-     * Checks if the device is from a manufacturer known for aggressive
-     * battery optimization that can kill background services.
-     */
     fun isProblematicManufacturer(): Boolean {
         val manufacturer = Build.MANUFACTURER.lowercase()
         return PROBLEMATIC_MANUFACTURERS.contains(manufacturer)

@@ -11,7 +11,7 @@ import com.tecsup.aurora.databinding.ActivityDevicesBinding
 
 class DevicesActivity : BaseActivity() {
 
-
+//NO USAMOS ESTA ACTIVITY
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_devices)

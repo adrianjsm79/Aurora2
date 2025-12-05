@@ -9,8 +9,8 @@
     <!-- Círculo Principal (Reemplaza al CardView) -->
     <FrameLayout
         android:id="@+id/marker_container"
-        android:layout_width="52dp"
-        android:layout_height="52dp"
+        android:layout_width="54dp"
+        android:layout_height="54dp"
         android:background="@drawable/bg_marker_circle"
         android:padding="2dp"
         android:elevation="6dp">
@@ -21,7 +21,7 @@
             android:id="@+id/marker_border"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="3dp"
+            android:padding="2dp"
             android:background="@drawable/circle_white_background">
 
             <!-- Imagen del Dispositivo -->
@@ -30,7 +30,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_phone"
-                android:padding="8dp"
+                android:padding="2dp"
                 android:scaleType="centerCrop"/>
 
         </FrameLayout>

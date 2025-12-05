@@ -53,7 +53,7 @@ class HomeActivity : AppCompatActivity() {
 
     private val authViewModel: AuthViewModel by viewModels {
         val repository = (application as MyApplication).authRepository
-        AuthViewModelFactory(repository, application)
+        AuthViewModelFactory(repository)
     }
 
     private val locationPermissionLauncher = registerForActivityResult(
@@ -86,6 +86,11 @@ class HomeActivity : AppCompatActivity() {
                 showLocationOptInDialog()
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.bottomNavView.selectedItemId = R.id.bottom_home
     }
 
     private fun setupDrawer() {
@@ -140,13 +145,32 @@ class HomeActivity : AppCompatActivity() {
                         state.userProfile.image
                     )
 
-                    if (state.devices.isEmpty()) {
+                    // DIAGNÓSTICO DE FILTRADO de devices para debug
+                    // Estos logs te dirán por qué el filtro falla
+                    Log.d("AURORA_DEBUG", "--- INICIO DE DIAGNÓSTICO ---")
+                    Log.d("AURORA_DEBUG", "Mi ID de Usuario (Perfil): ${state.userProfile.id}")
+                    Log.d("AURORA_DEBUG", "Total dispositivos crudos: ${state.devices.size}")
+
+                    state.devices.forEach { dev ->
+                        Log.d("AURORA_DEBUG", " -> Dispositivo '${dev.name}' tiene owner_id: ${dev.user}")
+                    }
+                    //Solo mostramos MIS dispositivos en el Home
+                    val myDevices = state.devices.filter { device ->
+                        device.user == state.userProfile.id
+                    }
+
+                    Log.d("AURORA_DEBUG", "Dispositivos MÍOS después del filtro: ${myDevices.size}")
+                    Log.d("AURORA_DEBUG", "--- FIN DE DIAGNÓSTICO ---")
+
+                    //lista filtrada para actualizar la UI
+                    if (myDevices.isEmpty()) {
                         binding.devicesRecyclerView.visibility = View.GONE
                         binding.emptyDevicesView.visibility = View.VISIBLE
                     } else {
                         binding.devicesRecyclerView.visibility = View.VISIBLE
                         binding.emptyDevicesView.visibility = View.GONE
-                        deviceAdapter.submitList(state.devices)
+
+                        deviceAdapter.submitList(myDevices)
                     }
                 }
                 is HomeState.Error -> {
@@ -160,6 +184,7 @@ class HomeActivity : AppCompatActivity() {
                     } else {
                         Toast.makeText(this, state.message, Toast.LENGTH_LONG).show()
                     }
+
                 }
             }
         }
@@ -201,20 +226,17 @@ class HomeActivity : AppCompatActivity() {
             startActivity(Intent(this, SecurityActivity::class.java))
         }
 
-        binding.bottomNavView.selectedItemId = R.id.bottom_home // Marca Perfil como activo
         binding.bottomNavView.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.bottom_home -> true // Ya estamos aquí
+                R.id.bottom_home -> true
                 R.id.bottom_profile -> {
                     val intent = Intent(this, ProfileActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
                     startActivity(intent)
-                    finish() // Cerramos Home para ahorrar memoria
                     true
                 }
                 R.id.bottom_settings -> {
                     startActivity(Intent(this, SettingsActivity::class.java))
-                    finish() // Cerramos ProfileActivity
                     true
                 }
                 else -> false

@@ -26,19 +26,18 @@ class PhoneContactAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         init {
-            // El item completo responde a un 'long press'
             binding.root.setOnLongClickListener {
                 if (adapterPosition != RecyclerView.NO_POSITION) {
                     onLongClick(getItem(adapterPosition))
                 }
-                true // Indica que el evento fue consumido
+                true
             }
         }
 
         fun bind(contact: PhoneContact) {
             binding.contactName.text = contact.name
             binding.contactNumber.text = contact.number
-            binding.actionIcon.visibility = View.GONE // Oculta el botón de borrar
+            binding.actionIcon.visibility = View.GONE
         }
     }
 

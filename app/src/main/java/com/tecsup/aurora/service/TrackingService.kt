@@ -52,11 +52,9 @@ class TrackingService : Service() {
             ACTION_START_SERVICE -> {
                 Log.d("TrackingService", "Iniciando servicio...")
 
-                // 1. CRÍTICO: Notificación inmediata para evitar crash
                 val notification = NotificationHelper.createNotification(this)
                 startForeground(NotificationHelper.NOTIFICATION_ID, notification)
 
-                // 2. Inicialización asíncrona (Red, DB, GPS)
                 initializeTracking()
             }
             ACTION_STOP_SERVICE -> {
@@ -70,12 +68,10 @@ class TrackingService : Service() {
     private fun initializeTracking() {
         scope.launch {
             try {
-                val token = authRepository.getToken() // Llamada a Realm
+                val token = authRepository.getToken()
 
                 if (token != null) {
-                    // Conectar WebSocket
                     locationRepository.connect(token)
-                    // Iniciar actualizaciones GPS
                     startLocationUpdates()
 
                     // CONFIRMACIÓN: El servicio está corriendo, actualizamos persistencia a TRUE
@@ -92,7 +88,6 @@ class TrackingService : Service() {
     }
 
     private fun startLocationUpdates() {
-        // Obtenemos el intervalo configurado por el usuario
         val intervalSeconds = settingsRepository.getTrackingInterval()
         val intervalMillis = intervalSeconds * 1000L
 
@@ -146,14 +141,14 @@ class TrackingService : Service() {
         } catch (e: Exception) {
             Log.e("TrackingService", "Error al detener", e)
         } finally {
-            // IMPORTANTE: Si paramos, actualizamos persistencia a FALSE
+            //Si paramos, actualizamos persistencia a FALSE
             settingsRepository.saveTrackingState(false)
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        // Aseguro final: Si el sistema mata el servicio, marcamos como inactivo
+        //Si el sistema mata el servicio, marcamos como inactivo
         settingsRepository.saveTrackingState(false)
         job.cancel()
     }

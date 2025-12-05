@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="?attr/colorSurface">
+
+    <!-- Cabecera -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Términos y Condiciones"
+        android:padding="20dp"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/k2d_bold"
+        android:textColor="?attr/colorOnSurface"
+        android:background="?attr/colorSurfaceContainer"/>
+
+    <ProgressBar
+        android:id="@+id/progress_bar_terms"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:visibility="visible"/>
+
+    <!-- WebView Contenedor -->
+    <WebView
+        android:id="@+id/webview_terms"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <!-- Footer con Botones -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="?attr/colorSurfaceContainer">
+
+        <TextView
+            android:id="@+id/scroll_hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Por favor lee hasta el final para continuar"
+            android:textColor="@color/red_error"
+            android:textAlignment="center"
+            android:textSize="12sp"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end">
+
+            <Button
+                android:id="@+id/btn_decline"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cancelar"
+                android:textColor="?attr/colorOnSurface"/>
+
+            <Button
+                android:id="@+id/btn_accept_terms"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="He leído y Acepto"
+                android:layout_marginStart="12dp"
+                android:enabled="false"/> <!-- Deshabilitado por defecto -->
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

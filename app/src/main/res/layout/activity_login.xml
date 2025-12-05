@@ -139,8 +139,21 @@
                 android:textColor="?attr/colorPrimary"
                 android:textSize="14sp"
                 android:textStyle="bold" />
-        </LinearLayout>
 
+        </LinearLayout>
+        <TextView
+            android:id="@+id/forgot_password_link"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:background="?attr/selectableItemBackground"
+            android:fontFamily="@font/k2d_bold"
+            android:padding="8dp"
+            android:text="¿Olvidaste tu contraseña?"
+            android:textColor="?attr/colorSecondary"
+            android:textSize="14sp"
+            android:textStyle="bold" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

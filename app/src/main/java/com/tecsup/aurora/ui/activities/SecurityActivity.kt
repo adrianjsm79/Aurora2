@@ -26,7 +26,6 @@ class SecurityActivity : AppCompatActivity() {
         (application as MyApplication).securityViewModelFactory
     }
 
-    // 1. Launcher para permiso de micrófono
     private val recordAudioLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
@@ -60,13 +59,13 @@ class SecurityActivity : AppCompatActivity() {
 
             if (isEnabled) {
                 binding.btnEnableFakeShutdown.text = "Desactivar Protección"
-                // Opcional: Cambiar color del botón a rojo o gris para indicar 'apagar'
+                //Cambiar color del botón a rojo o gris para indicar apagado
             } else {
                 binding.btnEnableFakeShutdown.text = "Activar Protección"
             }
         }
 
-        // 2. OBSERVAR ESTADO DEL SONAR
+        // OBSERVAR ESTADO DEL SONAR
         viewModel.isSoundListenerEnabled.observe(this) { isEnabled ->
             binding.switchSoundListener.isChecked = isEnabled
 
@@ -85,7 +84,7 @@ class SecurityActivity : AppCompatActivity() {
 
     private fun setupListeners() {
 
-        // Botón 1: Ir a configuración de Bloqueo de Pantalla
+        // Ir a configuración de Bloqueo de Pantalla
         binding.btnOpenLockSettings.setOnClickListener {
             try {
                 // Intentamos ir directo a seguridad
@@ -99,10 +98,9 @@ class SecurityActivity : AppCompatActivity() {
             }
         }
 
-        // Botón 2: Ir a configuración general (para buscar bloqueo de apagado)
+        //Ir a configuración general para buscar bloqueo de apagado
         binding.btnOpenSecuritySettings.setOnClickListener {
             try {
-                // Intentamos ir a seguridad, ya que en Samsung suele estar ahí
                 val intent = Intent(Settings.ACTION_SECURITY_SETTINGS)
                 startActivity(intent)
                 Toast.makeText(this, "Busca 'Bloquear red y seguridad'", Toast.LENGTH_LONG).show()
@@ -111,43 +109,34 @@ class SecurityActivity : AppCompatActivity() {
             }
         }
 
-        // Botón 3: Activar/Desactivar Apagado Falso
+        // Activar/Desactivar Apagado Falso
         binding.btnEnableFakeShutdown.setOnClickListener {
-            // 1. Cambiar estado manual (Toggle)
             viewModel.toggleFakeShutdown()
 
-            // 2. Verificar permiso de Accesibilidad
             if (!isAccessibilityServiceEnabled()) {
-                // Si no tiene permiso, lo mandamos a activarlo
                 val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
                 startActivity(intent)
                 Toast.makeText(this, "Activa el servicio 'Aurora Anti-Robo'", Toast.LENGTH_LONG).show()
             } else {
-                // Feedback visual simple
-                // (El texto del botón se actualizará solo gracias al observer)
                 val isEnabled = viewModel.isFakeShutdownEnabled.value == true
-                // Nota: El valor en el observer puede tardar unos ms, así que usamos la lógica inversa
-                // O simplemente mostramos un mensaje genérico
+
                 Toast.makeText(this, "Configuración actualizada", Toast.LENGTH_SHORT).show()
             }
         }
 
-        // 3. LISTENER DEL SWITCH DE SONIDO
+        // LISTENER DEL SWITCH DE SONIDO
         binding.switchSoundListener.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                // Antes de activar, verificamos permiso
+                // verificamos permiso
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
                     != PackageManager.PERMISSION_GRANTED) {
 
-                    // Si no tiene permiso, lo pedimos y revertimos el switch visualmente por ahora
                     binding.switchSoundListener.isChecked = false
                     recordAudioLauncher.launch(Manifest.permission.RECORD_AUDIO)
                 } else {
-                    // Si tiene permiso, activamos en ViewModel
                     viewModel.toggleSoundListener(true)
                 }
             } else {
-                // Si apaga, desactivamos directo
                 viewModel.toggleSoundListener(false)
             }
         }

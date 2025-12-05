@@ -11,5 +11,5 @@ data class DeviceResponse(
     val accuracy: Float?,
     val last_seen: String,
     val user_email: String?,
-    val photoUrl: String?
+    val user_image: String?
 )

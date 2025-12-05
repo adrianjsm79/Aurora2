@@ -23,7 +23,6 @@ class SoundListenerService : Service() {
     private var audioRecord: AudioRecord? = null
 
     // La clave que esperamos (ej. "FLORA" en morse: ..-. .-.. --- .-.)
-    // En una app real, esto vendría de Realm/SharedPreferences
     private val secretPattern = "..-. .-.. --- .-."
 
     // Buffer para acumular lo que escuchamos ("." o "-")
@@ -68,7 +67,7 @@ class SoundListenerService : Service() {
         )
 
         try {
-            // Permiso CHECK debe hacerse en la Activity antes de lanzar el servicio
+            //El Permiso CHECK debe hacerse en la Activity antes de lanzar el servicio
             audioRecord = AudioRecord(
                 MediaRecorder.AudioSource.MIC,
                 sampleRate,
@@ -103,7 +102,7 @@ class SoundListenerService : Service() {
         }
         val amplitude = sum / readSize
 
-        // Umbral de "Sonido Fuerte" (Ajustar según pruebas)
+        // Umbral de "Sonido Fuerte"
         val threshold = 200
 
         val currentTime = System.currentTimeMillis()
@@ -118,23 +117,8 @@ class SoundListenerService : Service() {
             }
             lastSoundTime = currentTime
 
-            // Lógica simple: Distinguir punto vs guion por intensidad/duración
-            // (Esta es una simplificación, un DSP real mediría la duración del pulso)
-            // Para este ejemplo, asumimos que el emisor manda pulsos claros.
-
-            // En una implementación real robusta, medirías cuánto TIEMPO dura el sonido
-            // > 100ms y < 300ms = PUNTO
-            // > 300ms = GUION
         }
 
-        // NOTA IMPORTANTE:
-        // La decodificación de Morse por amplitud en tiempo real es compleja por el eco.
-        // Para tu proyecto, sugiero una "Simplificación Académica":
-        // Si detectamos un sonido RÍTMICO fuerte repetido X veces, activamos la alarma.
-        // O usar una librería como TarsosDSP para detectar el tono DTMF específico.
-
-        // SIMULACIÓN DE DETECCIÓN PARA EL PROYECTO:
-        // Si la amplitud es MUY alta (el otro cel está cerca sonando fuerte), activamos.
         if (amplitude > 1000) { // Umbral de "grito"
             triggerAlarm()
         }

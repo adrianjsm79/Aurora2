@@ -1,18 +1,20 @@
 package com.tecsup.aurora.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tecsup.aurora.data.model.RegisterRequest
 import com.tecsup.aurora.data.repository.AuthRepository
 import com.tecsup.aurora.utils.DeviceHelper
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-// Estado para la UI: Cargando, Éxito o Error
+// --- ESTADOS DE LA UI (Se definen una sola vez aquí) ---
+
 sealed class RegistrationState {
     object Idle : RegistrationState()
     object Loading : RegistrationState()
@@ -27,41 +29,70 @@ sealed class LoginState {
     data class Error(val message: String) : LoginState()
 }
 
-// El ViewModel necesita el Repositorio para trabajar
-class AuthViewModel(
-    private val repository: AuthRepository,
-    application: Application
-) : AndroidViewModel(application) { // <-- Llama al constructor padre
+sealed class SessionState {
+    object Loading : SessionState()
+    object Authenticated : SessionState()
+    object Unauthenticated : SessionState()
+}
 
-    // --- SESSION MANAGEMENT ---
+// --- ESTE ES EL QUE TE FALTABA ---
+sealed class PasswordResetState {
+    object Idle : PasswordResetState()
+    object Loading : PasswordResetState()
+    object CodeSent : PasswordResetState()
+    object CodeVerified : PasswordResetState()
+    object PasswordResetSuccess : PasswordResetState()
+    data class Error(val message: String) : PasswordResetState()
+}
+// --- VIEWMODEL ---
+
+class AuthViewModel(private val repository: AuthRepository) : ViewModel() {
+
+    // --- LiveData para Registro ---
+    private val _registrationState = MutableLiveData<RegistrationState>(RegistrationState.Idle)
+    val registrationState: LiveData<RegistrationState> = _registrationState
+
+    // --- LiveData para Login ---
+    private val _loginState = MutableLiveData<LoginState>(LoginState.Idle)
+    val loginState: LiveData<LoginState> = _loginState
+
+    // --- LiveData para Términos y Condiciones ---
+    private val _termsHtml = MutableLiveData<String>()
+    val termsHtml: LiveData<String> = _termsHtml
+
+    private val _termsLoading = MutableLiveData<Boolean>()
+    val termsLoading: LiveData<Boolean> = _termsLoading
+
+    private val _termsError = MutableLiveData<String?>()
+    val termsError: LiveData<String?> = _termsError
+
+    // --- StateFlow para Sesión (Splash/Main) ---
     private val _sessionState = MutableStateFlow<SessionState>(SessionState.Loading)
-    val sessionState: StateFlow<SessionState> = _sessionState
+    val sessionState: StateFlow<SessionState> = _sessionState.asStateFlow()
 
+    // Recuperación de Contraseña
+    private val _passwordResetState = MutableLiveData<PasswordResetState>(PasswordResetState.Idle)
+    val passwordResetState: LiveData<PasswordResetState> = _passwordResetState
+
+
+    // --- FUNCIONES ---
+
+    // Verifica si hay un token válido al abrir la app
     fun checkSessionStatus() {
         viewModelScope.launch {
+            _sessionState.value = SessionState.Loading
             try {
-                // Busca un token en la base de datos local (Realm)
                 val token = repository.getToken()
-                if (token != null) {
-                    // Si hay token, el usuario está autenticado
+                if (!token.isNullOrBlank()) {
                     _sessionState.value = SessionState.Authenticated
                 } else {
-                    // Si no hay token, no está autenticado
                     _sessionState.value = SessionState.Unauthenticated
                 }
             } catch (e: Exception) {
-                // Ante cualquier error, se asume que no está autenticado
                 _sessionState.value = SessionState.Unauthenticated
             }
         }
     }
-
-    // LiveData privado que solo el ViewModel puede modificar
-    private val _registrationState = MutableLiveData<RegistrationState>(RegistrationState.Idle)
-
-    // LiveData público que la Activity \"observa\"
-    val registrationState: LiveData<RegistrationState> = _registrationState
-
 
     fun onRegisterClicked(
         nombre: String,
@@ -70,7 +101,6 @@ class AuthViewModel(
         pass1: String,
         pass2: String
     ) {
-        // --- 1. Lógica de Validación (El VM es responsable) ---
         if (nombre.isBlank() || email.isBlank() || numero.isBlank() || pass1.isBlank()) {
             _registrationState.value = RegistrationState.Error("Todos los campos son obligatorios")
             return
@@ -80,34 +110,19 @@ class AuthViewModel(
             return
         }
 
-        // --- 2. Iniciar la Corrutina ---
         viewModelScope.launch {
             _registrationState.value = RegistrationState.Loading
             try {
-                // --- 3. Crear Petición y Llamar al Repositorio ---
                 val request = RegisterRequest(email, nombre, numero, pass1, pass2)
                 repository.registerUser(request)
-
-                // --- 4. Éxito ---
                 _registrationState.value = RegistrationState.Success
-
             } catch (e: Exception) {
-                // --- 5. Error ---
-                // (En producción, deberías manejar errores de red específicos)
                 _registrationState.value = RegistrationState.Error(e.message ?: "Error desconocido")
             }
         }
     }
 
-    // LÓGICA DE LOGIN ---
-
-    // 1. LiveData para el estado de Login
-    private val _loginState = MutableLiveData<LoginState>(LoginState.Idle)
-    val loginState: LiveData<LoginState> = _loginState
-
-    // 2. Función que la Activity llamará
-    fun onLoginClicked(email: String, pass: String) {
-        // Validación simple
+    fun onLoginClicked(email: String, pass: String, context: Context) {
         if (email.isBlank() || pass.isBlank()) {
             _loginState.value = LoginState.Error("Email y contraseña son obligatorios")
             return
@@ -116,35 +131,93 @@ class AuthViewModel(
         viewModelScope.launch {
             _loginState.value = LoginState.Loading
             try {
-                // Paso 1: Autenticar y obtener token
+                // 1. Login y obtener token
                 val token = repository.login(email, pass)
-                val context = getApplication<Application>().applicationContext
-                // Paso 2: Obtener datos del dispositivo
+
+                // 2. Obtener ID del dispositivo
                 val deviceId = DeviceHelper.getDeviceIdentifier(context.applicationContext)
                 val deviceName = DeviceHelper.getDeviceName()
 
-                // Paso 3: Registrar el dispositivo en el backend
+                // 3. Registrar dispositivo
                 repository.registerDevice(token, deviceName, deviceId)
 
-                // ¡Éxito en ambos pasos!
+                // Éxito
                 _loginState.value = LoginState.Success
 
             } catch (e: Exception) {
-                // Si falla el login O el registro del dispositivo, se reporta error
                 _loginState.value = LoginState.Error(e.message ?: "Error desconocido")
             }
         }
     }
 
+    fun loadTerms(code: Int) {
+        viewModelScope.launch {
+            _termsLoading.value = true
+            _termsError.value = null
+            try {
+                val html = repository.fetchTermsAndConditions(code)
+                _termsHtml.value = html
+            } catch (e: Exception) {
+                _termsError.value = "No se pudieron cargar los términos: ${e.message}"
+            } finally {
+                _termsLoading.value = false
+            }
+        }
+    }
+
+    fun termsShown() {
+        _termsHtml.value = ""
+    }
+
     fun onLogoutClicked() {
         viewModelScope.launch {
             try {
-                repository.logout() // Llama al método del repositorio para borrar el token
-                _sessionState.value = SessionState.Unauthenticated // Notifica que la sesión ha terminado
+                repository.logout()
             } catch (e: Exception) {
-                // Incluso si hay un error, se considera la sesión cerrada
-                 _sessionState.value = SessionState.Unauthenticated
+                // Error silencioso
             }
         }
+    }
+
+    // --- FUNCIONES DE RECUPERACIÓN DE CONTRASEÑA ---
+
+    fun requestPasswordReset(email: String) {
+        viewModelScope.launch {
+            _passwordResetState.value = PasswordResetState.Loading
+            try {
+                repository.requestPasswordReset(email)
+                _passwordResetState.value = PasswordResetState.CodeSent
+            } catch (e: Exception) {
+                _passwordResetState.value = PasswordResetState.Error(e.message ?: "Error al enviar código")
+            }
+        }
+    }
+
+    fun verifyResetCode(email: String, code: String) {
+        viewModelScope.launch {
+            _passwordResetState.value = PasswordResetState.Loading
+            try {
+                repository.verifyResetCode(email, code)
+                _passwordResetState.value = PasswordResetState.CodeVerified
+            } catch (e: Exception) {
+                _passwordResetState.value = PasswordResetState.Error(e.message ?: "Código inválido")
+            }
+        }
+    }
+
+    fun confirmPasswordReset(email: String, code: String, newPass: String) {
+        viewModelScope.launch {
+            _passwordResetState.value = PasswordResetState.Loading
+            try {
+                repository.confirmPasswordReset(email, code, newPass)
+                _passwordResetState.value = PasswordResetState.PasswordResetSuccess
+            } catch (e: Exception) {
+                _passwordResetState.value = PasswordResetState.Error(e.message ?: "Error al cambiar contraseña")
+            }
+        }
+    }
+
+    fun resetState() {
+        _passwordResetState.value = PasswordResetState.Idle
     }
 }

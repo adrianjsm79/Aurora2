@@ -3,6 +3,8 @@ package com.tecsup.aurora.data.remote
 import com.tecsup.aurora.data.model.DeviceRequest
 import com.tecsup.aurora.data.model.DeviceResponse
 import com.tecsup.aurora.data.model.AddContactRequest
+import com.tecsup.aurora.data.model.DirectionsResponse
+import com.tecsup.aurora.data.model.LegalResponse
 import com.tecsup.aurora.data.model.TrustedContact
 import com.tecsup.aurora.data.model.LoginRequest
 import com.tecsup.aurora.data.model.LoginResponse
@@ -21,6 +23,8 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Multipart
 import retrofit2.http.Part
+import retrofit2.http.Query
+import retrofit2.http.Url
 
 interface ApiService {
 
@@ -39,10 +43,10 @@ interface ApiService {
         @Header("Authorization") token: String
     ): Response<UserProfile>
 
-    // Endpoint para registrar un dispositivo
+    // registrar un dispositivo
     @POST("/api/devices/") // Apunta al 'create' de tu DeviceViewSet
     suspend fun registerDevice(
-        @Header("Authorization") token: String, // El token de sesión
+        @Header("Authorization") token: String,
         @Body request: DeviceRequest
     ): Response<DeviceResponse>
 
@@ -55,10 +59,9 @@ interface ApiService {
     suspend fun updateDevice(
         @Header("Authorization") token: String,
         @Path("id") deviceId: Int,
-        // Añadimos @JvmSuppressWildcards para que Retrofit entienda el 'Any'
+        //el @JvmSuppressWildcards para que Retrofit entienda el 'Any'
         @Body updates: Map<String, @JvmSuppressWildcards Any>
     ): Response<DeviceResponse>
-    // ---------------------------
 
     @DELETE("/api/devices/{id}/")
     suspend fun deleteDevice(
@@ -89,6 +92,7 @@ interface ApiService {
         @Header("Authorization") token: String
     ): Response<List<TrustedContact>>
 
+    //endpoint para cambiar los datos del perfil
     @Multipart
     @PATCH("/api/users/profile/")
     suspend fun updateProfile(
@@ -100,4 +104,27 @@ interface ApiService {
         @Part image: MultipartBody.Part?
     ): Response<UserProfile>
 
+
+    // Usamos @Url para ignorar el BASE_URL de Railway y llamar directo a Google
+    @GET
+    suspend fun getDirections(
+        @Url url: String,
+        @Query("origin") origin: String,
+        @Query("destination") destination: String,
+        @Query("key") apiKey: String
+    ): Response<DirectionsResponse>
+
+    @GET("/api/users/legal/{code}/")
+    suspend fun getLegalDocument(
+        @Path("code") code: Int
+    ): Response<LegalResponse>
+
+    @POST("/api/users/password-reset/request/")
+    suspend fun requestPasswordReset(@Body body: Map<String, String>): Response<Void>
+
+    @POST("/api/users/password-reset/verify/")
+    suspend fun verifyResetCode(@Body body: Map<String, String>): Response<Void>
+
+    @POST("/api/users/password-reset/confirm/")
+    suspend fun confirmPasswordReset(@Body body: Map<String, String>): Response<Void>
 }

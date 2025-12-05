@@ -16,7 +16,6 @@ class LocationWebSocketClient {
     private var webSocket: WebSocket? = null
     private val client = OkHttpClient()
 
-    //tubo de datos para mensajes entrantes
     private val _incomingMessages = MutableSharedFlow<String>(
         replay = 0,
         extraBufferCapacity = 10,
@@ -38,7 +37,6 @@ class LocationWebSocketClient {
 
         override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
             Log.e("WebSocket", "Error de conexión: ${t.message}", t)
-            // Aquí podrías intentar reconectar
         }
 
         override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
@@ -62,7 +60,6 @@ class LocationWebSocketClient {
         val sent = webSocket?.send(jsonMessage)
         if (sent != true) {
             Log.w("WebSocket", "No se pudo enviar el mensaje, WebSocket no conectado.")
-            // Podrías re-intentar conectar aquí
         }
     }
 

@@ -27,24 +27,22 @@ class AntiTheftService : AccessibilityService() {
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         if (event == null) return
 
-        // 1. VERIFICACIÓN MAESTRA
+        // VERIFICACIÓN
         val shouldIntercept = settingsRepository.isFakeShutdownEnabled() || settingsRepository.isDeviceLost()
         if (!shouldIntercept) return
 
-        // 2. ANTI-REBOTE (Evitar disparos múltiples en milisegundos)
+        //Evitar disparos múltiples en milisegundos
         val currentTime = System.currentTimeMillis()
         if (currentTime - lastEventTime < 400) return
 
-        // 3. SÓLO ESCUCHAMOS CAMBIOS DE ESTADO DE VENTANA
-        // (Ignoramos CONTENT_CHANGED para evitar bugs con notificaciones)
+        //Ignoramos CONTENT_CHANGED para evitar bugs con notificaciones
         if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
 
             val packageName = event.packageName?.toString()?.lowercase() ?: ""
             val className = event.className?.toString()?.lowercase() ?: ""
-            // Combinamos texto y descripción para mayor precisión
             val contentText = (event.text.toString() + (event.contentDescription ?: "")).lowercase()
 
-            // --- FILTROS DE SEGURIDAD (WHITELIST) ---
+            // WHITELIST
             // Ignoramos nuestra propia app, launchers y notificaciones
             if (packageName.contains("com.tecsup.aurora") ||
                 packageName.contains("launcher") ||
@@ -53,12 +51,12 @@ class AntiTheftService : AccessibilityService() {
                 return
             }
 
-            // 4. HEURÍSTICA DE DETECCIÓN (El "Cerebro")
+            //DETECCIÓN
             var isPowerMenu = false
 
-            // A. Detección por Nombre Técnico (Funciona en casi todos)
-            if (className.contains("globalactions") || // Android Puro / Samsung
-                className.contains("powerdialog") ||   // Xiaomi / Huawei
+            // Detección por Nombre Técnico
+            if (className.contains("globalactions") ||
+                className.contains("powerdialog") ||
                 className.contains("shutdown") ||
                 (isSamsung && className.contains("dialoglite"))) { // Samsung OneUI específico
                 isPowerMenu = true

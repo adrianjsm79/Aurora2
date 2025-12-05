@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter
 class DeviceInfoBottomSheet(
     private val deviceName: String,
     private val deviceId: String,
-    private val ownerEmail: String?, // O nombre si lo tienes disponible
+    private val ownerEmail: String?,
     private val lastSeen: String,
     private val accuracy: Double?
 ) : BottomSheetDialogFragment() {
@@ -33,17 +33,13 @@ class DeviceInfoBottomSheet(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 1. Rellenar datos
         binding.sheetDeviceName.text = deviceName
         binding.sheetDeviceId.text = "ID: ${deviceId.take(8)}..." // ID cortito
 
-        // Propietario
         binding.sheetOwnerName.text = ownerEmail ?: "Desconocido"
 
-        // Tiempo relativo
         binding.sheetLastSeen.text = formatRelativeTime(lastSeen)
 
-        // Precisión
         val acc = accuracy ?: 0.0
         val quality = when {
             acc == 0.0 -> "Desconocida"
@@ -53,7 +49,6 @@ class DeviceInfoBottomSheet(
         }
         binding.sheetAccuracy.text = "$quality (${String.format("%.1f", acc)} m)"
 
-        // Botón cerrar
         binding.btnCloseSheet.setOnClickListener {
             dismiss()
         }

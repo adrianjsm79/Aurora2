@@ -78,7 +78,7 @@ class LocationActivity : AppCompatActivity() {
             viewModel.onIntervalChanged(seconds)
         }
 
-        // Botón "Emitir Señal de Búsqueda"
+        // Botón de emitir señales de busqueda
         binding.btnEmitSignal.setOnClickListener {
             Toast.makeText(this, "Emitiendo señal sónica...", Toast.LENGTH_SHORT).show()
             lifecycleScope.launch {
@@ -89,9 +89,8 @@ class LocationActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
-        // 1. Observar si el tracking está activo o inactivo
+        // Observa si el tracking está activo o inactivo
         viewModel.isTrackingEnabled.observe(this) { isEnabled ->
-            // Bloqueamos la bandera para que este cambio no dispare el listener de arriba
             isUpdatingSwitch = true
             binding.switchTracking.isChecked = isEnabled
             isUpdatingSwitch = false
@@ -103,11 +102,10 @@ class LocationActivity : AppCompatActivity() {
             }
         }
 
-        // 2. Observar si está cargando (para mostrar tu diálogo)
+        //Observa si esta cargando
         viewModel.isLoading.observe(this) { isLoading ->
             if (isLoading) {
                 ProgressDialogFragment.show(supportFragmentManager)
-                // Bloqueamos interacción mientras carga
                 binding.switchTracking.isEnabled = false
                 setRadioGroupEnabled(false)
             } else {

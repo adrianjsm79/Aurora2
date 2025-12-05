@@ -39,7 +39,6 @@ class MapDeviceAdapter(
             binding.deviceName.text = device.name
             val context = binding.root.context
 
-            // ... (Tu lógica de tiempo y colores sigue igual) ...
             val secondsAgo = getSecondsAgo(device.last_seen)
             if (device.is_lost) {
                 binding.deviceStatus.text = "PERDIDO"
@@ -55,14 +54,12 @@ class MapDeviceAdapter(
                 binding.statusDot.background.setTint(ContextCompat.getColor(context, colorRes))
             }
 
-            // 1. CLIC EN LA FILA (Texto/Icono) -> Mover Mapa
             binding.root.setOnClickListener {
                 if (adapterPosition != RecyclerView.NO_POSITION) {
                     onRowClick(getItem(adapterPosition))
                 }
             }
 
-            // 2. CLIC EN EL CHEVRON -> Abrir Info
             binding.infoDevice.setOnClickListener {
                 if (adapterPosition != RecyclerView.NO_POSITION) {
                     onInfoClick(getItem(adapterPosition))
@@ -71,7 +68,6 @@ class MapDeviceAdapter(
         }
     }
 
-    // ... (Helpers de tiempo y DiffCallback iguales) ...
     private fun getSecondsAgo(apiTimestamp: String): Long {
         return try {
             val time = try {

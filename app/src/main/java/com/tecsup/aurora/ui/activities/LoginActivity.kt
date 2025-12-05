@@ -16,12 +16,9 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
 
-    // 1. Obtenemos el MISMO AuthViewModel.
-    // Usamos la MISMA Factory que creamos para RegisterActivity.
     private val viewModel: AuthViewModel by viewModels {
         val repository = (application as MyApplication).authRepository
-        // Pasamos ambos parámetros requeridos por la Factory
-        AuthViewModelFactory(repository, application)
+        AuthViewModelFactory(repository)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,12 +26,10 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // 2. Listener para el botón de Ingresar
         binding.btnIngresar.setOnClickListener {
             handleLogin()
         }
 
-        // 3. Observador para el ESTADO de LOGIN
         viewModel.loginState.observe(this) { state ->
             when (state) {
                 is LoginState.Loading -> {
@@ -42,17 +37,16 @@ class LoginActivity : AppCompatActivity() {
                     ProgressDialogFragment.show(supportFragmentManager)
                 }
                 is LoginState.Success -> {
-                    // ÉXITO: Realm ya tiene el token.
+                    // Realm ya tiene el token.
                     binding.btnIngresar.isEnabled = true
                     ProgressDialogFragment.hide(supportFragmentManager)
 
-                    // ¡CAMBIO CLAVE AQUÍ!
                     // Le decimos a HomeActivity que muestre el diálogo.
                     val intent = Intent(this, HomeActivity::class.java).apply {
                         putExtra("SHOW_LOCATION_DIALOG", true)
                     }
                     startActivity(intent)
-                    finish() // Cierra LoginActivity para que no pueda volver
+                    finish()
                 }
                 is LoginState.Error -> {
                     binding.btnIngresar.isEnabled = true
@@ -69,13 +63,16 @@ class LoginActivity : AppCompatActivity() {
         binding.registerLink.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
         }
+        binding.forgotPasswordLink.setOnClickListener {
+            val intent = Intent(this, ForgotPasswordActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun handleLogin() {
-        // 4. La Activity solo recolecta datos y avisa al ViewModel
         val email = binding.inputEmail.text.toString().trim()
         val pass = binding.inputPassword.text.toString()
 
-        viewModel.onLoginClicked(email, pass)
+        viewModel.onLoginClicked(email, pass, this)
     }
 }
