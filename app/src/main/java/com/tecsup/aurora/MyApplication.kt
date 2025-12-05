@@ -109,7 +109,7 @@ class MyApplication : Application() {
 
     // 1. Crear instancia del MapRepository
     val mapRepository by lazy {
-        MapRepository(realm, apiService)
+        MapRepository(realm, apiService, applicationContext)
     }
 
     // 2. Actualizar la fábrica del mapa

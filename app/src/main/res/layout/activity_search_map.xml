@@ -12,9 +12,9 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="80dp" /> <!-- Margen para que se vea algo del mapa con el sheet -->
+        android:layout_marginBottom="80dp" />
 
-    <!-- 2. BOTÓN FLOTANTE DE CONTROL DE UBICACIÓN (Arriba Derecha) -->
+
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/card_location_status"
         android:layout_width="wrap_content"

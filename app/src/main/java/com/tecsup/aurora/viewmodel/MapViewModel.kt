@@ -19,12 +19,10 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 
-// --- CLASES DE ESTADO DE UI ---
-
 data class MapOverlays(
     val routeTargetId: Int? = null,
-    val routePoints: List<LatLng> = emptyList(), // Puntos de la línea de ruta (Calles reales)
-    val traces: Map<Int, List<LatLng>> = emptyMap() // Mapa de DeviceID -> Lista de puntos ("migas")
+    val routePoints: List<LatLng> = emptyList(), // Puntos de la línea de ruta
+    val traces: Map<Int, List<LatLng>> = emptyMap()
 )
 
 data class MapUiState(
@@ -40,9 +38,6 @@ class MapViewModel(
     private val trackingServiceManager: TrackingServiceManager,
     private val mapRepository: MapRepository
 ) : ViewModel() {
-
-    // REEMPLAZA CON TU API KEY REAL DE GOOGLE MAPS (La que habilitaste para Directions API)
-    private val GOOGLE_API_KEY = "TU_API_KEY_AQUI"
 
     // --- LiveData ---
     private val _uiState = MutableLiveData<MapUiState>()
@@ -187,8 +182,8 @@ class MapViewModel(
                     val origin = LatLng(myDevice.latitude!!, myDevice.longitude!!)
                     val dest = LatLng(targetDevice.latitude!!, targetDevice.longitude!!)
 
-                    // Llamada a la API de Google para ruta real por calles
-                    routePoints = mapRepository.getRealRoute(origin, dest, GOOGLE_API_KEY)
+                    // Llamada al repositorio que ahora se encarga de obtener la API Key y calcular la ruta
+                    routePoints = mapRepository.getRealRoute(origin, dest)
 
                     // Fallback a línea recta si falla la API
                     if (routePoints.isEmpty()) {
